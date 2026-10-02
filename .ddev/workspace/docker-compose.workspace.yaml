@@ -1,0 +1,19 @@
+# Workspace mode: mount the workspace's apps/ checkouts into the web container.
+#
+# The demo lives at <workspace>/demos/design_system_api_demo and the module repos at
+# <workspace>/apps/*. Inside the container the project root is /var/www/html, so
+# mounting apps/ at /var/apps makes the same relative path (../../apps) resolve on
+# the host and in the container. Composer's path repository and its relative
+# symlinks then work from both sides.
+#
+# COMPOSER points Composer at the generated composer.workspace.json (with its own
+# composer.workspace.lock), so the committed composer.json/composer.lock never
+# reference local paths.
+#
+# Copied to .ddev/ by `ddev workspace-mode on`; never commit the copy.
+services:
+  web:
+    volumes:
+      - ../../../apps:/var/apps:cached
+    environment:
+      - COMPOSER=composer.workspace.json

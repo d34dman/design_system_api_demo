@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+## Description: Use the workspace's local apps/ checkouts instead of drupal.org releases
+## Usage: workspace-mode [on|off|status]
+## Example: "ddev workspace-mode on"
+
+set -euo pipefail
+
+cd "$DDEV_APPROOT"
+APPS="../../apps"
+TEMPLATE=".ddev/workspace"
+OVERRIDE=".ddev/docker-compose.workspace.yaml"
+
+is_on() { [ -f "$OVERRIDE" ]; }
+
+case "${1:-status}" in
+  on)
+    if [ ! -d "$APPS" ]; then
+      echo "No workspace found at $APPS."
+      echo "Workspace mode needs this demo checked out at <workspace>/demos/design_system_api_demo."
+      exit 1
+    fi
+    cp "$TEMPLATE/docker-compose.workspace.yaml" "$OVERRIDE"
+    ddev restart
+    # composer.json + workspace path repositories (prepended, so they win).
+    ddev exec php .ddev/workspace/build-composer-json.php
+    if [ -f composer.workspace.lock ]; then
+      ddev composer update 'drupal/design_system_api*' --with-all-dependencies
+    else
+      ddev composer update
+    fi
+    echo
+    echo "Workspace mode on. Local checkouts from $APPS:"
+    ls -1 "$APPS"
+    ;;
+  off)
+    rm -f "$OVERRIDE"
+    ddev restart
+    if [ -f composer.lock ]; then ddev composer install; else ddev composer update; fi
+    echo
+    echo "Workspace mode off. Using drupal.org releases."
+    ;;
+  status)
+    if is_on; then echo "Workspace mode: on"; else echo "Workspace mode: off"; fi
+    ;;
+  *)
+    echo "Usage: ddev workspace-mode [on|off|status]" >&2
+    exit 1
+    ;;
+esac

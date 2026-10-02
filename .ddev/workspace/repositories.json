@@ -1,0 +1,9 @@
+[
+    {
+        "type": "path",
+        "url": "../../apps/*",
+        "options": {
+            "symlink": true
+        }
+    }
+]

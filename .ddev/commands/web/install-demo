@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+## Description: Install the Design System API demo site from scratch and print a login link
+## Usage: install-demo
+## Example: "ddev install-demo"
+
+set -euo pipefail
+
+composer install --no-interaction
+drush site:install standard --account-name=admin --account-pass=admin -y
+drush theme:install gin -y
+drush config:set system.theme admin gin -y
+drush pm:install design_system_api -y
+drush cache:rebuild
+
+echo
+echo "Admin theme: Gin. Switch with: ddev admin-theme <claro|default_admin|gin>"
+echo "Open this link to log in:"
+drush user:login

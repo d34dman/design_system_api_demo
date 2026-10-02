@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+## Description: Switch the admin theme, to compare how contract-based UI looks under each
+## Usage: admin-theme [theme-machine-name]
+## Example: "ddev admin-theme claro"
+
+set -euo pipefail
+
+if [ $# -eq 0 ]; then
+  echo "Current admin theme: $(drush config:get system.theme admin --format=string)"
+  echo
+  echo "Installable themes:"
+  drush pm:list --type=theme --fields=name,status --format=table
+  exit 0
+fi
+
+drush theme:install "$1" -y
+drush config:set system.theme admin "$1" -y
+drush cache:rebuild
+echo "Admin theme is now: $1"
