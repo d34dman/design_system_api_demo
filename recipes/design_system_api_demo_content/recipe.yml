@@ -1,0 +1,38 @@
+name: 'Design System API demo content'
+description: 'The stage for the Design System API demo: an Article type with a Media Library field, image media, Arabic (RTL), and content editing in the frontend theme.'
+type: 'Site'
+recipes:
+  - core/recipes/image_media_type
+install:
+  - node
+  - text
+  - field
+  - field_ui
+  - language
+  - content_translation
+config:
+  strict: false
+  import:
+    language: '*'
+    node:
+      - core.entity_view_mode.node.teaser
+      - core.entity_view_mode.node.full
+  actions:
+    # Edit content in the frontend theme, so the Media Library widget shows up
+    # under Olivero and Stark (proof moment 3).
+    node.settings:
+      simpleConfigUpdate:
+        use_admin_theme: false
+    # Language prefixes (/ar/...) make the RTL moment one URL.
+    language.types:
+      simpleConfigUpdate:
+        negotiation.language_interface.enabled:
+          language-url: 0
+          language-selected: 12
+    # Arabic is created by an action, not imported: it must come after the
+    # locked languages (und, zxx) the language module creates.
+    language.entity.ar:
+      createIfNotExists:
+        label: Arabic
+        direction: rtl
+        weight: 1

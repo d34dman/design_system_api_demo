@@ -1,0 +1,336 @@
+<title>Design System API proof</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single reading column for the argument, widening to a full-bleed
+   matrix where the evidence sits. Tokens mirror the contract's own roles. */
+:root {
+  --bg: #f6f7fa;
+  --surface: #ffffff;
+  --surface-nested: #eef0f5;
+  --fg: #16181d;
+  --fg-soft: #545967;
+  --border: #d9dce4;
+  --accent: #2a59d5;
+  --accent-soft: #e6ecfb;
+  --ok: #18794e;
+  --bad: #c62828;
+  --code-bg: #10131a;
+  --code-fg: #d8dde8;
+  --font-display: "Bricolage Grotesque", "Hanken Grotesk", system-ui, sans-serif;
+  --font-body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius: 10px;
+  --gutter: clamp(16px, 4vw, 40px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111318; --surface: #191c23; --surface-nested: #222631; --fg: #e8eaf0; --fg-soft: #a3a9b8;
+    --border: #2e3340; --accent: #84a6ff; --accent-soft: #1d2740; --ok: #4cc38a; --bad: #f28b82;
+    --code-bg: #0a0c10; --code-fg: #d8dde8; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111318; --surface: #191c23; --surface-nested: #222631; --fg: #e8eaf0; --fg-soft: #a3a9b8;
+  --border: #2e3340; --accent: #84a6ff; --accent-soft: #1d2740; --ok: #4cc38a; --bad: #f28b82;
+  --code-bg: #0a0c10; --code-fg: #d8dde8; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 400 16px/1.6 var(--font-body);
+}
+.wrap { padding-inline: var(--gutter); padding-block: 48px 80px; display: grid; gap: 72px; }
+.col { max-width: 760px; width: 100%; margin-inline: auto; display: grid; gap: 20px; min-width: 0; }
+.wide { max-width: 1320px; width: 100%; margin-inline: auto; display: grid; gap: 20px; min-width: 0; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(2.1rem, 5vw, 3.4rem); line-height: 1.05; font-weight: 700; }
+h2 { font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.15; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 500; }
+p { margin: 0; max-width: 65ch; }
+.soft { color: var(--fg-soft); }
+.eyebrow { font: 500 0.75rem/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-soft); }
+a { color: var(--accent); }
+code, .mono { font-family: var(--font-mono); font-size: 0.88em; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.claim {
+  margin: 0;
+  padding-block: 4px;
+  padding-inline: 20px 0;
+  border-inline-start: 3px solid var(--accent);
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 2px; }
+.stat b { font: 700 1.6rem/1.1 var(--font-display); font-variant-numeric: tabular-nums; }
+.stat span { font-size: 0.85rem; color: var(--fg-soft); }
+
+ol.moments { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; counter-reset: m; border-block-start: 1px solid var(--border); }
+ol.moments li { counter-increment: m; display: grid; grid-template-columns: 2.5rem 1fr; gap: 4px 12px; padding-block: 12px; border-block-end: 1px solid var(--border); }
+ol.moments li::before { content: counter(m); font: 500 0.95rem/1.6 var(--font-mono); color: var(--accent); grid-row: span 2; }
+ol.moments b { font-weight: 600; }
+ol.moments span { color: var(--fg-soft); font-size: 0.95rem; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); padding: 3px; gap: 2px; }
+.seg button {
+  font: 500 0.9rem/1 var(--font-body); color: var(--fg-soft); background: none; border: 0; border-radius: 999px;
+  padding: 8px 14px; cursor: pointer;
+}
+.seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+:root[data-theme="dark"] .seg button[aria-pressed="true"] { color: #0b1020; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .seg button[aria-pressed="true"] { color: #0b1020; } }
+.note { font-size: 0.92rem; color: var(--fg-soft); background: var(--surface-nested); border-radius: var(--radius); padding: 10px 14px; max-width: none; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr)); gap: 20px; }
+figure.cell { margin: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; display: grid; min-width: 0; }
+figure.cell figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 12px; padding: 10px 14px; border-block-end: 1px solid var(--border); }
+figure.cell figcaption h3 { font-family: var(--font-body); font-weight: 600; font-size: 0.95rem; }
+.axe { font: 500 0.75rem/1 var(--font-mono); padding: 4px 8px; border-radius: 999px; white-space: nowrap; }
+.axe.ok { color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent); }
+.axe.bad { color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, transparent); }
+
+.compare { position: relative; overflow: hidden; background: var(--surface-nested); max-width: 100%; }
+.compare img { display: block; width: 100%; height: auto; }
+.compare .after { position: absolute; inset: 0; clip-path: inset(0 0 0 var(--pos, 50%)); }
+.compare .after img { height: 100%; object-fit: cover; object-position: left top; }
+.compare .rule { position: absolute; inset-block: 0; left: var(--pos, 50%); width: 2px; background: var(--accent); pointer-events: none; }
+.compare .tag { position: absolute; inset-block-start: 8px; font: 500 0.7rem/1 var(--font-mono); padding: 5px 7px; border-radius: 5px; background: rgb(16 19 26 / 0.78); color: #fff; pointer-events: none; }
+.compare .tag.b { inset-inline-start: 8px; }
+.compare .tag.a { inset-inline-end: 8px; background: var(--accent); }
+.compare input[type="range"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
+.compare:has(input:focus-visible) { outline: 3px solid var(--accent); outline-offset: -3px; }
+
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 20px; }
+.pair figure { margin: 0; display: grid; gap: 8px; min-width: 0; }
+.pair img { border: 1px solid var(--border); border-radius: var(--radius); display: block; width: 100%; height: auto; }
+.pair figcaption { font-size: 0.9rem; color: var(--fg-soft); }
+
+pre {
+  margin: 0; background: var(--code-bg); color: var(--code-fg); border-radius: var(--radius);
+  padding: 16px 18px; font: 400 0.82rem/1.55 var(--font-mono); overflow-x: auto; white-space: pre; min-width: 0;
+}
+.code-label { font: 500 0.75rem/1 var(--font-mono); color: var(--fg-soft); margin-block-end: -12px; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); gap: 20px; }
+.two > div { display: grid; gap: 20px; align-content: start; min-width: 0; }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+th, td { padding: 8px 12px; text-align: start; border-block-end: 1px solid var(--border); white-space: nowrap; }
+thead th { font: 500 0.75rem/1.2 var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--fg-soft); }
+tbody tr:last-child td { border-block-end: 0; }
+
+footer { color: var(--fg-soft); font-size: 0.85rem; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .seg button { transition: background-color 0.15s, color 0.15s; }
+}
+</style>
+
+<div class="wrap">
+  <header class="col">
+    <span class="eyebrow">Drupal · Design System API · v0 demo</span>
+    <h1>One module, one stylesheet, every theme</h1>
+    <blockquote class="claim">The Media Library, styled once against the design contract, looks native in Default Admin and Claro and plain but deliberate in Olivero and in Stark, a theme with no CSS. It follows dark mode, RTL, high contrast and forced colors, and an author rebrands it in one file without touching code.</blockquote>
+    <div class="stats" id="stats"></div>
+    <p class="soft">Every screenshot on this page is captured by <code>tests/proof/capture.mjs</code> from the demo site (Drupal 12.0.0-beta1), with an axe-core scan of each cell. Rebuild it with one command; nothing here is mocked.</p>
+  </header>
+
+  <section class="col" aria-labelledby="moments-h">
+    <h2 id="moments-h">The seven moments</h2>
+    <ol class="moments">
+      <li><b>Before</b><span>Pilot off. Each admin theme ships its own Media Library CSS; Olivero and Stark get almost none.</span></li>
+      <li><b>One module, every admin theme</b><span>Pilot on. The themes' Media Library CSS is switched off; adapters map the contract to each theme's variables.</span></li>
+      <li><b>Same module, frontend</b><span>Olivero and Stark get the contract's plain defaults.</span></li>
+      <li><b>Modes</b><span>Dark, RTL, prefers-contrast and forced colors, from one stylesheet.</span></li>
+      <li><b>The author fills</b><span>A registry file rebrands the card border on Olivero only, with provenance.</span></li>
+      <li><b>The guard rail</b><span>The linter passes the pilot and fails a literal color, by rule ID.</span></li>
+      <li><b>Receipts</b><span>No hex values, no theme names, a quarter of the CSS.</span></li>
+    </ol>
+  </section>
+
+  <section class="wide" aria-labelledby="matrix-h">
+    <div class="col" style="margin: 0; max-width: 760px;">
+      <span class="eyebrow">Moments 1–4</span>
+      <h2 id="matrix-h">Before and after, per theme and context</h2>
+      <p class="soft">Drag across a screenshot (or focus it and use the arrow keys) to compare the theme's own CSS with the pilot.</p>
+    </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Theme" id="theme-seg"></div>
+      <div class="seg" role="group" aria-label="View" id="view-seg"></div>
+    </div>
+    <p class="note" id="theme-note"></p>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="wide" aria-labelledby="author-h">
+    <div class="col" style="margin: 0;">
+      <span class="eyebrow">Moment 5</span>
+      <h2 id="author-h">The author fills: one registry file</h2>
+      <p class="soft"><code>ddev ds-brand on</code> drops this file into the registry. Two values change: the shared <code>color.border.primary</code> and the media card's own border. Everything else, and every other theme, is untouched.</p>
+    </div>
+    <div class="pair">
+      <figure><img src="shots/on/olivero/light--modal.jpg" alt="Media Library on Olivero with contract defaults: grey card borders, blue selection." loading="lazy" width="1280" height="860"><figcaption>Olivero, contract defaults</figcaption></figure>
+      <figure><img src="shots/brand/olivero/light--modal.jpg" alt="Media Library on Olivero with the brand registry: red card borders, navy selection." loading="lazy" width="1280" height="860"><figcaption>Olivero, with the brand registry</figcaption></figure>
+    </div>
+    <div class="two">
+      <div>
+        <span class="code-label">design-system/registry/olivero.registry.yml</span>
+        <pre id="registry"></pre>
+      </div>
+      <div>
+        <span class="code-label">drush ds:resolve media-card.border --theme=olivero</span>
+        <pre id="resolve-brand"></pre>
+        <span class="code-label">… --mode=dark</span>
+        <pre id="resolve-brand-dark"></pre>
+        <span class="code-label">… --theme=default_admin (no author file: the adapter fills it)</span>
+        <pre id="resolve-admin"></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="wide" aria-labelledby="lint-h">
+    <div class="col" style="margin: 0;">
+      <span class="eyebrow">Moments 6 and 7</span>
+      <h2 id="lint-h">Guard rail and receipts</h2>
+      <p class="soft">The rules are data in the module (<code>design_system_api.rules.yml</code>); the stylelint rules carry the same IDs. The component's tokens each suggest a mapping to the shared vocabulary, so a new theme needs no setup.</p>
+    </div>
+    <div class="two">
+      <div>
+        <span class="code-label">ddev ds-lint</span>
+        <pre id="lint"></pre>
+      </div>
+      <div>
+        <span class="code-label">design_system_api_media_library.tokens.yml</span>
+        <pre id="tokens"></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="wide" aria-labelledby="axe-h">
+    <div class="col" style="margin: 0;">
+      <h2 id="axe-h">Accessibility scan, every cell</h2>
+      <p class="soft">axe-core (WCAG 2.1 A/AA) on the field widget and on the open dialog. Counts are violated rules.</p>
+    </div>
+    <div class="table-wrap"><table id="axe-table"></table></div>
+  </section>
+
+  <section class="col" aria-labelledby="repro-h">
+    <h2 id="repro-h">Run it yourself</h2>
+    <pre>git clone https://github.com/d34dman/design_system_api_demo.git
+cd design_system_api_demo
+ddev start &amp;&amp; ddev install-demo
+ddev admin-theme claro          # or default_admin
+ddev frontend-theme stark       # or olivero
+ddev ds-brand on                # moment 5
+ddev ds-lint                    # moments 6 and 7
+cd tests/proof &amp;&amp; npm install &amp;&amp; npm run capture &amp;&amp; npm run gallery</pre>
+    <p class="soft">Until the module's <code>1.0.x</code> branch and the demo are published, this runs in the workspace (<code>ddev workspace-mode on</code>).</p>
+    <footer id="built"></footer>
+  </section>
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const NOTES = {
+  default_admin: 'Core\'s admin theme. The adapter aliases every token to Default Admin\'s own variables, so its accent setting and its dark mode flow through. Default Admin declares dark support, so the dark cell follows the OS.',
+  claro: 'Contrib on Drupal 12. The adapter maps the contract to Claro\'s variables. Claro has no dark mode, so the dark cell stays light: module UI never turns dark on a light page.',
+  olivero: 'Contrib on Drupal 12, with no Media Library styles of its own: "before" is core\'s bare markup in a jQuery UI dialog. "After" is the contract\'s plain frontend defaults. Olivero has no dark mode, so the dark cell stays light.',
+  stark: 'No CSS at all: the strictest test of the frontend defaults. Core\'s Navigation sidebar overlaps the dialog because Stark gives dialogs no stacking order; that is outside the pilot.',
+};
+const VIEW_LABELS = { modal: 'Dialog', widget: 'Field widget' };
+let state = { theme: 'default_admin', view: 'modal' };
+try { Object.assign(state, JSON.parse(localStorage.getItem('dsproof') || '{}')); } catch (e) {}
+
+function axeCount(key, view) {
+  const c = DATA.cells[key];
+  return c ? c.axe[view].length : null;
+}
+function badge(n) {
+  if (n === null) return '<span class="axe">n/a</span>';
+  return `<span class="axe ${n ? 'bad' : 'ok'}">axe ${n ? n + ' rule' + (n > 1 ? 's' : '') : 'clean'}</span>`;
+}
+
+function seg(el, items, key) {
+  el.innerHTML = items.map(([v, l]) => `<button type="button" data-v="${v}" aria-pressed="${state[key] === v}">${esc(l)}</button>`).join('');
+  el.onclick = (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    state[key] = b.dataset.v;
+    try { localStorage.setItem('dsproof', JSON.stringify(state)); } catch (e2) {}
+    render();
+  };
+}
+
+function render() {
+  seg($('#theme-seg'), DATA.themes.map((t) => [t.name, t.label]), 'theme');
+  seg($('#view-seg'), DATA.views.map((v) => [v.name, VIEW_LABELS[v.name] || v.label]), 'view');
+  $('#theme-note').textContent = NOTES[state.theme] || '';
+  const { theme, view } = state;
+  $('#grid').innerHTML = DATA.variants.map((v) => {
+    const before = `shots/off/${theme}/${v.name}--${view}.jpg`;
+    const after = `shots/on/${theme}/${v.name}--${view}.jpg`;
+    const label = `${DATA.themes.find((t) => t.name === theme).label}, ${v.label}`;
+    return `<figure class="cell">
+      <figcaption><h3>${esc(v.label)}</h3><span>${badge(axeCount(`off/${theme}/${v.name}`, view))} → ${badge(axeCount(`on/${theme}/${v.name}`, view))}</span></figcaption>
+      <div class="compare" style="--pos:50%">
+        <img src="${before}" alt="Before, ${esc(label)}: the theme's own Media Library CSS" loading="lazy">
+        <div class="after"><img src="${after}" alt="After, ${esc(label)}: the pilot on the contract" loading="lazy"></div>
+        <div class="rule"></div>
+        <span class="tag b">before</span><span class="tag a">after</span>
+        <input type="range" min="0" max="100" value="50" aria-label="Compare before and after: ${esc(label)}">
+      </div>
+    </figure>`;
+  }).join('');
+  document.querySelectorAll('.compare input').forEach((r) => {
+    r.addEventListener('input', () => r.parentElement.style.setProperty('--pos', r.value + '%'));
+  });
+}
+
+function stats() {
+  const on = Object.values(DATA.cells).filter((c) => c.pilot === 'on');
+  const violations = on.reduce((n, c) => n + c.axe.widget.length + c.axe.modal.length, 0);
+  const lint = DATA.receipts.lint;
+  const lines = (lint.match(/pilot CSS:\s+(\d+) lines, replacing (\d+) \(Default Admin\) \+ (\d+)/) || []);
+  const hex = (lint.match(/hex colors:\s+(\d+)/) || [])[1];
+  const names = (lint.match(/theme names:\s+(\d+)/) || [])[1];
+  const items = [
+    [DATA.themes.length, 'themes, one stylesheet'],
+    [DATA.variants.length, 'contexts per theme'],
+    [violations, 'axe violations, pilot on'],
+    [hex ?? '–', 'hex colors in the pilot'],
+    [names ?? '–', 'theme names in the pilot'],
+    [lines[1] ? `${lines[1]} / ${Number(lines[2]) + Number(lines[3])}` : '–', 'lines: pilot vs theme copies'],
+  ];
+  $('#stats').innerHTML = items.map(([b, s]) => `<div class="stat"><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join('');
+}
+
+function axeTable() {
+  const head = `<thead><tr><th>Theme</th>${DATA.variants.map((v) => `<th>${esc(v.label)}</th>`).join('')}</tr></thead>`;
+  const rows = DATA.themes.map((t) => `<tr><th scope="row">${esc(t.label)}</th>${DATA.variants.map((v) => {
+    const cell = (p) => { const c = DATA.cells[`${p}/${t.name}/${v.name}`]; return c ? c.axe.widget.length + c.axe.modal.length : '–'; };
+    return `<td>${cell('off')} → <b>${cell('on')}</b></td>`;
+  }).join('')}</tr>`).join('');
+  $('#axe-table').innerHTML = head + `<tbody>${rows}</tbody>`;
+}
+
+$('#registry').textContent = DATA.receipts.registry;
+$('#resolve-brand').textContent = DATA.receipts.resolveBrand;
+$('#resolve-brand-dark').textContent = DATA.receipts.resolveBrandDark;
+$('#resolve-admin').textContent = DATA.receipts.resolveAdmin;
+$('#lint').textContent = DATA.receipts.lint;
+$('#tokens').textContent = DATA.receipts.tokens;
+$('#built').textContent = `Captured ${new Date(DATA.builtAt).toUTCString()} from the demo site.`;
+stats();
+axeTable();
+render();
+</script>

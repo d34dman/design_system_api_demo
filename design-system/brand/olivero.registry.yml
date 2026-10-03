@@ -1,0 +1,24 @@
+# An author's registry file for the Olivero context: a brand palette
+# (primitives) and the values that differ from what Olivero gets by default.
+# `ddev ds-brand on` copies it into design-system/registry/, which is where the
+# Design System API reads author values from.
+#
+# Only two tokens change. color.border.primary is shared, so everything built
+# on it follows; media-card.border is an override for the media card only.
+theme: olivero
+
+primitives:
+  brand.navy.700: '#1d3557'
+  brand.navy.200: '#a8c5e6'
+  brand.red.600: '#c8102e'
+  brand.red.300: '#ff6b6b'
+
+values:
+  base:
+    color.border.primary: '{brand.navy.700}'
+    media-card.border: '{brand.red.600}'
+  mode=dark:
+    color.border.primary: '{brand.navy.200}'
+    media-card.border: '{brand.red.300}'
+  contrast=more:
+    media-card.border: '#8b0000'

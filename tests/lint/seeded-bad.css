@@ -1,0 +1,5 @@
+/* Deliberately wrong, for proof moment 6: `ddev ds-lint` must fail on this. */
+.media-card-copy {
+  color: #6b7280;
+  margin-left: 1rem;
+}

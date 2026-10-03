@@ -7,13 +7,25 @@
 set -euo pipefail
 
 composer install --no-interaction
-drush site:install standard --account-name=admin --account-pass=admin -y
-drush theme:install gin -y
-drush config:set system.theme admin gin -y
-drush pm:install design_system_api -y
+drush site:install standard --account-name=admin --account-pass=admin \
+  --site-name="Design System API demo" -y
+# Drupal 12's Standard profile installs no frontend theme; Olivero comes from contrib.
+drush theme:install olivero default_admin claro -y
+drush config:set system.theme default olivero -y
+drush config:set system.theme admin default_admin -y
+# Standard points the front page at /admin/welcome when there is no frontend theme,
+# and ships the /node listing (promoted_content) disabled.
+drush views:enable promoted_content
+drush config:set system.site page.front /node -y
+# The stage: Article type, image media, Media Library widget, Arabic (RTL),
+# content editing in the frontend theme.
+drush recipe ../recipes/design_system_api_demo_content
+drush php:script ../scripts/demo-content.php
+drush pm:install design_system_api design_system_api_default_admin design_system_api_claro design_system_api_media_library -y
 drush cache:rebuild
 
 echo
-echo "Admin theme: Gin. Switch with: ddev admin-theme <claro|default_admin|gin>"
+echo "Frontend theme: Olivero. Admin theme: Default Admin."
+echo "Switch with: ddev admin-theme <default_admin|claro>, ddev frontend-theme <olivero|stark>"
 echo "Open this link to log in:"
 drush user:login

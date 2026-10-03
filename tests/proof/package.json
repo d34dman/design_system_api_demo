@@ -1,0 +1,14 @@
+{
+  "name": "design-system-api-demo-proof",
+  "private": true,
+  "description": "Captures the proof gallery: theme × context × pilot off/on, with an axe scan per cell.",
+  "type": "module",
+  "scripts": {
+    "capture": "node capture.mjs",
+    "gallery": "node gallery.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.0",
+    "playwright": "^1.55.0"
+  }
+}

@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+## Description: Turn the author's brand registry for Olivero on or off (proof moment 5)
+## Usage: ds-brand [on|off|status]
+## Example: "ddev ds-brand on"
+
+set -euo pipefail
+
+SRC=/var/www/html/design-system/brand/olivero.registry.yml
+DEST=/var/www/html/design-system/registry/olivero.registry.yml
+
+case "${1:-status}" in
+  on)
+    mkdir -p "$(dirname "$DEST")"
+    cp "$SRC" "$DEST"
+    drush cache:rebuild
+    echo "Brand registry on for Olivero."
+    drush ds:resolve media-card.border --theme=olivero
+    ;;
+  off)
+    rm -f "$DEST"
+    drush cache:rebuild
+    echo "Brand registry off: Olivero gets the contract defaults."
+    ;;
+  status)
+    if [ -f "$DEST" ]; then echo "Brand registry: on"; else echo "Brand registry: off"; fi
+    ;;
+  *)
+    echo "Usage: ddev ds-brand [on|off|status]" >&2
+    exit 1
+    ;;
+esac

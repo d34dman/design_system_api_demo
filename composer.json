@@ -1,6 +1,6 @@
 {
     "name": "d34dman/design_system_api_demo",
-    "description": "Demo site for the Drupal Design System API: one contract, several admin themes.",
+    "description": "Demo site for the Drupal Design System API: one contract, admin and frontend themes.",
     "type": "project",
     "license": "GPL-2.0-or-later",
     "homepage": "https://www.drupal.org/project/design_system_api",
@@ -11,13 +11,14 @@
         }
     ],
     "require": {
-        "php": ">=8.3",
+        "php": ">=8.5",
         "composer/installers": "^2.3",
-        "drupal/core-composer-scaffold": "^11.4",
-        "drupal/core-recommended": "^11.4",
+        "drupal/claro": "^3",
+        "drupal/core-composer-scaffold": "12.0.0-beta1",
+        "drupal/core-recommended": "12.0.0-beta1",
         "drupal/design_system_api": "1.0.x-dev@dev",
-        "drupal/gin": "^5",
-        "drush/drush": "^13"
+        "drupal/olivero": "^2",
+        "drush/drush": "14.x-dev"
     },
     "conflict": {
         "drupal/drupal": "*"
@@ -70,5 +71,8 @@
                 "type:drupal-recipe"
             ]
         }
+    },
+    "require-dev": {
+        "drupal/core-dev": "12.0.0-beta1"
     }
 }
