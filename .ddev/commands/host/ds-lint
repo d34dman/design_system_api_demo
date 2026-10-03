@@ -32,5 +32,5 @@ echo
 echo "== Receipts: hex values and theme names in the pilot submodule"
 PILOT="web/modules/contrib/design_system_api/modules/design_system_api_media_library"
 echo "hex colors:   $(grep -rEoi '#[0-9a-f]{3,8}\b' "$PILOT" --include='*.css' | wc -l | tr -d ' ')"
-echo "theme names:  $(grep -rEiw 'default_admin|claro|olivero|gin|stark' "$PILOT" | wc -l | tr -d ' ')"
+echo "theme names:  $(grep -rEiw --exclude-dir=tests 'default_admin|claro|olivero|gin|stark' "$PILOT" | wc -l | tr -d ' ')"
 echo "pilot CSS:    $(cat "$PILOT"/css/*.css | wc -l | tr -d ' ') lines, replacing $(ls web/core/themes/default_admin/css/components/media-library*.css | grep -v pcss | xargs cat | wc -l | tr -d ' ') (Default Admin) + $(cat web/themes/contrib/claro/css/theme/media-library.css web/themes/contrib/claro/css/components/media-library.ui.css 2>/dev/null | wc -l | tr -d ' ') (Claro) lines of theme CSS"
