@@ -21,7 +21,7 @@ It proves that in seven moments, each with a before and after:
 | 2 | **One module, every admin theme:** the pilot replaces the themes' Media Library CSS; adapters map the contract to each theme. | `ddev admin-theme default_admin\|claro` |
 | 3 | **Same module, frontend:** plain, deliberate defaults on Olivero and on Stark (no CSS at all). | `ddev frontend-theme olivero\|stark`, then edit an article |
 | 4 | **Modes:** OS dark mode (where the theme has one), RTL at `/ar/node/1/edit`, `prefers-contrast: more`, forced colors. | DevTools rendering emulation |
-| 5 | **The author fills:** a registry file turns the card border brand red on Olivero only. | `ddev ds-brand on`, `ddev drush ds:resolve media-card.border --theme=olivero --mode=dark` |
+| 5 | **The author fills:** a registry file turns the card border brand red on Olivero only. Authors can also edit it at Appearance » Design system. | `ddev ds-brand on`, `ddev drush ds:resolve media-card.border --theme=olivero --mode=dark` |
 | 6 | **The guard rail:** the linter passes the pilot and fails a seeded literal color. | `ddev ds-lint` |
 | 7 | **Receipts:** zero hex values and zero theme names in the pilot; 418 lines of CSS replacing about 1,700 lines of theme copies. | `ddev ds-lint` (last block) |
 
