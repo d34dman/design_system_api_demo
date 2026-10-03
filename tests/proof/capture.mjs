@@ -86,6 +86,12 @@ async function captureCell(browser, pilot, theme, variant) {
   await login(context);
   const page = await context.newPage();
   await page.goto(BASE + variant.path, { waitUntil: 'networkidle' });
+  // Page-side choices made with attributes (e.g. data-ds-mode="dark").
+  if (variant.html) {
+    await page.evaluate((attributes) => {
+      for (const [name, value] of Object.entries(attributes)) document.documentElement.setAttribute(name, value);
+    }, variant.html);
+  }
 
   // View 1: the field widget on the entity form.
   const widget = page.locator('.js-media-library-widget').first();
@@ -133,7 +139,7 @@ try {
     execFileSync('ddev', ['ds-brand', 'on'], { cwd: ROOT, stdio: 'ignore' });
     try {
       setTheme(THEMES.find((t) => t.name === 'olivero'));
-      for (const variant of VARIANTS.filter((v) => ['light', 'contrast'].includes(v.name))) {
+      for (const variant of VARIANTS.filter((v) => ['light', 'contrast', 'dark-contrast'].includes(v.name))) {
         await captureCell(browser, 'brand', THEMES.find((t) => t.name === 'olivero'), variant);
       }
     }
