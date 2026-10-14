@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+## Description: Set up or remove the two-design-systems POC (test module, Layout Builder, ds_hostile)
+## Usage: ds-scope-poc [on|off]
+## Example: "ddev ds-scope-poc on"
+
+set -euo pipefail
+
+case "${1:-}" in
+  on)
+    drush recipe ../recipes/ds_scope_poc
+    drush state:set ds_scope_poc.strategy none
+    drush cache:rebuild
+    echo "POC on. Switch approaches with: ddev ds-scope <none|fence|fence-id|systems|ref>"
+    ;;
+  off)
+    drush state:delete ds_scope_poc.strategy || true
+    drush state:delete ds_scope_poc.ml_as || true
+    drush config:set system.theme default olivero -y
+    drush config:set system.performance css.preprocess 1 -y
+    drush pm:uninstall ds_scope_poc -y
+    drush theme:uninstall ds_hostile -y || true
+    # Layout Builder stays installed if overrides were saved; turn it off by hand
+    # (drush pm:uninstall layout_builder contextual) after deleting overrides.
+    drush cache:rebuild
+    echo "POC off."
+    ;;
+  *)
+    echo "Usage: ddev ds-scope-poc [on|off]" >&2
+    exit 1
+    ;;
+esac

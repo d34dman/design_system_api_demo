@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+## Description: Switch the two-design-systems POC approach (none, fence, fence-id, systems, ref) or how the Media Library is marked
+## Usage: ds-scope [none|fence|fence-id|systems|ref|ml-boundary|ml-admin|status]
+## Example: "ddev ds-scope systems"
+
+set -euo pipefail
+
+rebuild() {
+  # Aggregate file names hash the asset list, not the approach, and core's
+  # deleteAll() only removes files older than 45 days: delete them all so they
+  # are rebuilt with (or without) the scoping.
+  rm -f /var/www/html/web/sites/default/files/css/*
+  drush php:eval '\Drupal::service("asset.query_string")->reset(); \Drupal\Core\Cache\Cache::invalidateTags(["ds_scope_poc"]);'
+  drush cache:rebuild >/dev/null
+}
+
+case "${1:-status}" in
+  none|fence|fence-id|systems)
+    drush state:set ds_scope_poc.strategy "$1"
+    drush config:set system.performance css.preprocess 1 -y >/dev/null
+    rebuild
+    echo "Approach: $1 (CSS aggregation on)"
+    ;;
+  ref)
+    # References: tokens and base per region, no fence, no scoping, and files
+    # served one by one so the measuring script can drop one system's CSS.
+    drush state:set ds_scope_poc.strategy ref
+    drush config:set system.performance css.preprocess 0 -y >/dev/null
+    rebuild
+    echo "Approach: ref (CSS aggregation off)"
+    ;;
+  ml-boundary|ml-admin)
+    drush state:set ds_scope_poc.ml_as "${1#ml-}"
+    rebuild
+    echo "Media Library marked as: ${1#ml-}"
+    ;;
+  status)
+    echo "Approach: $(drush state:get ds_scope_poc.strategy 2>/dev/null || echo none)"
+    echo "Media Library: $(drush state:get ds_scope_poc.ml_as 2>/dev/null || echo boundary)"
+    ;;
+  *)
+    echo "Usage: ddev ds-scope [none|fence|fence-id|systems|ref|ml-boundary|ml-admin|status]" >&2
+    exit 1
+    ;;
+esac

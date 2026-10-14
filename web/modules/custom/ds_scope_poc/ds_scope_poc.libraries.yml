@@ -1,0 +1,17 @@
+regions:
+  js:
+    js/regions.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings
+    - core/once
+
+fence:
+  css:
+    base:
+      css/fence.css: {}
+
+fence-id:
+  css:
+    base:
+      css/fence-id.css: {}

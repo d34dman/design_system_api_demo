@@ -1,0 +1,4 @@
+leaks:
+  css:
+    theme:
+      css/leaks.css: {}

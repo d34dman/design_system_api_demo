@@ -1,0 +1,7 @@
+/*
+ * Reset fence at ID strength, like core's off-canvas reset
+ * (#drupal-off-canvas-wrapper *). :is() takes its strongest argument.
+ */
+:where(body) :is(#ds-fence, [data-ds-system], [data-ds-boundary]) *:where(:not(svg, svg *)) {
+  all: revert;
+}

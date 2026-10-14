@@ -1,0 +1,14 @@
+name: 'DS scope POC'
+description: 'Test setup for the two-design-systems POC: the ds_scope_poc test module, Layout Builder with per-node overrides for articles, contextual links, and the ds_hostile test theme (installed, not default). Applied on demand with "ddev ds-scope-poc on"; never by install-demo.'
+type: 'Site'
+install:
+  - contextual
+  - layout_builder
+  - ds_scope_poc
+  - ds_hostile
+config:
+  strict: false
+  actions:
+    core.entity_view_display.node.article.default:
+      enableLayoutBuilder: []
+      allowLayoutOverrides: true

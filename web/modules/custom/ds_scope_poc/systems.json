@@ -1,0 +1,15 @@
+{
+  "_comment": "Which CSS belongs to which design system, by path prefix (relative to the Drupal root). Shared by the PHP scoper and tests/regions. Anything not listed is system-neutral module CSS and stays unscoped.",
+  "site": [
+    "themes/contrib/olivero/",
+    "themes/custom/ds_hostile/"
+  ],
+  "admin": [
+    "core/themes/default_admin/",
+    "themes/contrib/claro/",
+    "core/modules/layout_builder/",
+    "core/modules/contextual/",
+    "core/modules/navigation/",
+    "core/misc/dialog/off-canvas/"
+  ]
+}

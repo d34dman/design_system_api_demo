@@ -1,0 +1,8 @@
+/*
+ * Reset fence at one-attribute strength (seanB's admin-section class, any
+ * marked region). Unlayered, base group, so module CSS after it re-applies
+ * its own rules; theme CSS loads last.
+ */
+:where(body) :is([data-ds-system], [data-ds-boundary]) *:where(:not(svg, svg *)) {
+  all: revert;
+}
