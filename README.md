@@ -117,7 +117,7 @@ approaches. Test tooling only: nothing here belongs in the modules, and
 
 ```bash
 ddev ds-scope-poc on          # test module ds_scope_poc, test theme ds_hostile, Layout Builder, contextual links
-ddev ds-scope systems         # none | fence | fence-id | systems | ref; ml-boundary | ml-admin; status
+ddev ds-scope systems         # none | fence | fence-id | systems | layers | ref; ml-boundary | ml-admin; status
 cd tests/proof && npm run regions && npm run regions:gallery   # out/regions/: report.json, screenshots, index.html
 ddev ds-scope-poc off
 ```
@@ -125,7 +125,10 @@ ddev ds-scope-poc off
 - `web/modules/custom/ds_scope_poc`: region markers (`data-ds-system`,
   `data-ds-boundary`), tokens per region, the two reset fences, and `@scope` wrapping of
   each system's CSS during aggregation (`systems.json` says which paths belong to which
-  system).
+  system). Approach `layers` adds one stacking order shared by every system on the page
+  (`css/layers.css`).
+- `tests/proof/regions.mjs` scores each approach twice: elements that leak, and how intact
+  the page looks (`regions-visual.mjs`: the weakest of seven checks).
 - `web/themes/custom/ds_hostile`: Olivero plus CSS rules that leak the way real themes do.
 
 ## What's inside

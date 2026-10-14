@@ -67,6 +67,9 @@ class DsScopePocHooks {
     if ($strategy === 'fence' || $strategy === 'fence-id') {
       $attachments['#attached']['library'][] = 'ds_scope_poc/' . $strategy;
     }
+    if ($strategy === 'layers') {
+      $attachments['#attached']['library'][] = 'ds_scope_poc/layers';
+    }
     $attachments['#attached']['html_head'][] = [
       [
         '#type' => 'html_tag',

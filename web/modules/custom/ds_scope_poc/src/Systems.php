@@ -11,7 +11,7 @@ use Drupal\Core\State\StateInterface;
  */
 class Systems {
 
-  public const STRATEGIES = ['none', 'fence', 'fence-id', 'systems', 'ref'];
+  public const STRATEGIES = ['none', 'fence', 'fence-id', 'systems', 'layers', 'ref'];
 
   /**
    * Path prefixes per system, from systems.json.
@@ -28,6 +28,13 @@ class Systems {
   public function strategy(): string {
     $strategy = $this->state->get('ds_scope_poc.strategy', 'none');
     return in_array($strategy, self::STRATEGIES, TRUE) ? $strategy : 'none';
+  }
+
+  /**
+   * Whether each system's CSS is wrapped in @scope ('layers' adds page tokens).
+   */
+  public function scoped(): bool {
+    return in_array($this->strategy(), ['systems', 'layers'], TRUE);
   }
 
   /**

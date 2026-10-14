@@ -27,6 +27,7 @@ const APPROACH = {
   fence: { letter: 'B', name: 'Reset fence', what: 'Each admin area resets the styles it inherits from the theme, at one-attribute strength (seanB’s admin-section class).' },
   'fence-id': { letter: 'C', name: 'Strong reset fence', what: 'The same reset at ID strength, like core’s off-canvas dialog does.' },
   systems: { letter: 'D', name: 'Scoped design systems', what: 'Drupal wraps each design system’s CSS so it only applies inside its own areas (CSS @scope).' },
+  layers: { letter: 'E', name: 'Scoped + page tokens', what: 'D, plus one stacking order shared by every design system on the page (concept Q18). The dialog sets its own z-index from it; Navigation’s is mapped onto it.' },
 };
 const VERDICT = {
   ok: { icon: '✓', word: 'Works' },
@@ -44,6 +45,7 @@ const CHECKS = {
 };
 
 const approaches = report.approaches;
+const count = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven'][approaches.length] ?? approaches.length;
 const ids = Object.keys(report.scenarios);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const img = (file) => existsSync(file) ? `data:image/jpeg;base64,${readFileSync(file).toString('base64')}` : null;
@@ -97,7 +99,7 @@ const pages = ids.map((id) => {
     <header><h3>${esc(s.title)}</h3>
     <p class="meta"><code>${esc(s.path)}</code> · theme ${s.theme === 'ds_hostile' ? 'Olivero with leaking rules added' : 'Olivero'} · ${esc(s.nesting)}</p>
     ${look ? `<p class="look"><b>Look at:</b> ${esc(look)}</p>` : ''}</header>
-    <div class="shots">${figures}</div>
+    <div class="shots" style="--cols: ${approaches.length}">${figures}</div>
     <details><summary>Numbers for this page</summary>${approaches.map((a) => `<h4><span class="letter sm">${APPROACH[a].letter}</span> ${APPROACH[a].name}</h4><div class="scroll">${numbersTable(s.approaches[a])}</div>`).join('')}</details>
   </section>`;
 }).join('\n');
@@ -165,7 +167,7 @@ code { font-family: var(--mono); font-size: .84em; overflow-wrap: anywhere; }
 .page { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-block: 18px; scroll-margin-block-start: 16px; }
 .page .meta { margin: .2rem 0 0; color: var(--soft); font-size: .85rem; }
 .page .look { margin: .5rem 0 0; }
-.shots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-block-start: 14px; }
+.shots { display: grid; grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); gap: 12px; margin-block-start: 14px; }
 @media (max-width: 1000px) { .shots { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 520px) { .shots { grid-template-columns: minmax(0, 1fr); } }
 .shot { margin: 0; display: flex; flex-direction: column; gap: 8px; min-inline-size: 0; }
@@ -206,7 +208,7 @@ dialog#zoom::backdrop { background: rgb(15 17 14 / .78); } /* ::backdrop doesn�
 </style>
 <main>
   <h1>Two design systems on one page</h1>
-  <p class="lede">Can a site’s theme and Drupal’s admin UI share a page without breaking each other? We put both on real Drupal pages, nested every way core allows, and tried four ways of keeping them apart.</p>
+  <p class="lede">Can a site’s theme and Drupal’s admin UI share a page without breaking each other? We put both on real Drupal pages, nested every way core allows, and tried ${count} ways of keeping them apart.</p>
 
   ${notes.answer ? `<section class="answer"><h2>Short answer</h2>${notes.answer}</section>` : ''}
 
@@ -217,7 +219,7 @@ dialog#zoom::backdrop { background: rgb(15 17 14 / .78); } /* ::backdrop doesn�
     <div><b>Two numbers</b><p><b>Leaking:</b> elements styled by the wrong design system; lower is better. <b>Looks right:</b> 0–100, the weakest of seven automatic checks (not covered by other UI, text laid out, no overlapping text, screen-reader text stays hidden, buttons and fields styled, fonts styled, contrast). An approach needs both.</p></div>
   </div>
 
-  <h2>The four approaches</h2>
+  <h2>The ${count} approaches</h2>
   <ol class="approaches">${approachCards}</ol>
 
   <h2>Verdict per page</h2>

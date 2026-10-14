@@ -22,7 +22,7 @@ class ScopedCssOptimizer implements AssetOptimizerInterface {
 
   public function optimize(array $asset) {
     $css = $this->inner->optimize($asset);
-    if ($this->systems->strategy() !== 'systems') {
+    if (!$this->systems->scoped()) {
       return $css;
     }
     $system = $this->systems->systemOf((string) $asset['data']);

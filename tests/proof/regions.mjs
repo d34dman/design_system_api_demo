@@ -36,7 +36,7 @@ const BASE = process.env.DEMO_URL ?? 'https://design-system-api-demo.ddev.site';
 const SYSTEMS = JSON.parse(readFileSync(join(ROOT, 'web/modules/custom/ds_scope_poc/systems.json'), 'utf8'));
 delete SYSTEMS._comment;
 
-const APPROACHES = ['none', 'fence', 'fence-id', 'systems'];
+const APPROACHES = ['none', 'fence', 'fence-id', 'systems', 'layers'];
 
 async function openMediaLibrary(page) {
   await page.locator('.js-media-library-open-button').first().click();
