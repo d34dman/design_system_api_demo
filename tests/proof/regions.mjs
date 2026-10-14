@@ -14,7 +14,11 @@
  * the admin CSS. Same markup both times, so elements match one to one; a
  * structure mismatch is reported instead of compared.
  *
- * Writes out/regions/report.json and out/regions/<scenario>--<approach>.jpg.
+ * Each approach also gets a visual score (regions-visual.mjs): an approach can
+ * stop every leak and still leave the page broken.
+ *
+ * Writes out/regions/report.json, out/regions/<scenario>--<approach>.jpg (the
+ * focus element) and <scenario>--<approach>--window.jpg (the browser window).
  * Leaves the site on approach "none", Olivero, Media Library as boundary.
  */
 
@@ -23,6 +27,7 @@ import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
+import { readVisual, contrast, score } from './regions-visual.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..', '..');
@@ -181,13 +186,22 @@ try {
       setUp(scenario, approach);
       const { page, errors } = await open(context, scenario);
       const got = await page.evaluate(readRegions);
+      // The window first, scrolled to the top of the focus element (below
+      // Navigation's top bar); then a close-up of the focus element.
+      await page.evaluate((sel) => { const el = sel && document.querySelector(sel); if (el) scrollTo(0, Math.max(0, el.getBoundingClientRect().top + scrollY - 80)); }, scenario.shot);
+      await page.waitForTimeout(200);
+      await page.screenshot({ path: join(OUT, `${id}--${approach}--window.jpg`), type: 'jpeg', quality: 72, animations: 'disabled', caret: 'hide' });
       const target = scenario.shot ? page.locator(scenario.shot).first() : page;
       await target.screenshot({ path: join(OUT, `${id}--${approach}.jpg`), type: 'jpeg', quality: 72, animations: 'disabled', caret: 'hide' });
       const result = compare(got, refSite, refAdmin);
       result.errors = errors;
+      const focus = scenario.shot ?? 'body';
+      result.visual = await page.evaluate(readVisual, focus);
+      result.visual.contrast = await contrast(page, focus);
+      result.visualScore = score(result.visual);
       report.scenarios[id].approaches[approach] = result;
       const leaking = result.mismatch ? 'structure mismatch' : result.regions.reduce((n, r) => n + r.leaking, 0) + ' leaking element(s)';
-      console.log(`${id} ${approach}: ${leaking}${errors.length ? `, ${errors.length} JS error(s)` : ''}`);
+      console.log(`${id} ${approach}: ${leaking}, visual ${result.visualScore} ${JSON.stringify(Object.fromEntries(Object.entries(result.visual).filter(([, c]) => c).map(([k, c]) => [k, `${c.ok}/${c.total}`])))}${errors.length ? `, ${errors.length} JS error(s)` : ''}`);
       await page.close();
       writeFileSync(join(OUT, 'report.json'), JSON.stringify(report, null, 2));
     }
