@@ -1,0 +1,19 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Panel
+status: experimental
+description: 'Dashboard: a titled surface with optional actions in its header and a footer.'
+props:
+  type: object
+  required: [heading]
+  properties:
+    heading: { type: string, title: Heading }
+    description: { type: [string, 'null'], title: Description }
+    span:
+      type: string
+      title: Columns to span in a dashboard grid
+      enum: ['1', '2', 'full']
+      default: '1'
+slots:
+  actions: { title: Actions }
+  content: { title: Content }
+  footer: { title: Footer }

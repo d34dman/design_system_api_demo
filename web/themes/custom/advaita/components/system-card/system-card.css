@@ -1,0 +1,18 @@
+.system-card {
+  display: grid;
+  gap: var(--ds-space-xs);
+  align-content: start;
+  padding: var(--ds-space-m);
+  color: var(--ds-color-fg-default);
+  border: 1px solid var(--ds-color-border-default);
+  border-radius: var(--ds-radius-l);
+  background: var(--ds-color-bg-canvas);
+  font-family: var(--ds-font-family-base);
+}
+.system-card__swatches { display: flex; gap: 0.25rem; }
+.system-card__swatches span { inline-size: 1.5rem; block-size: 1.5rem; border: 1px solid var(--ds-color-border-default); border-radius: var(--ds-radius-s); }
+.system-card__name { margin: 0; color: var(--ds-color-fg-loud); font-weight: var(--ds-font-weight-strong); }
+.system-card__sample { margin: 0; color: var(--ds-color-fg-loud); font-family: var(--ds-font-family-heading); font-size: var(--ds-font-size-l); }
+.system-card__summary { margin: 0; color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-s); }
+.system-card__facts { display: flex; gap: var(--ds-space-s); margin: 0; color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-xs); }
+.system-card .button { justify-self: start; pointer-events: none; }

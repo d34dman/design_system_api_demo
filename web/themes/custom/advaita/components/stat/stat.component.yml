@@ -1,0 +1,16 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Stat
+status: experimental
+description: 'Dashboard: one figure with its label and a hint. Optional link to where the figure comes from.'
+props:
+  type: object
+  required: [label, value]
+  properties:
+    label: { type: string, title: Label }
+    value: { type: [string, integer], title: Value }
+    hint: { type: [string, 'null'], title: Hint }
+    href: { type: [string, 'null'], title: Link }
+    tone:
+      type: string
+      enum: [neutral, success, warning, danger]
+      default: neutral

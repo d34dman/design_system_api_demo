@@ -1,0 +1,9 @@
+<ol class="timeline">
+  {% for item in items %}
+    <li class="timeline__item">
+      <time class="timeline__time" datetime="{{ item.datetime }}">{{ item.time }}</time>
+      <div class="timeline__text">{{ item.text }}</div>
+      {% if item.meta %}<div class="timeline__meta">{{ item.meta }}</div>{% endif %}
+    </li>
+  {% endfor %}
+</ol>

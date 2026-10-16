@@ -1,0 +1,51 @@
+global:
+  css:
+    base:
+      css/base/fonts.css: {}
+      css/base/elements.css: {}
+    layout:
+      css/layout/site.css: {}
+      css/layout/admin.css: {}
+    component:
+      css/components/button.css: {}
+      css/components/form.css: {}
+      css/components/details.css: {}
+      css/components/messages.css: {}
+      css/components/table.css: {}
+      css/components/tabs.css: {}
+      css/components/breadcrumb.css: {}
+      css/components/pager.css: {}
+      css/components/action-links.css: {}
+      css/components/node.css: {}
+      css/components/admin-list.css: {}
+      css/components/node-form.css: {}
+  js:
+    js/mode.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
+dialog:
+  css:
+    component:
+      css/components/dialog.css: {}
+
+tabledrag:
+  css:
+    component:
+      css/components/tabledrag.css: {}
+
+dropbutton:
+  css:
+    component:
+      css/components/dropbutton.css: {}
+
+vertical-tabs:
+  css:
+    component:
+      css/components/vertical-tabs.css: {}
+
+autocomplete:
+  css:
+    component:
+      css/components/autocomplete.css: {}

@@ -1,0 +1,6 @@
+advaita_showcase.dashboard:
+  title: Dashboard
+  description: 'Content, review queue and design systems at a glance.'
+  route_name: advaita_showcase.dashboard
+  parent: system.admin
+  weight: -20

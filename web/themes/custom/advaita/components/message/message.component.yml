@@ -1,0 +1,17 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Message
+status: experimental
+description: 'A status, warning or error message. Realizes the contract''s message pattern; colors come from the region''s status tokens.'
+props:
+  type: object
+  properties:
+    type:
+      type: string
+      enum: [status, warning, error, info]
+    heading:
+      type: ['string', 'object', 'null']
+    role:
+      type: string
+      enum: [status, alert]
+    messages:
+      type: ['array', 'object']

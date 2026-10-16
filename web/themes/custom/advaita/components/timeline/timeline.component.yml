@@ -1,0 +1,16 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Timeline
+status: experimental
+description: 'Dashboard: what happened, newest first.'
+props:
+  type: object
+  properties:
+    items:
+      type: array
+      items:
+        type: object
+        properties:
+          time: { type: string }
+          datetime: { type: string }
+          text: { type: [string, object] }
+          meta: { type: [string, 'null'] }

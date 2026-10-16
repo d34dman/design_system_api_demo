@@ -1,0 +1,206 @@
+/**
+ * @file
+ * Form elements, on the markup core Form API builds.
+ */
+form { margin: 0; }
+
+.form-item,
+.form-wrapper,
+.form-actions { margin-block: var(--ds-space-m); }
+.form-item:first-child { margin-block-start: 0; }
+.form-actions { display: flex; flex-wrap: wrap; gap: var(--ds-space-xs); align-items: center; }
+
+label,
+.form-item__label,
+.fieldset-legend {
+  display: block;
+  margin-block-end: var(--ds-space-2xs);
+  color: var(--ds-color-fg-loud);
+  font-size: var(--ds-font-size-s);
+  font-weight: var(--ds-font-weight-strong);
+}
+label.option {
+  display: inline;
+  margin: 0;
+  color: var(--ds-color-fg-default);
+  font-weight: var(--ds-font-weight-normal);
+}
+.form-required::after {
+  content: "*";
+  margin-inline-start: 0.2em;
+  color: var(--ds-color-status-error);
+}
+
+.form-text,
+.form-email,
+.form-url,
+.form-search,
+.form-tel,
+.form-number,
+.form-date,
+.form-time,
+.form-password,
+.form-autocomplete,
+.form-select,
+.form-textarea,
+input.form-file {
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  min-block-size: 2.375rem;
+  margin: 0;
+  padding-block: var(--ds-space-xs);
+  padding-inline: var(--ds-space-s);
+  color: var(--ds-color-fg-default);
+  border: 1px solid var(--ds-color-border-input);
+  border-radius: var(--ds-radius-m);
+  background-color: var(--ds-color-bg-input);
+  font: inherit;
+  font-size: var(--ds-font-size-s);
+  line-height: 1.4;
+  transition: border-color 120ms, box-shadow 120ms;
+}
+.form-text,
+.form-email,
+.form-url,
+.form-search,
+.form-autocomplete,
+.form-password { inline-size: min(100%, 36rem); }
+.form-textarea { inline-size: 100%; min-block-size: 6rem; resize: vertical; }
+
+.form-text:hover,
+.form-select:hover,
+.form-textarea:hover,
+.form-email:hover,
+.form-autocomplete:hover { border-color: var(--ds-color-border-loud); }
+
+.form-text:focus,
+.form-email:focus,
+.form-url:focus,
+.form-search:focus,
+.form-tel:focus,
+.form-number:focus,
+.form-date:focus,
+.form-time:focus,
+.form-password:focus,
+.form-autocomplete:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--ds-color-action-primary);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ds-color-focus) 30%, transparent);
+}
+:is(.form-text, .form-select, .form-textarea, .form-email, .form-autocomplete)::placeholder {
+  color: var(--ds-color-fg-soft);
+  opacity: 1;
+}
+
+.form-select {
+  padding-inline-end: calc(var(--ds-space-s) * 2 + 0.75em);
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentcolor 50%),
+    linear-gradient(135deg, currentcolor 50%, transparent 50%);
+  background-repeat: no-repeat;
+  background-position:
+    right calc(var(--ds-space-s) + 0.3em) center,
+    right var(--ds-space-s) center;
+  background-size: 0.3em 0.3em;
+  appearance: none;
+}
+[dir="rtl"] .form-select {
+  background-position:
+    left var(--ds-space-s) center,
+    left calc(var(--ds-space-s) + 0.3em) center;
+}
+.form-select[multiple] { background-image: none; padding-inline-end: var(--ds-space-s); }
+
+.form-checkbox,
+.form-radio {
+  inline-size: 1.05rem;
+  block-size: 1.05rem;
+  margin: 0;
+  margin-inline-end: var(--ds-space-xs);
+  vertical-align: -0.15em;
+  accent-color: var(--ds-color-action-primary);
+}
+.form-type-checkbox,
+.form-type-radio { margin-block: var(--ds-space-xs); }
+.form-checkboxes .form-item,
+.form-radios .form-item { margin-block: var(--ds-space-2xs); }
+
+.form-disabled label { color: var(--ds-color-fg-disabled); }
+:is(.form-text, .form-select, .form-textarea):disabled {
+  color: var(--ds-color-fg-disabled);
+  background-color: var(--ds-color-bg-surface-nested);
+  border-color: var(--ds-color-border-soft);
+}
+
+.description,
+.form-item .description,
+.fieldset-description {
+  margin-block-start: var(--ds-space-2xs);
+  color: var(--ds-color-fg-soft);
+  font-size: var(--ds-font-size-xs);
+  line-height: 1.45;
+}
+
+.form-item--error .form-text,
+.form-item--error .form-select,
+.form-item--error .form-textarea,
+.form-text.error,
+.form-select.error,
+.form-textarea.error { border-color: var(--ds-color-status-error); border-width: 2px; }
+.form-item--error-message { margin-block-start: var(--ds-space-2xs); color: var(--ds-color-status-error); font-size: var(--ds-font-size-xs); font-weight: var(--ds-font-weight-strong); }
+
+fieldset {
+  min-inline-size: 0;
+  margin-inline: 0;
+  padding: var(--ds-space-m);
+  border: 1px solid var(--ds-color-border-default);
+  border-radius: var(--ds-radius-l);
+  background: var(--ds-color-bg-surface);
+}
+fieldset legend { padding-inline: var(--ds-space-2xs); }
+.fieldgroup { padding: 0; border: 0; background: none; }
+
+.container-inline { display: flex; flex-wrap: wrap; gap: var(--ds-space-xs); align-items: center; }
+.container-inline > .form-item,
+.container-inline .form-item { margin: 0; }
+.container-inline label { display: inline; margin: 0; }
+
+.field-prefix,
+.field-suffix { color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-s); }
+
+/* Text format selector under a WYSIWYG field. */
+.filter-wrapper { padding-block: var(--ds-space-xs); font-size: var(--ds-font-size-xs); }
+.filter-wrapper .form-item { margin: 0; }
+.filter-help { font-size: var(--ds-font-size-xs); }
+.filter-guidelines { color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-xs); }
+
+/* Machine names next to a label. */
+.machine-name-label,
+.machine-name-value { font-family: var(--ds-font-family-mono); font-size: var(--ds-font-size-xs); }
+
+/* Managed file and image widgets. */
+.form-managed-file { display: flex; flex-wrap: wrap; gap: var(--ds-space-xs); align-items: center; }
+.image-widget { display: flex; gap: var(--ds-space-s); align-items: flex-start; }
+
+/* CKEditor 5 sits in the region's surface and borders. */
+.ck.ck-editor__main > .ck-editor__editable:not(.ck-focused) { border-color: var(--ds-color-border-input); }
+.ck.ck-editor__main > .ck-editor__editable { background: var(--ds-color-bg-input); color: var(--ds-color-fg-default); }
+.ck.ck-toolbar { border-color: var(--ds-color-border-input); background: var(--ds-color-bg-surface-nested); }
+.ck.ck-editor__top .ck-sticky-panel .ck-toolbar { border-start-start-radius: var(--ds-radius-m); border-start-end-radius: var(--ds-radius-m); }
+.ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable { border-end-start-radius: var(--ds-radius-m); border-end-end-radius: var(--ds-radius-m); }
+
+input[type="file"]::file-selector-button {
+  margin-inline-end: var(--ds-space-s);
+  padding-block: var(--ds-space-2xs);
+  padding-inline: var(--ds-space-s);
+  color: var(--ds-color-fg-default);
+  border: 1px solid var(--ds-color-border-loud);
+  border-radius: var(--ds-radius-m);
+  background: var(--ds-color-bg-surface);
+  font: inherit;
+  font-weight: var(--ds-font-weight-strong);
+  cursor: pointer;
+}
+input[type="file"]::file-selector-button:hover { background: var(--ds-color-bg-surface-nested); }

@@ -1,0 +1,6 @@
+{% set tag = href ? 'a' : 'div' %}
+<{{ tag }} class="stat stat--{{ tone|default('neutral') }}"{% if href %} href="{{ href }}"{% endif %}>
+  <span class="stat__label">{{ label }}</span>
+  <span class="stat__value">{{ value }}</span>
+  {% if hint %}<span class="stat__hint">{{ hint }}</span>{% endif %}
+</{{ tag }}>

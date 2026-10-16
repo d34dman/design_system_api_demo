@@ -1,0 +1,11 @@
+{#
+/**
+ * @file
+ * Local actions ("+ Add content"): core prints list items without a list.
+ */
+#}
+{% if content %}
+  <nav{{ attributes.addClass('action-links-block') }} aria-label="{{ 'Actions'|t }}">
+    <ul class="action-links">{{ content }}</ul>
+  </nav>
+{% endif %}

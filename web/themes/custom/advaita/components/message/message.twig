@@ -1,0 +1,11 @@
+<div class="message message--{{ type }}" role="{{ role }}" aria-label="{{ heading }}">
+  <span class="message__icon" aria-hidden="true"></span>
+  <div class="message__body">
+    {% if heading %}<h2 class="visually-hidden">{{ heading }}</h2>{% endif %}
+    {% if messages|length > 1 %}
+      <ul class="message__list">{% for message in messages %}<li>{{ message }}</li>{% endfor %}</ul>
+    {% else %}
+      {{ messages|first }}
+    {% endif %}
+  </div>
+</div>

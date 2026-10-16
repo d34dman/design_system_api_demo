@@ -1,0 +1,6 @@
+.empty-state { display: grid; justify-items: center; gap: var(--ds-space-2xs); padding-block: var(--ds-space-l); text-align: center; }
+.empty-state__mark { inline-size: 2.5rem; block-size: 2.5rem; margin-block-end: var(--ds-space-xs); border: 2px dashed var(--ds-color-border-loud); border-radius: 50%; }
+.empty-state--success .empty-state__mark { border: 0; background: var(--ds-color-status-success); mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20'/%3E%3Cpath d='M12 20.5l5.5 5.5L28.5 15' fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; }
+.empty-state__heading { margin: 0; color: var(--ds-color-fg-loud); font-weight: var(--ds-font-weight-strong); }
+.empty-state__text { margin: 0; max-inline-size: 28ch; color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-s); }
+.empty-state__action { margin-block-start: var(--ds-space-xs); }

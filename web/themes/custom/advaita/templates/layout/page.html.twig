@@ -1,0 +1,29 @@
+{#
+/**
+ * @file
+ * The site's page shell (every non-admin route).
+ */
+#}
+<div class="site">
+  <a href="#main-content" class="visually-hidden focusable skip-link">{{ 'Skip to main content'|t }}</a>
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      {{ page.branding }}
+      {% if page.primary_menu %}<nav class="site-header__nav" aria-label="{{ 'Main'|t }}">{{ page.primary_menu }}</nav>{% endif %}
+      {% if page.secondary_menu %}<div class="site-header__secondary">{{ page.secondary_menu }}</div>{% endif %}
+    </div>
+  </header>
+  {% if page.breadcrumb %}<div class="site__breadcrumb">{{ page.breadcrumb }}</div>{% endif %}
+  {% if page.highlighted %}<div class="site__highlighted">{{ page.highlighted }}</div>{% endif %}
+  <main id="main-content" class="site-main{{ page.sidebar ? ' site-main--with-sidebar' }}" tabindex="-1">
+    <div class="site-main__content">
+      {% if page.content_header %}<div class="content-header">{{ page.content_header }}</div>{% endif %}
+      {{ page.help }}
+      {{ page.content }}
+    </div>
+    {% if page.sidebar %}<aside class="site-main__sidebar" role="complementary">{{ page.sidebar }}</aside>{% endif %}
+  </main>
+  {% if page.footer %}
+    <footer class="site-footer" role="contentinfo"><div class="site-footer__inner">{{ page.footer }}</div></footer>
+  {% endif %}
+</div>

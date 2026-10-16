@@ -1,0 +1,32 @@
+/**
+ * @file
+ * Admin overview pages: config index, structure, node/add.
+ */
+.panel {
+  margin-block-end: var(--ds-space-m);
+  padding: var(--ds-space-m);
+  border: 1px solid var(--ds-color-border-default);
+  border-radius: var(--ds-radius-l);
+  background: var(--ds-color-bg-surface);
+}
+.panel__title { margin-block: 0 var(--ds-space-xs); font-size: var(--ds-font-size-m); }
+.panel__description { color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-s); }
+.list-group { margin: 0; }
+.list-group__link { margin-block-start: var(--ds-space-s); font-weight: var(--ds-font-weight-strong); }
+.list-group__link:first-child { margin-block-start: 0; }
+.list-group__description { margin: 0; color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-s); }
+.layout-column { min-inline-size: 0; }
+@media (min-width: 64rem) {
+  .system-admin-index,
+  .admin-index { display: grid; grid-template-columns: 1fr 1fr; gap: var(--ds-space-m); }
+  .layout-column--half { display: contents; }
+}
+.admin-list { display: grid; gap: var(--ds-space-xs); margin: 0; padding: 0; list-style: none; }
+.admin-list > li,
+.admin-list dt {
+  padding: var(--ds-space-s) var(--ds-space-m);
+  border: 1px solid var(--ds-color-border-default);
+  border-radius: var(--ds-radius-m);
+  background: var(--ds-color-bg-surface);
+}
+.admin-list .label { font-weight: var(--ds-font-weight-strong); }

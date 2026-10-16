@@ -1,0 +1,21 @@
+.badge {
+  --_tone: var(--ds-color-fg-soft);
+  display: inline-flex;
+  gap: 0.35em;
+  align-items: center;
+  padding-block: 0.1em;
+  padding-inline: 0.55em;
+  color: var(--ds-color-fg-default);
+  border: 1px solid color-mix(in srgb, var(--_tone) 35%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--_tone) 10%, var(--ds-color-bg-surface));
+  font-size: var(--ds-font-size-xs);
+  font-weight: var(--ds-font-weight-strong);
+  white-space: nowrap;
+}
+.badge::before { content: ""; inline-size: 0.45em; block-size: 0.45em; border-radius: 50%; background: var(--_tone); }
+.badge--info { --_tone: var(--ds-color-action-primary); }
+.badge--success { --_tone: var(--ds-color-status-success); }
+.badge--warning { --_tone: var(--ds-color-status-warning); }
+.badge--danger { --_tone: var(--ds-color-status-error); }
+@media (forced-colors: active) { .badge { border-color: CanvasText; } .badge::before { background: CanvasText; } }

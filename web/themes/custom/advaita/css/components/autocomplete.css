@@ -1,0 +1,22 @@
+/**
+ * @file
+ * Autocomplete suggestions (jQuery UI menu).
+ */
+.ui-autocomplete.ui-menu {
+  z-index: var(--ds-layer-top);
+  max-block-size: 18rem;
+  overflow-y: auto;
+  margin: 0;
+  padding: var(--ds-space-2xs);
+  list-style: none;
+  color: var(--ds-color-fg-default);
+  border: 1px solid var(--ds-color-border-default);
+  border-radius: var(--ds-radius-m);
+  background: var(--ds-color-bg-raised);
+  box-shadow: var(--ds-shadow-overlay);
+  font-family: var(--ds-font-family-base);
+  font-size: var(--ds-font-size-s);
+}
+.ui-autocomplete .ui-menu-item-wrapper { padding: var(--ds-space-2xs) var(--ds-space-xs); border: 0; border-radius: var(--ds-radius-s); }
+.ui-autocomplete .ui-menu-item-wrapper.ui-state-active { margin: 0; color: var(--ds-color-fg-loud); border: 0; background: var(--ds-color-bg-selected); }
+.form-autocomplete.is-autocompleting { background-image: none; }

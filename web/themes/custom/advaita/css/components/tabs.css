@@ -1,0 +1,26 @@
+/**
+ * @file
+ * Local tasks (tabs).
+ */
+.tabs { display: flex; flex-wrap: wrap; gap: var(--ds-space-2xs); margin: 0; padding: 0; list-style: none; }
+.tabs__tab a {
+  display: block;
+  padding-block: var(--ds-space-xs);
+  padding-inline: var(--ds-space-s);
+  color: var(--ds-color-fg-soft);
+  font-size: var(--ds-font-size-s);
+  font-weight: var(--ds-font-weight-strong);
+  text-decoration: none;
+}
+.tabs--primary .tabs__tab a { border-block-end: 3px solid transparent; }
+.tabs--primary .tabs__tab a:hover { color: var(--ds-color-fg-loud); border-block-end-color: var(--ds-color-border-default); }
+.tabs--primary .tabs__tab.is-active a { color: var(--ds-color-fg-loud); border-block-end-color: var(--ds-color-action-primary); }
+.tabs--secondary { margin-block-end: var(--ds-space-s); }
+.tabs--secondary .tabs__tab a { border-radius: 999px; }
+.tabs--secondary .tabs__tab a:hover { background: var(--ds-color-bg-surface-nested); }
+.tabs--secondary .tabs__tab.is-active a { color: var(--ds-color-action-primary); background: var(--ds-color-action-primary-soft); }
+
+/* On site pages tabs sit in a strip of their own. */
+.advaita-site .tabs--primary { padding: var(--ds-space-2xs); border: 1px solid var(--ds-color-border-default); border-radius: var(--ds-radius-m); background: var(--ds-color-bg-surface); inline-size: fit-content; }
+.advaita-site .tabs--primary .tabs__tab a { border: 0; border-radius: var(--ds-radius-s); }
+.advaita-site .tabs--primary .tabs__tab.is-active a { color: var(--ds-color-fg-on-action); background: var(--ds-color-action-primary); }

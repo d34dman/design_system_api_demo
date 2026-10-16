@@ -1,0 +1,23 @@
+{#
+/**
+ * @file
+ * The admin page shell (admin routes). Navigation is core's, in page_top.
+ */
+#}
+<div class="admin">
+  <a href="#main-content" class="visually-hidden focusable skip-link">{{ 'Skip to main content'|t }}</a>
+  <header class="admin-header">
+    <div class="admin-header__top">
+      {{ page.breadcrumb }}
+      <button type="button" class="mode-toggle" data-advaita-mode-toggle aria-pressed="false">
+        <span class="mode-toggle__label">{{ 'Dark mode'|t }}</span>
+      </button>
+    </div>
+    <div class="admin-header__main">{{ page.content_header }}</div>
+  </header>
+  <main id="main-content" class="admin-main" tabindex="-1">
+    {{ page.highlighted }}
+    {{ page.help }}
+    {{ page.content }}
+  </main>
+</div>

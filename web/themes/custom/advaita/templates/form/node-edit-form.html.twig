@@ -1,0 +1,23 @@
+{#
+/**
+ * @file
+ * The node form: content, then its settings beside it, then actions.
+ */
+#}
+{% if form.is_ajax_request %}
+  {{ form|without('advanced', 'actions') }}
+  {{ form.advanced }}
+  {{ form.actions }}
+{% else %}
+  <div class="entity-form">
+    <div class="entity-form__main">
+      {{ form|without('advanced', 'actions') }}
+    </div>
+    <aside class="entity-form__aside" aria-label="{{ 'Settings'|t }}">
+      {{ form.advanced }}
+    </aside>
+    <div class="entity-form__actions">
+      {{ form.actions }}
+    </div>
+  </div>
+{% endif %}

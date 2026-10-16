@@ -1,0 +1,46 @@
+name: Advaita
+type: theme
+description: 'Prototype of a dual theme: one component library on the Design System API contract, serving the admin and the site design system. Demo only.'
+package: Prototype
+core_version_requirement: ^12
+base theme: false
+dependencies:
+  - design_system_api:design_system_api
+libraries:
+  - advaita/global
+libraries-override:
+  # Advaita realizes these patterns itself, on contract tokens.
+  core/drupal.dropbutton:
+    css:
+      component:
+        misc/dropbutton/dropbutton.css: false
+  core/drupal.vertical-tabs:
+    css:
+      component:
+        misc/vertical-tabs.css: false
+libraries-extend:
+  core/drupal.dialog:
+    - advaita/dialog
+  core/drupal.tabledrag:
+    - advaita/tabledrag
+  core/drupal.dropbutton:
+    - advaita/dropbutton
+  core/drupal.vertical-tabs:
+    - advaita/vertical-tabs
+  core/drupal.autocomplete:
+    - advaita/autocomplete
+design_system_api:
+  color_schemes: [light, dark]
+regions:
+  branding: 'Site branding'
+  content_header: 'Content header (title, tabs, actions)'
+  primary_menu: 'Primary menu'
+  secondary_menu: 'Secondary menu'
+  breadcrumb: Breadcrumb
+  highlighted: Highlighted
+  help: Help
+  content: Content
+  sidebar: Sidebar
+  footer: Footer
+  page_top: 'Page top'
+  page_bottom: 'Page bottom'

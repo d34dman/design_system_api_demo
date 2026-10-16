@@ -1,0 +1,7 @@
+.timeline { display: grid; gap: var(--ds-space-s); margin: 0; padding: 0; list-style: none; }
+.timeline__item { position: relative; display: grid; gap: 0.1rem; padding-inline-start: var(--ds-space-l); }
+.timeline__item::before { content: ""; position: absolute; inset-block-start: 0.4rem; inset-inline-start: 0.3rem; inline-size: 0.5rem; block-size: 0.5rem; border-radius: 50%; background: var(--ds-color-action-primary); box-shadow: 0 0 0 3px var(--ds-color-action-primary-soft); }
+.timeline__item:not(:last-child)::after { content: ""; position: absolute; inset-block: 1.1rem -0.75rem; inset-inline-start: calc(0.55rem - 0.5px); inline-size: 1px; background: var(--ds-color-border-default); }
+.timeline__time { color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-xs); font-variant-numeric: tabular-nums; }
+.timeline__text { font-size: var(--ds-font-size-s); }
+.timeline__meta { color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-xs); }

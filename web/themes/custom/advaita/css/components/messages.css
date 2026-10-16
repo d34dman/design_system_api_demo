@@ -1,0 +1,6 @@
+/**
+ * @file
+ * The list of status messages (each message is the message component).
+ */
+.messages-list { display: grid; gap: var(--ds-space-xs); }
+.messages-list:empty { display: none; }

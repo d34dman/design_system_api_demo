@@ -1,0 +1,16 @@
+{#
+/**
+ * @file
+ * Status messages, each rendered by the message component.
+ */
+#}
+<div data-drupal-messages class="messages-list">
+{% for type, messages in message_list %}
+  {{ include('advaita:message', {
+    type: type,
+    heading: status_headings[type],
+    messages: messages,
+    role: type in ['error', 'warning'] ? 'alert' : 'status',
+  }, with_context = false) }}
+{% endfor %}
+</div>

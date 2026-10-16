@@ -1,0 +1,44 @@
+/**
+ * @file
+ * Details: collapsible groups.
+ */
+details.details {
+  margin-block: var(--ds-space-m);
+  border: 1px solid var(--ds-color-border-default);
+  border-radius: var(--ds-radius-l);
+  background: var(--ds-color-bg-surface);
+}
+details.details > summary {
+  display: flex;
+  gap: var(--ds-space-xs);
+  align-items: center;
+  padding-block: var(--ds-space-s);
+  padding-inline: var(--ds-space-m);
+  color: var(--ds-color-fg-loud);
+  font-weight: var(--ds-font-weight-strong);
+  list-style: none;
+  cursor: pointer;
+  border-radius: var(--ds-radius-l);
+}
+details.details > summary::-webkit-details-marker { display: none; }
+details.details > summary::before {
+  content: "";
+  flex: none;
+  inline-size: 0.45em;
+  block-size: 0.45em;
+  margin-inline-end: 0.2em;
+  border-block-end: 2px solid currentcolor;
+  border-inline-end: 2px solid currentcolor;
+  transform: rotate(-45deg);
+  transition: transform 150ms;
+}
+[dir="rtl"] details.details > summary::before { transform: rotate(135deg); }
+details.details[open] > summary::before { transform: rotate(45deg); }
+details.details > summary:hover { background: var(--ds-color-bg-surface-nested); }
+details.details[open] > summary { border-end-start-radius: 0; border-end-end-radius: 0; border-block-end: 1px solid var(--ds-color-border-soft); }
+details.details > .details-wrapper,
+details.details > :not(summary) { margin-inline: var(--ds-space-m); }
+details.details > :last-child { margin-block-end: var(--ds-space-m); }
+details.details > .details-wrapper { padding-block-start: var(--ds-space-s); }
+details.details .details-description { color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-xs); }
+.details .summary { color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-xs); font-weight: var(--ds-font-weight-normal); }

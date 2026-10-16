@@ -1,0 +1,7 @@
+/**
+ * @file
+ * Local actions ("+ Add content").
+ */
+.action-links { display: flex; flex-wrap: wrap; gap: var(--ds-space-xs); margin: 0; padding: 0; list-style: none; }
+.button-action::before { content: "+"; font-size: 1.15em; font-weight: 500; line-height: 1; }
+.block-local-actions-block ul { display: flex; flex-wrap: wrap; gap: var(--ds-space-xs); margin: 0; padding: 0; list-style: none; }

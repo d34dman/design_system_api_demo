@@ -1,0 +1,9 @@
+advaita_showcase.dashboard:
+  path: '/admin/dashboard'
+  defaults:
+    _controller: '\Drupal\advaita_showcase\Controller\DashboardController::build'
+    _title: 'Dashboard'
+  requirements:
+    _permission: 'access content overview'
+  options:
+    _admin_route: TRUE

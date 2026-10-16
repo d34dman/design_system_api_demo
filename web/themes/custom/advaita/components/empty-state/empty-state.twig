@@ -1,0 +1,6 @@
+<div class="empty-state empty-state--{{ tone|default('neutral') }}">
+  <span class="empty-state__mark" aria-hidden="true"></span>
+  <p class="empty-state__heading">{{ heading }}</p>
+  {% if text %}<p class="empty-state__text">{{ text }}</p>{% endif %}
+  {% if action %}<div class="empty-state__action">{% block action %}{{ action }}{% endblock %}</div>{% endif %}
+</div>

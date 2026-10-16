@@ -1,0 +1,22 @@
+/**
+ * @file
+ * The node form layout.
+ */
+.entity-form { display: grid; gap: 0 var(--ds-space-l); }
+@media (min-width: 64rem) {
+  .entity-form { grid-template-columns: minmax(0, 1fr) 20rem; align-items: start; }
+  .entity-form__aside { position: sticky; inset-block-start: var(--ds-space-m); }
+  .entity-form__actions { grid-column: 1 / -1; }
+}
+.entity-form__main { min-inline-size: 0; }
+.entity-form__main > .form-item:first-child,
+.entity-form__main > .field--name-title { margin-block-start: 0; }
+.entity-form__aside .details { margin-block: 0 var(--ds-space-xs); font-size: var(--ds-font-size-s); }
+.entity-form__aside .details > summary { padding-block: var(--ds-space-xs); }
+.entity-form__aside .form-text,
+.entity-form__aside .form-autocomplete { inline-size: 100%; }
+.entity-form__aside .entity-meta__header { display: grid; gap: var(--ds-space-2xs); }
+.entity-meta__title { margin: 0; font-weight: var(--ds-font-weight-strong); }
+.entity-meta__last-saved,
+.entity-meta__author { margin: 0; color: var(--ds-color-fg-soft); }
+.entity-form__settings > .form-item { margin-block: var(--ds-space-xs); }

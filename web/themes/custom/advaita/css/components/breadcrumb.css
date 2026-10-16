@@ -1,0 +1,5 @@
+.breadcrumb__list { display: flex; flex-wrap: wrap; gap: var(--ds-space-2xs); margin: 0; padding: 0; list-style: none; font-size: var(--ds-font-size-xs); }
+.breadcrumb__item { display: inline-flex; gap: var(--ds-space-2xs); align-items: center; color: var(--ds-color-fg-soft); }
+.breadcrumb__item + .breadcrumb__item::before { content: "/"; color: var(--ds-color-border-loud); }
+.breadcrumb a { color: var(--ds-color-fg-soft); text-decoration: none; }
+.breadcrumb a:hover { color: var(--ds-color-fg-link); text-decoration: underline; }

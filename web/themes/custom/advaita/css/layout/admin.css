@@ -1,0 +1,83 @@
+/**
+ * @file
+ * The admin page shell. Navigation (core) sits beside it.
+ */
+.admin { display: flex; flex-direction: column; min-block-size: 100vh; }
+
+.admin-header {
+  padding-block: var(--ds-space-m) 0;
+  padding-inline: var(--ds-space-xl);
+  border-block-end: 1px solid var(--ds-color-border-default);
+  background: var(--ds-color-bg-surface);
+}
+.admin-header__top {
+  display: flex;
+  gap: var(--ds-space-m);
+  align-items: center;
+  justify-content: space-between;
+  min-block-size: 2rem;
+  margin-block-end: var(--ds-space-xs);
+}
+.admin-header .page-title { font-size: var(--ds-font-size-xl); letter-spacing: -0.015em; }
+.admin-header .tabs--primary { margin-block-start: var(--ds-space-s); }
+.admin-header:not(:has(.tabs--primary)) { padding-block-end: var(--ds-space-m); }
+
+.admin-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-m);
+  inline-size: 100%;
+  max-inline-size: 90rem;
+  padding-block: var(--ds-space-l) var(--ds-space-xl);
+  padding-inline: var(--ds-space-xl);
+}
+.admin-main:focus { outline: none; }
+.admin-main > * { min-inline-size: 0; }
+
+/* A form's last actions stay in reach on long admin forms. */
+.admin-main form:not(.views-exposed-form) > .form-actions:last-child,
+.admin-main form:not(.views-exposed-form) > div > .form-actions:last-child,
+.admin-main .entity-form__actions > .form-actions {
+  position: sticky;
+  z-index: var(--ds-layer-sticky);
+  inset-block-end: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-space-xs);
+  align-items: center;
+  margin-block-start: var(--ds-space-l);
+  margin-inline: calc(var(--ds-space-xl) * -1);
+  padding-block: var(--ds-space-s);
+  padding-inline: var(--ds-space-xl);
+  border-block-start: 1px solid var(--ds-color-border-default);
+  background: color-mix(in srgb, var(--ds-color-bg-surface) 92%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+.mode-toggle {
+  display: inline-flex;
+  gap: var(--ds-space-xs);
+  align-items: center;
+  padding-block: var(--ds-space-2xs);
+  padding-inline: var(--ds-space-xs) var(--ds-space-s);
+  color: var(--ds-color-fg-soft);
+  border: 1px solid var(--ds-color-border-default);
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-size: var(--ds-font-size-xs);
+  cursor: pointer;
+}
+.mode-toggle::before {
+  content: "";
+  inline-size: 0.875rem;
+  block-size: 0.875rem;
+  border-radius: 50%;
+  background: linear-gradient(90deg, currentcolor 50%, transparent 50%);
+  box-shadow: inset 0 0 0 1.5px currentcolor;
+}
+.mode-toggle:hover { color: var(--ds-color-fg-default); border-color: var(--ds-color-border-loud); }
+
+/* A region holding only the messages placeholder takes no space. */
+.admin-main > :has(> [data-drupal-messages-fallback]:only-child) { display: none; }

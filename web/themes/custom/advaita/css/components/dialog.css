@@ -1,0 +1,69 @@
+/**
+ * @file
+ * Dialogs (jQuery UI). Two classes outrank jQuery UI's own skin.
+ */
+.ui-dialog.ui-widget {
+  padding: 0;
+  color: var(--ds-color-fg-default);
+  border: 1px solid var(--ds-color-border-default);
+  border-radius: var(--ds-radius-l);
+  background: var(--ds-color-bg-surface);
+  box-shadow: var(--ds-shadow-overlay);
+  font-family: var(--ds-font-family-base);
+  font-size: var(--ds-font-size-m);
+}
+.ui-dialog.ui-widget .ui-dialog-titlebar {
+  padding-block: var(--ds-space-s);
+  padding-inline: var(--ds-space-m);
+  color: var(--ds-color-fg-loud);
+  border: 0;
+  border-block-end: 1px solid var(--ds-color-border-default);
+  border-radius: var(--ds-radius-l) var(--ds-radius-l) 0 0;
+  background: var(--ds-color-bg-surface);
+}
+.ui-dialog.ui-widget .ui-dialog-title { font-family: var(--ds-font-family-heading); font-size: var(--ds-font-size-l); font-weight: var(--ds-font-weight-strong); }
+.ui-dialog.ui-widget .ui-dialog-titlebar-close {
+  inline-size: 2rem;
+  block-size: 2rem;
+  margin-block-start: -1rem;
+  color: var(--ds-color-fg-soft);
+  border: 0;
+  border-radius: var(--ds-radius-m);
+  background: transparent;
+}
+.ui-dialog.ui-widget .ui-dialog-titlebar-close:hover { color: var(--ds-color-fg-loud); background: var(--ds-color-bg-surface-nested); }
+.ui-dialog.ui-widget .ui-dialog-titlebar-close .ui-icon { background: none; text-indent: 0; overflow: hidden; color: transparent; }
+.ui-dialog.ui-widget .ui-dialog-titlebar-close { position: absolute; inset-inline-end: var(--ds-space-s); inset-block-start: 50%; overflow: hidden; }
+.ui-dialog.ui-widget .ui-dialog-titlebar-close .ui-button-icon,
+.ui-dialog.ui-widget .ui-dialog-titlebar-close .ui-icon { display: none; }
+.ui-dialog.ui-widget .ui-dialog-titlebar-close::before { content: "×"; position: absolute; inset: 0; text-indent: 0; display: grid; place-items: center; color: var(--ds-color-fg-soft); font-size: 1.4rem; line-height: 1; }
+.ui-dialog.ui-widget .ui-dialog-content { padding: var(--ds-space-m); color: inherit; background: none; }
+.ui-dialog.ui-widget .ui-dialog-buttonpane {
+  margin: 0;
+  padding-block: var(--ds-space-s);
+  padding-inline: var(--ds-space-m);
+  border: 0;
+  border-block-start: 1px solid var(--ds-color-border-default);
+  border-radius: 0 0 var(--ds-radius-l) var(--ds-radius-l);
+  background: var(--ds-color-bg-surface-nested);
+}
+.ui-dialog.ui-widget .ui-dialog-buttonpane .ui-button.button,
+.ui-dialog.ui-widget .ui-dialog-buttonpane .ui-button {
+  margin-block: 0;
+  margin-inline: 0 var(--ds-space-xs);
+  padding-block: var(--ds-space-xs);
+  padding-inline: var(--ds-space-m);
+  color: var(--ds-color-fg-default);
+  border: 1px solid var(--ds-color-border-loud);
+  border-radius: var(--ds-radius-m);
+  background: var(--ds-color-bg-surface);
+  font: inherit;
+  font-size: var(--ds-font-size-s);
+  font-weight: var(--ds-font-weight-strong);
+}
+.ui-dialog.ui-widget .ui-dialog-buttonpane .ui-button.button--primary {
+  color: var(--ds-color-fg-on-action);
+  border-color: var(--ds-color-action-primary);
+  background: var(--ds-color-action-primary);
+}
+.ui-widget-overlay.ui-front { background: rgb(10 12 18 / 0.55); opacity: 1; }

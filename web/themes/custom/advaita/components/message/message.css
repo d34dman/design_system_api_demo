@@ -1,0 +1,37 @@
+.message {
+  --_tone: var(--ds-color-action-primary);
+  display: flex;
+  gap: var(--ds-space-s);
+  align-items: flex-start;
+  padding-block: var(--ds-space-s);
+  padding-inline: var(--ds-space-m);
+  color: var(--ds-color-fg-default);
+  border: 1px solid var(--ds-color-border-default);
+  border-inline-start: 4px solid var(--_tone);
+  border-radius: var(--ds-radius-m);
+  background: var(--ds-color-bg-surface);
+}
+.message--status { --_tone: var(--ds-color-status-success); }
+.message--warning { --_tone: var(--ds-color-status-warning); }
+.message--error { --_tone: var(--ds-color-status-error); }
+.message__icon {
+  flex: none;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  margin-block-start: 0.125rem;
+  border-radius: 50%;
+  background: var(--_tone);
+  mask: var(--_icon) center / 0.875rem no-repeat, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  --_icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3 3 7-7' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.message--warning .message__icon,
+.message--error .message__icon {
+  --_icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 3.5v5.5M8 11.5v1' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+.message__body { min-inline-size: 0; }
+.message__list { margin: 0; padding-inline-start: 1.1em; }
+@media (forced-colors: active) {
+  .message { border-inline-start-color: CanvasText; }
+  .message__icon { background: CanvasText; }
+}

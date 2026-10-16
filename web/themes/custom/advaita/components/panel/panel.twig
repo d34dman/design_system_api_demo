@@ -1,0 +1,11 @@
+<section class="dash-panel dash-panel--span-{{ span|default('1') }}" aria-labelledby="{{ heading|clean_id }}">
+  <header class="dash-panel__header">
+    <div>
+      <h2 class="dash-panel__heading" id="{{ heading|clean_id }}">{{ heading }}</h2>
+      {% if description %}<p class="dash-panel__description">{{ description }}</p>{% endif %}
+    </div>
+    {% if actions %}<div class="dash-panel__actions">{% block actions %}{{ actions }}{% endblock %}</div>{% endif %}
+  </header>
+  <div class="dash-panel__content">{% block content %}{{ content }}{% endblock %}</div>
+  {% if footer %}<footer class="dash-panel__footer">{% block footer %}{{ footer }}{% endblock %}</footer>{% endif %}
+</section>

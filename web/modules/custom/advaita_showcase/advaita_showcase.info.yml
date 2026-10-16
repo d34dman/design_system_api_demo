@@ -1,0 +1,9 @@
+name: 'Advaita showcase'
+type: module
+description: 'An admin dashboard built from the Advaita prototype theme''s components, on real site data. Demo only.'
+package: Prototype
+core_version_requirement: ^12
+dependencies:
+  - design_system_api:design_system_api
+  - drupal:node
+  - drupal:media

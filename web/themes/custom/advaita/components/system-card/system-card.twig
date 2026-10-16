@@ -1,0 +1,13 @@
+<div class="system-card" data-ds-system="{{ system }}">
+  <div class="system-card__swatches" aria-hidden="true">
+    <span style="background: var(--ds-color-bg-canvas)"></span>
+    <span style="background: var(--ds-color-bg-surface-nested)"></span>
+    <span style="background: var(--ds-color-action-primary)"></span>
+    <span style="background: var(--ds-color-fg-loud)"></span>
+  </div>
+  <p class="system-card__name">{{ name }}</p>
+  <p class="system-card__sample">Aa {{ typeface }}</p>
+  {% if summary %}<p class="system-card__summary">{{ summary }}</p>{% endif %}
+  <p class="system-card__facts"><span>{{ tokens }} tokens</span><span>{{ problems == 0 ? 'no problems' : problems ~ ' problems' }}</span></p>
+  <span class="button button--primary button--small" aria-hidden="true">Primary</span>
+</div>
