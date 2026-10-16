@@ -11,6 +11,8 @@
 # The theme carries no values: the site binds them (skins-and-modes plan, M3), e.g.
 #   drush ds:bind site advaita_paper && drush ds:bind chrome advaita_indigo
 # advaita_ember is a third, warm chrome to swap in without touching the theme.
+# Typefaces are fonts declared in advaita.fonts.yml ({font: <id>}, plan M4): the module
+# writes the family stack and the @font-face rules of every bound skin's fonts.
 
 advaita_paper:
   label: 'Advaita paper'
@@ -47,8 +49,8 @@ advaita_paper:
       color.status.error: '#b42318'
       color.status.warning: '#8a5300'
       color.status.success: '#146c2e'
-      font.family.base: 'Public Sans, system-ui, sans-serif'
-      font.family.heading: 'Fraunces, Georgia, serif'
+      font.family.base: { font: public_sans }
+      font.family.heading: { font: fraunces }
       radius.s: '0.25rem'
       radius.m: '0.5rem'
       radius.l: '0.875rem'
@@ -130,7 +132,7 @@ advaita_indigo:
       color.status.error: '#c0262d'
       color.status.warning: '#8c5600'
       color.status.success: '#177245'
-      font.family.base: 'Inter, system-ui, sans-serif'
+      font.family.base: { font: inter }
       font.family.heading: '{font.family.base}'
       radius.s: '0.25rem'
       radius.m: '0.375rem'
@@ -209,7 +211,7 @@ advaita_ember:
       palette.neutral-11: '#4b443c'
       palette.neutral-12: '#1c1915'
       color.fg.loud: '#0c0a08'
-      font.family.base: 'Inter, system-ui, sans-serif'
+      font.family.base: { font: inter }
       font.family.heading: '{font.family.base}'
       radius.s: '0.375rem'
       radius.m: '0.625rem'

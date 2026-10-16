@@ -1,7 +1,6 @@
 global:
   css:
     base:
-      css/base/fonts.css: {}
       css/base/elements.css: {}
     layout:
       css/layout/site.css: {}

@@ -1,0 +1,72 @@
+# Advaita's typefaces, declared for the Design System API (FontManager).
+#
+# Skins name them by ID (`font.family.base: {font: inter}`); the module writes
+# the family stack and the @font-face rules for the fonts of every bound skin,
+# each face once per page. The theme ships no @font-face of its own.
+#
+# Arabic: Inter, Fraunces and Public Sans have no Arabic glyphs, so each family
+# also gets Noto Sans Arabic for the Arabic blocks through unicode-range (one sans
+# Arabic for all three, the serif headings included: a demo choice). The
+# browser downloads it only for pages with Arabic text (/ar), and once: it is
+# one file. Noto Sans Arabic is variable (weights 100–900); the file is the
+# Arabic subset of @fontsource-variable/noto-sans-arabic 5.3.0
+# (noto-sans-arabic-arabic-wght-normal.woff2). License text:
+# fonts/noto-sans-arabic-OFL.txt.
+
+inter:
+  label: 'Inter'
+  family: Inter
+  fallback: [system-ui, sans-serif]
+  license:
+    name: OFL-1.1
+    url: 'https://github.com/rsms/inter/blob/master/LICENSE.txt'
+  faces:
+    - file: fonts/inter.woff2
+      weight: 100 900
+      preload: true
+    # The Arabic face; the other families reuse it (a YAML anchor). Its weight
+    # and style must be those of the family's own face: browsers only combine
+    # faces by unicode-range when those match, else the Arabic face is never
+    # picked.
+    - &arabic
+      file: fonts/noto-sans-arabic.woff2
+      weight: 100 900
+      unicode_range: 'U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC'
+      license:
+        name: OFL-1.1
+        url: 'https://github.com/notofonts/arabic/blob/main/OFL.txt'
+
+fraunces:
+  label: 'Fraunces'
+  family: Fraunces
+  fallback: [Georgia, serif]
+  license:
+    name: OFL-1.1
+    url: 'https://github.com/undercasetype/Fraunces/blob/master/OFL.txt'
+  faces:
+    - file: fonts/fraunces.woff2
+      weight: 300 800
+      preload: true
+    - <<: *arabic
+      weight: 300 800
+
+public_sans:
+  label: 'Public Sans'
+  family: Public Sans
+  fallback: [system-ui, sans-serif]
+  license:
+    name: OFL-1.1
+    url: 'https://github.com/uswds/public-sans/blob/develop/LICENSE.md'
+  faces:
+    - file: fonts/public-sans.woff2
+      weight: 300 800
+      preload: true
+    - file: fonts/public-sans-italic.woff2
+      weight: 300 800
+      style: italic
+    - <<: *arabic
+      weight: 300 800
+    # Arabic has no italic: italic text keeps the upright Arabic face.
+    - <<: *arabic
+      weight: 300 800
+      style: italic
