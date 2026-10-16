@@ -6,7 +6,9 @@
  *   cd tests/proof && node contrib.mjs [--scenarios=c1,c3] [--themes=advaita]
  *
  * Advaita (the dual-theme prototype) runs as both the admin and the default
- * theme; every other theme runs with Default Admin as the admin theme. Node
+ * theme, with its skins bound (site advaita_paper, chrome advaita_indigo: the
+ * theme carries no values); every other theme runs with Default Admin as the
+ * admin theme and both contexts bound to the theme. Node
  * forms render in the frontend theme (node.settings use_admin_theme off), as
  * scenarios c4 and c5 need.
  *
@@ -17,7 +19,7 @@
  *
  * Writes out/contrib/report.json and out/contrib/<scenario>--<theme>--<approach>.jpg
  * (the UI) and ...--window.jpg. Leaves the site on approach "none", Olivero
- * and Default Admin.
+ * and Default Admin, both contexts bound to the theme.
  */
 
 import { execFileSync } from 'node:child_process';
@@ -35,10 +37,20 @@ const ALL_THEMES = ['olivero', 'ds_hostile', 'advaita'];
 const APPROACHES = ['none', 'systems', 'patterns'];
 
 async function openCoffee(page) {
-  await page.keyboard.press('Alt+d');
-  await page.locator('.coffee-form-wrapper input').waitFor({ state: 'visible' });
-  await page.keyboard.type('cont');
-  await page.locator('.coffee-form-wrapper li').first().waitFor({ state: 'visible' });
+  // The first open after a cache rebuild can miss Coffee's data: reload once.
+  for (const attempt of [1, 2]) {
+    await page.keyboard.press('Alt+d');
+    await page.locator('.coffee-form-wrapper input').waitFor({ state: 'visible' });
+    await page.keyboard.type('cont');
+    try {
+      await page.locator('.coffee-form-wrapper li').first().waitFor({ state: 'visible', timeout: attempt === 1 ? 10000 : 30000 });
+      return;
+    }
+    catch (e) {
+      if (attempt === 2) throw e;
+      await page.reload({ waitUntil: 'networkidle' });
+    }
+  }
 }
 
 async function hoverComponent(page) {
@@ -67,6 +79,8 @@ function ddev(...cmd) {
 function useTheme(theme) {
   ddev('drush', 'config:set', 'system.theme', 'default', theme, '-y');
   ddev('drush', 'config:set', 'system.theme', 'admin', theme === 'advaita' ? 'advaita' : 'default_admin', '-y');
+  ddev('drush', 'ds:bind', 'site', theme === 'advaita' ? 'advaita_paper' : 'theme');
+  ddev('drush', 'ds:bind', 'chrome', theme === 'advaita' ? 'advaita_indigo' : 'theme');
 }
 
 mkdirSync(OUT, { recursive: true });
@@ -86,6 +100,7 @@ for (const s of scenarios) {
   report.scenarios[s.id] = { module: s.module, title: s.title, role: s.role, path: s.path, results };
 }
 
+try {
 for (const theme of THEMES) {
   useTheme(theme);
   for (const approach of APPROACHES) {
@@ -115,6 +130,9 @@ for (const theme of THEMES) {
 }
 
 writeFileSync(join(OUT, 'report.json'), JSON.stringify(report, null, 1));
-useTheme('olivero');
-ddev('ds-scope', 'none');
-await browser.close();
+}
+finally {
+  useTheme('olivero');
+  ddev('ds-scope', 'none');
+  await browser.close();
+}

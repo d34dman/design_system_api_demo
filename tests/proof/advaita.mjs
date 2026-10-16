@@ -4,15 +4,22 @@
  *
  * Usage (site on snapshot contrib-setup-2026-10-14 or later, Advaita and
  * advaita_showcase installed):
- *   cd tests/proof && node advaita.mjs [--only=looks|feels|coverage]
+ *   cd tests/proof && node advaita.mjs [--only=looks|feels|coverage|swap]
  *
  * Sets Advaita as both the admin and the default theme, with node forms on
  * admin routes, and approach "none": Advaita needs no scoping, the Design
- * System API delivers each system's tokens to its regions. Restores Olivero,
- * Default Admin and frontend node forms afterwards.
+ * System API delivers each system's tokens to its regions. The theme carries
+ * no values: the site binds its skins (site advaita_paper, chrome
+ * advaita_indigo). Restores Olivero, Default Admin, both contexts bound to the
+ * theme and frontend node forms afterwards.
  *
  * Writes out/advaita/report.json, looks/<page>--<mode>.jpg, feels/<state>.jpg,
  * clips/<clip>.webm and coverage/<page>.jpg.
+ *
+ * The swap (--only=swap, also part of a full run) binds the chrome to
+ * advaita_ember, the theme unchanged, and captures the same pages with each
+ * chrome skin: out/advaita-skin-swap/<page>--<mode>--<skin>.jpg and
+ * report.json (the theme's own stylesheets per capture, to show they match).
  */
 
 import { execFileSync } from 'node:child_process';
@@ -25,6 +32,7 @@ import AxeBuilder from '@axe-core/playwright';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..', '..');
 const OUT = join(HERE, 'out', 'advaita');
+const SWAP_OUT = join(HERE, 'out', 'advaita-skin-swap');
 const BASE = process.env.DEMO_URL ?? 'https://design-system-api-demo.ddev.site';
 const args = Object.fromEntries(process.argv.slice(2).map((a) => a.replace(/^--/, '').split('=')));
 
@@ -138,6 +146,19 @@ export const FEELS = [
   },
 ];
 
+// The chrome skin swapped, the theme unchanged: admin pages, and admin UI on
+// a site page (the switch-user block, Paragraphs on a site form).
+export const SWAP = {
+  skins: ['advaita_indigo', 'advaita_ember'],
+  pages: [
+    { id: 'dashboard', path: '/admin/dashboard', title: 'Dashboard' },
+    { id: 'node-edit', path: '/node/2/edit', title: 'Edit an article' },
+    { id: 'article', path: '/node/2', title: 'Article with the switch-user block (admin region on a site page)' },
+    { id: 'landing-edit', path: '/node/3/edit', title: 'Paragraphs in the admin system inside a site form', frontendForms: true, focus: '.field--widget-paragraphs' },
+  ],
+  modes: ['light', 'dark'],
+};
+
 // Short clips: the same components moving.
 export const CLIPS = [
   {
@@ -185,6 +206,8 @@ const login = () => ddev('drush', 'user:login', '--uri=' + BASE);
 ddev('drush', 'config:set', 'system.theme', 'default', 'advaita', '-y');
 ddev('drush', 'config:set', 'system.theme', 'admin', 'advaita', '-y');
 ddev('drush', 'config:set', 'node.settings', 'use_admin_theme', '1', '-y');
+ddev('drush', 'ds:bind', 'site', 'advaita_paper');
+ddev('drush', 'ds:bind', 'chrome', 'advaita_indigo');
 ddev('ds-scope', 'none');
 
 const report = { generated: new Date().toISOString(), pages: {}, feels: {}, clips: {}, coverage: {} };
@@ -284,10 +307,54 @@ if (!only || only === 'coverage') {
   await context.close();
 }
 
+if (!only || only === 'swap') {
+  mkdirSync(SWAP_OUT, { recursive: true });
+  const swap = { generated: new Date().toISOString(), theme: 'advaita', skins: SWAP.skins, pages: {} };
+  try {
+    for (const skin of SWAP.skins) {
+      ddev('drush', 'ds:bind', 'chrome', skin);
+      for (const p of SWAP.pages) {
+        if (p.frontendForms) ddev('drush', 'config:set', 'node.settings', 'use_admin_theme', '0', '-y');
+        for (const mode of SWAP.modes) {
+          const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, ignoreHTTPSErrors: true, colorScheme: mode });
+          const page = await context.newPage();
+          await page.goto(login());
+          await page.goto(BASE + p.path, { waitUntil: 'networkidle' });
+          if (p.focus) await page.locator(p.focus).first().scrollIntoViewIfNeeded();
+          await settle(page);
+          const file = `${p.id}--${mode}--${skin}.jpg`;
+          await page.screenshot({ path: join(SWAP_OUT, file), type: 'jpeg', quality: 82 });
+          const facts = await page.evaluate(() => ({
+            theme: [...document.querySelectorAll('link[rel=stylesheet]')].map((l) => l.getAttribute('href')).filter((h) => !h.includes('/design-system/')),
+            tokens: [...document.querySelectorAll('link[data-design-system-skin]')].map((l) => ({ skin: l.dataset.designSystemSkin, context: l.dataset.designSystemContext, region: l.dataset.designSystemRegion ?? null, href: l.getAttribute('href') })),
+            primary: getComputedStyle(document.documentElement).getPropertyValue('--ds-color-action-primary').trim(),
+          }));
+          const violations = await axe(page);
+          swap.pages[p.id] ??= { ...p, captures: {} };
+          swap.pages[p.id].captures[`${mode}--${skin}`] = { file, ...facts, violations };
+          console.log('swap', p.id, mode, skin, facts.primary, 'axe', violations.length);
+          await context.close();
+        }
+        if (p.frontendForms) ddev('drush', 'config:set', 'node.settings', 'use_admin_theme', '1', '-y');
+      }
+    }
+    for (const p of Object.values(swap.pages)) {
+      const sheets = Object.values(p.captures).map((c) => JSON.stringify(c.theme));
+      p.themeUnchanged = sheets.every((t) => t === sheets[0]);
+    }
+  }
+  finally {
+    writeFileSync(join(SWAP_OUT, 'report.json'), JSON.stringify(swap, null, 1));
+    ddev('drush', 'ds:bind', 'chrome', 'advaita_indigo');
+  }
+}
+
 }
 finally {
   // Whatever got captured is kept, and the site goes back to its usual state.
   save();
+  ddev('drush', 'ds:bind', 'site', 'theme');
+  ddev('drush', 'ds:bind', 'chrome', 'theme');
   ddev('drush', 'config:set', 'system.theme', 'default', 'olivero', '-y');
   ddev('drush', 'config:set', 'system.theme', 'admin', 'default_admin', '-y');
   ddev('drush', 'config:set', 'node.settings', 'use_admin_theme', '0', '-y');

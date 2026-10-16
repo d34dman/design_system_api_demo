@@ -10,7 +10,9 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drupal\Core\Url;
+use Drupal\design_system_api\Binding\Binding;
 use Drupal\design_system_api\ContextCss;
+use Drupal\design_system_api\Skin\SkinRegistry;
 
 /**
  * The dashboard: every figure on it is read from the site.
@@ -24,6 +26,8 @@ final class DashboardController implements ContainerInjectionInterface {
     private readonly DateFormatterInterface $dateFormatter,
     private readonly ContextCss $contextCss,
     private readonly ThemeHandlerInterface $themeHandler,
+    private readonly Binding $binding,
+    private readonly SkinRegistry $skins,
   ) {}
 
   /**
@@ -227,14 +231,19 @@ final class DashboardController implements ContainerInjectionInterface {
   /**
    * One card per design system, each drawn in its own tokens.
    *
+   * Each card names the skin its context is bound to (drush ds:binding).
+   *
    * @return array<string, mixed>
    *   A render array.
    */
   private function systems(): array {
     $cards = [];
     $theme = $this->themeHandler->getDefault();
-    foreach (['site' => ['frontend', 'Site', 'Fraunces / Public Sans', 'Articles, landing pages, everything visitors see.'], 'admin' => ['admin', 'Admin', 'Inter', 'This dashboard, forms, lists, Media Library.']] as $system => [$role, $name, $face, $summary]) {
-      $result = $this->contextCss->resolveAll($theme, $role);
+    $bindings = $this->binding->effective();
+    foreach (['site' => ['site', 'Site', 'Fraunces / Public Sans', 'Articles, landing pages, everything visitors see.'], 'admin' => ['chrome', 'Admin', 'Inter', 'This dashboard, forms, lists, Media Library.']] as $system => [$context, $name, $face, $summary]) {
+      $bound = $bindings[$context];
+      $result = $bound->skin === NULL ? $this->contextCss->resolveAll($theme, $bound->role()) : $this->contextCss->resolveBinding($bound);
+      $name .= ': ' . ($bound->skin === NULL ? 'theme' : ($this->skins->get($bound->skin)?->label() ?? $bound->skin));
       $cards[] = [
         '#type' => 'component',
         '#component' => 'advaita:system-card',

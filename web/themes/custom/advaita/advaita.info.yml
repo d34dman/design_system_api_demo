@@ -29,8 +29,6 @@ libraries-extend:
     - advaita/vertical-tabs
   core/drupal.autocomplete:
     - advaita/autocomplete
-design_system_api:
-  color_schemes: [light, dark]
 regions:
   branding: 'Site branding'
   content_header: 'Content header (title, tabs, actions)'

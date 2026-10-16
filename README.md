@@ -131,6 +131,22 @@ ddev ds-scope-poc off
   the page looks (`regions-visual.mjs`: the weakest of seven checks).
 - `web/themes/custom/ds_hostile`: Olivero plus CSS rules that leak the way real themes do.
 
+## Advaita: one theme, skins bound per context
+
+`web/themes/custom/advaita` is a dual theme (admin and default theme at once) that
+carries no values: its look is three skins in `advaita.skins.yml`, bound by the site.
+
+```bash
+ddev drush ds:bind site advaita_paper      # the site: warm paper, deep green
+ddev drush ds:bind chrome advaita_indigo   # admin routes and admin regions: indigo
+ddev drush ds:bind chrome advaita_ember    # the same theme with a warm chrome
+ddev drush ds:binding                      # what each context uses
+```
+
+`tests/proof/advaita.mjs` binds paper and indigo, captures, swaps the chrome to ember
+(`out/advaita-skin-swap/`) and binds both contexts back to `theme` at the end;
+`contrib.mjs` binds them for the Advaita column only.
+
 ## What's inside
 
 | Part | Status |

@@ -6,9 +6,11 @@
 # - color.fg.disabled and color.border.input differ but share step 8 (light; dark
 #   too for indigo), and color.bg.input differs from step 3 in dark mode;
 # - status colors stay semantic in v0;
-# - contrast=more: the theme has no more-contrast values, and these keep it so
+# - contrast=more: the theme had no more-contrast values, and these keep it so
 #   until the skins tune a contrast=more set.
-# Until M3 binds them, pages still use advaita.design_system_adapter.yml.
+# The theme carries no values: the site binds them (skins-and-modes plan, M3), e.g.
+#   drush ds:bind site advaita_paper && drush ds:bind chrome advaita_indigo
+# advaita_ember is a third, warm chrome to swap in without touching the theme.
 
 advaita_paper:
   label: 'Advaita paper'
@@ -175,3 +177,83 @@ advaita_indigo:
       color.action.primary: '#8d9cff'
       color.action.primary-hover: '#aab5ff'
       color.focus: '#8d9cff'
+
+advaita_ember:
+  label: 'Advaita ember'
+  description: 'A warm chrome: stone neutrals, Inter, burnt-orange actions, softer corners.'
+  color_schemes: [light, dark]
+  values:
+    base:
+      palette.accent-1: '#ffffff'
+      palette.accent-2: '#fff6f0'
+      palette.accent-3: '#fde8db'
+      palette.accent-4: '#fbd9c4'
+      palette.accent-5: '#f8c7aa'
+      palette.accent-6: '#f2ad87'
+      palette.accent-7: '#e88a5c'
+      palette.accent-8: '#c2410c'
+      palette.accent-9: '#c2410c'
+      palette.accent-10: '#9a3412'
+      palette.accent-11: '#8a2f10'
+      palette.accent-12: '#5c1f0b'
+      palette.neutral-1: '#f7f5f2'
+      palette.neutral-2: '#ffffff'
+      palette.neutral-3: '#f0ece6'
+      palette.neutral-4: '#ebe6df'
+      palette.neutral-5: '#e6e0d8'
+      palette.neutral-6: '#e4ded5'
+      palette.neutral-7: '#d6cec3'
+      palette.neutral-8: '#857a6c'
+      palette.neutral-9: '#6f6458'
+      palette.neutral-10: '#5e554b'
+      palette.neutral-11: '#4b443c'
+      palette.neutral-12: '#1c1915'
+      color.fg.loud: '#0c0a08'
+      font.family.base: 'Inter, system-ui, sans-serif'
+      font.family.heading: '{font.family.base}'
+      radius.s: '0.375rem'
+      radius.m: '0.625rem'
+      radius.l: '1rem'
+      font.size.xl: '1.5rem'
+      font.size.2xl: '1.875rem'
+    mode=dark:
+      palette.accent-1: '#2a1206'
+      palette.accent-2: '#36180a'
+      palette.accent-3: '#4a210e'
+      palette.accent-4: '#5a2912'
+      palette.accent-5: '#6b3217'
+      palette.accent-6: '#82401f'
+      palette.accent-7: '#a3542b'
+      palette.accent-8: '#ff8a4c'
+      palette.accent-9: '#ff8a4c'
+      palette.accent-10: '#ffa877'
+      palette.accent-11: '#ffc4a1'
+      palette.accent-12: '#ffe4d4'
+      palette.neutral-1: '#14110e'
+      palette.neutral-2: '#1d1915'
+      palette.neutral-3: '#26211c'
+      palette.neutral-4: '#2d2721'
+      palette.neutral-5: '#342d26'
+      palette.neutral-6: '#2a241f'
+      palette.neutral-7: '#3b342c'
+      palette.neutral-8: '#7f7468'
+      palette.neutral-9: '#9a8f82'
+      palette.neutral-10: '#a69b8e'
+      palette.neutral-11: '#b3a99c'
+      palette.neutral-12: '#ece6de'
+      color.fg.loud: '#ffffff'
+    # More contrast: deeper neutrals for text and edges; the accent keeps the
+    # contract's mapping to its further steps.
+    contrast=more:
+      palette.neutral-1: '#f7f5f2'
+      palette.neutral-2: '#ffffff'
+      palette.neutral-3: '#f0ece6'
+      palette.neutral-4: '#ebe6df'
+      palette.neutral-5: '#e6e0d8'
+      palette.neutral-6: '#d6cec3'
+      palette.neutral-7: '#a69c90'
+      palette.neutral-8: '#5e554b'
+      palette.neutral-9: '#4b443c'
+      palette.neutral-10: '#3d372f'
+      palette.neutral-11: '#2e2924'
+      palette.neutral-12: '#0c0a08'

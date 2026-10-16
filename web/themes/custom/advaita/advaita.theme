@@ -5,9 +5,9 @@
  * Advaita: one component library, two design systems.
  *
  * Admin routes render in the admin system, every other page in the site's.
- * Which values a system gets is the Design System API's business (role=admin
- * value sets in advaita.design_system_adapter.yml); the theme only picks the
- * page shell.
+ * Which values a system gets is the Design System API's business: the theme
+ * carries no values. Its skins (advaita.skins.yml) are bound to the site and
+ * the chrome by the site (drush ds:bind); the theme only picks the page shell.
  */
 
 declare(strict_types=1);

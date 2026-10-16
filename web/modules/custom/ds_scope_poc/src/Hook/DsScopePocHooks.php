@@ -11,6 +11,7 @@ use Drupal\Core\Render\Element;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Routing\AdminContext;
 use Drupal\Core\Theme\ThemeManagerInterface;
+use Drupal\design_system_api\Binding\Binding;
 use Drupal\design_system_api\ContextCss;
 use Drupal\ds_scope_poc\Systems;
 
@@ -47,6 +48,7 @@ class DsScopePocHooks {
     private ThemeManagerInterface $themeManager,
     private ContextCss $contextCss,
     private AdminContext $adminContext,
+    private Binding $binding,
   ) {}
 
   /**
@@ -172,7 +174,7 @@ class DsScopePocHooks {
    */
   private function regionCss(): string {
     $themes = $this->configFactory->get('system.theme');
-    $site = $this->contextCss->css((string) $themes->get('default'), 'frontend');
+    $site = $this->boundCss('site', (string) $themes->get('default'));
     // Page tokens (the stacking order) stay on the document: every system on
     // the page shares them, including UI outside any region, such as a
     // dialog's overlay.
@@ -187,7 +189,7 @@ class DsScopePocHooks {
         $css .= $this->rescope((string) file_get_contents(DRUPAL_ROOT . "/core/themes/default_admin/css/_variables/variables-$file.css"), 'admin');
       }
     }
-    $css .= $this->rescope($this->contextCss->css($admin, 'admin'), 'admin');
+    $css .= $this->rescope($this->boundCss('chrome', $admin), 'admin');
     return $css . <<<CSS
 @layer ds.base {
   [data-ds-system="admin"], [data-ds-boundary] {
@@ -208,6 +210,14 @@ class DsScopePocHooks {
   }
 }
 CSS;
+  }
+
+  /**
+   * A context's values at the page root: its bound skin's, else the theme's.
+   */
+  private function boundCss(string $context, string $theme): string {
+    $binding = $this->binding->effective()[$context];
+    return $binding->skin === NULL ? $this->contextCss->css($theme, $binding->role()) : $this->contextCss->skinCss($binding, [NULL]);
   }
 
   private function rescope(string $css, string $system): string {
