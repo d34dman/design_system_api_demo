@@ -21,7 +21,7 @@ drush config:set system.site page.front /node -y
 # content editing in the frontend theme.
 drush recipe ../recipes/design_system_api_demo_content
 drush php:script ../scripts/demo-content.php
-drush pm:install design_system_api design_system_api_default_admin design_system_api_claro design_system_api_media_library -y
+drush pm:install design_system_api design_system_api_ui design_system_api_default_admin design_system_api_claro design_system_api_media_library -y
 drush cache:rebuild
 
 echo
