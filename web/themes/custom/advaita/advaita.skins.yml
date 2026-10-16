@@ -13,6 +13,9 @@
 # advaita_ember is a third, warm chrome to swap in without touching the theme.
 # Typefaces are fonts declared in advaita.fonts.yml ({font: <id>}, plan M4): the module
 # writes the family stack and the @font-face rules of every bound skin's fonts.
+# Icons (plan M5): the chrome skins name an icon pack from advaita.icons.yml and map
+# the contract's icon names to it; advaita_paper names none, so the site draws the
+# contract's default icons.
 
 advaita_paper:
   label: 'Advaita paper'
@@ -101,6 +104,16 @@ advaita_indigo:
   label: 'Advaita indigo'
   description: 'The chrome: cool neutrals, Inter, indigo actions, tighter type.'
   color_schemes: [light, dark]
+  icons:
+    pack: advaita_tabler
+    map:
+      close: x
+      chevron: chevron-down
+      drag: grip-vertical
+      menu: menu-2
+      warning: alert-triangle
+      error: alert-circle
+      info: info-circle
   values:
     base:
       palette.accent-1: '#ffffff'
@@ -184,6 +197,15 @@ advaita_ember:
   label: 'Advaita ember'
   description: 'A warm chrome: stone neutrals, Inter, burnt-orange actions, softer corners.'
   color_schemes: [light, dark]
+  icons:
+    # check, warning and info have the contract's names in the pack.
+    pack: advaita_phosphor
+    map:
+      close: x-circle
+      chevron: caret-circle-down
+      drag: dots-six-vertical
+      menu: list
+      error: warning-circle
   values:
     base:
       palette.accent-1: '#ffffff'

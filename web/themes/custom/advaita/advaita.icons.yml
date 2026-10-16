@@ -1,0 +1,38 @@
+# Two small icon packs for Advaita's chrome skins (skins-and-modes plan, M5),
+# so swapping the chrome skin swaps its icons too: advaita_indigo draws Tabler,
+# advaita_ember Phosphor. Each pack holds only the icons the contract names
+# (drush ds:icons); the skins map the contract names to them
+# (advaita.skins.yml, icons.map). Copied unchanged from the npm packages; each
+# folder keeps the package's LICENSE.
+advaita_tabler:
+  label: 'Tabler Icons (outline)'
+  description: 'Eight outline icons from Tabler Icons: 24×24, 2px stroke.'
+  version: 3.31.0
+  license:
+    name: MIT
+    url: 'https://github.com/tabler/tabler-icons/blob/main/LICENSE'
+    gpl-compatible: true
+  links:
+    - 'https://tabler.io/icons'
+    - 'https://www.npmjs.com/package/@tabler/icons'
+  extractor: svg
+  config:
+    sources:
+      - icons/tabler/{icon_id}.svg
+  template: '<svg{{ attributes.setAttribute("aria-hidden", "true") }}>{{ content }}</svg>'
+advaita_phosphor:
+  label: 'Phosphor Icons (bold)'
+  description: 'Eight bold icons from Phosphor Icons: 256×256, filled.'
+  version: 2.1.1
+  license:
+    name: MIT
+    url: 'https://github.com/phosphor-icons/core/blob/main/LICENSE'
+    gpl-compatible: true
+  links:
+    - 'https://phosphoricons.com'
+    - 'https://www.npmjs.com/package/@phosphor-icons/core'
+  extractor: svg
+  config:
+    sources:
+      - icons/phosphor/{icon_id}.svg
+  template: '<svg{{ attributes.setAttribute("aria-hidden", "true") }}>{{ content }}</svg>'

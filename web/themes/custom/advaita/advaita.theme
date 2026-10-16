@@ -33,6 +33,24 @@ function advaita_theme_suggestions_page_alter(array &$suggestions): void {
  */
 function advaita_preprocess_html(array &$variables): void {
   $variables['attributes']['class'][] = _advaita_is_admin() ? 'advaita-admin' : 'advaita-site';
+  // Core builds the dropbutton toggle, the tabledrag handle and the dialog's
+  // close button in JavaScript. The page carries their icons once, from the
+  // Design System API's icon component, for js/icons.js to clone. The markup
+  // fits any context: the component picks each context's skin icons in CSS.
+  foreach (['chevron', 'close', 'drag'] as $name) {
+    $variables['page_bottom']['advaita_icons'][$name] = [
+      '#type' => 'inline_template',
+      '#template' => '<template data-advaita-icon="{{ name }}">{{ icon }}</template>',
+      '#context' => [
+        'name' => $name,
+        'icon' => [
+          '#type' => 'component',
+          '#component' => 'design_system_api:icon',
+          '#props' => ['name' => $name],
+        ],
+      ],
+    ];
+  }
 }
 
 /**

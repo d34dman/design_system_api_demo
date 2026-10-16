@@ -24,20 +24,41 @@ global:
     - core/drupal
     - core/once
 
+# Contract icons for markup core builds in JavaScript (js/icons.js). The libraries
+# below extend core's (advaita.info.yml), so their scripts run right after core's
+# and replace its Drupal.theme functions.
+icons:
+  js:
+    js/icons.js: {}
+  dependencies:
+    - core/drupal
+
 dialog:
   css:
     component:
       css/components/dialog.css: {}
+  js:
+    js/dialog.js: {}
+  dependencies:
+    - advaita/icons
 
 tabledrag:
   css:
     component:
       css/components/tabledrag.css: {}
+  js:
+    js/tabledrag.js: {}
+  dependencies:
+    - advaita/icons
 
 dropbutton:
   css:
     component:
       css/components/dropbutton.css: {}
+  js:
+    js/dropbutton.js: {}
+  dependencies:
+    - advaita/icons
 
 vertical-tabs:
   css:

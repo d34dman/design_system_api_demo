@@ -36,7 +36,8 @@
 .ui-dialog.ui-widget .ui-dialog-titlebar-close { position: absolute; inset-inline-end: var(--ds-space-s); inset-block-start: 50%; overflow: hidden; }
 .ui-dialog.ui-widget .ui-dialog-titlebar-close .ui-button-icon,
 .ui-dialog.ui-widget .ui-dialog-titlebar-close .ui-icon { display: none; }
-.ui-dialog.ui-widget .ui-dialog-titlebar-close::before { content: "×"; position: absolute; inset: 0; text-indent: 0; display: grid; place-items: center; color: var(--ds-color-fg-soft); font-size: 1.4rem; line-height: 1; }
+/* The contract's close icon (js/dialog.js); the button's text stays its name. */
+.ui-dialog.ui-widget .ui-dialog-titlebar-close .ds-icon { position: absolute; inset: 0; margin: auto; inline-size: 1.25rem; block-size: 1.25rem; }
 .ui-dialog.ui-widget .ui-dialog-content { padding: var(--ds-space-m); color: inherit; background: none; }
 .ui-dialog.ui-widget .ui-dialog-buttonpane {
   margin: 0;

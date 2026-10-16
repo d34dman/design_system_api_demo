@@ -57,16 +57,9 @@
   cursor: pointer;
 }
 .dropbutton-toggle button:hover { background: var(--ds-color-bg-surface-nested); }
-.dropbutton-arrow {
-  display: block;
-  inline-size: 0.45em;
-  block-size: 0.45em;
-  border-block-end: 2px solid currentcolor;
-  border-inline-end: 2px solid currentcolor;
-  transform: translateY(-0.12em) rotate(45deg);
-  transition: transform 150ms;
-}
-.dropbutton-wrapper.open .dropbutton-arrow { transform: translateY(0.12em) rotate(-135deg); }
+/* The contract's chevron icon (js/dropbutton.js), turned over when open. */
+.dropbutton-toggle .ds-icon { inline-size: 1rem; block-size: 1rem; transition: transform 150ms; }
+.dropbutton-wrapper.open .dropbutton-toggle .ds-icon { transform: rotate(180deg); }
 
 /* Secondary actions: a menu under the button. */
 .dropbutton-multiple .secondary-action { display: none; }

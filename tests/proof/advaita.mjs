@@ -4,7 +4,8 @@
  *
  * Usage (site on snapshot contrib-setup-2026-10-14 or later, Advaita and
  * advaita_showcase installed):
- *   cd tests/proof && node advaita.mjs [--only=looks|feels|coverage|swap]
+ *   cd tests/proof && node advaita.mjs [--only=looks|feels|coverage|swap|icons]
+ *   (icons needs Firefox and WebKit: npx playwright install webkit firefox)
  *
  * Sets Advaita as both the admin and the default theme, with node forms on
  * admin routes, and approach "none": Advaita needs no scoping, the Design
@@ -19,20 +20,31 @@
  * The swap (--only=swap, also part of a full run) binds the chrome to
  * advaita_ember, the theme unchanged, and captures the same pages with each
  * chrome skin: out/advaita-skin-swap/<page>--<mode>--<skin>.jpg and
- * report.json (the theme's own stylesheets per capture, to show they match).
+ * report.json (the theme's own stylesheets per capture, to show they match,
+ * and which icon each contract icon draws: the chrome skins name different
+ * icon packs). Where a page has icons in an admin region on a site page, a
+ * close-up of the region: <page>--<mode>--<skin>--icons.jpg.
+ *
+ * Icons across browsers (--only=icons, also part of a full run): the admin
+ * region on a site page (Paragraphs on a site form) with each chrome skin in
+ * Chromium, Firefox and WebKit, and once more with the component's container
+ * style queries removed, as in a browser without them: the default icons must
+ * show. Writes out/advaita-icons/<browser>--<skin>[--fallback].jpg and
+ * report.json.
  */
 
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, readdirSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { chromium } from 'playwright';
+import { chromium, firefox, webkit } from 'playwright';
 import AxeBuilder from '@axe-core/playwright';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..', '..');
 const OUT = join(HERE, 'out', 'advaita');
 const SWAP_OUT = join(HERE, 'out', 'advaita-skin-swap');
+const ICONS_OUT = join(HERE, 'out', 'advaita-icons');
 const BASE = process.env.DEMO_URL ?? 'https://design-system-api-demo.ddev.site';
 const args = Object.fromEntries(process.argv.slice(2).map((a) => a.replace(/^--/, '').split('=')));
 
@@ -154,10 +166,34 @@ export const SWAP = {
     { id: 'dashboard', path: '/admin/dashboard', title: 'Dashboard' },
     { id: 'node-edit', path: '/node/2/edit', title: 'Edit an article' },
     { id: 'article', path: '/node/2', title: 'Article with the switch-user block (admin region on a site page)' },
-    { id: 'landing-edit', path: '/node/3/edit', title: 'Paragraphs in the admin system inside a site form', frontendForms: true, focus: '.field--widget-paragraphs' },
+    { id: 'landing-edit', path: '/node/3/edit', title: 'Paragraphs in the admin system inside a site form', frontendForms: true, focus: '.field--widget-paragraphs', icons: '.field--widget-paragraphs' },
   ],
   modes: ['light', 'dark'],
 };
+
+// Icons across browsers: the admin region on a site page.
+export const ICONS = {
+  browsers: { chromium, firefox, webkit },
+  skins: SWAP.skins,
+  page: SWAP.pages.find((p) => p.id === 'landing-edit'),
+};
+
+// Which drawing each contract icon on the page shows, per region: the
+// default, or the sprite of the skin it comes from. "admin@site page" is an
+// admin region on a site page.
+function iconFacts() {
+  const page = document.body.classList.contains('advaita-admin') ? 'admin page' : 'site page';
+  const out = {};
+  for (const svg of document.querySelectorAll('body .ds-icon')) {
+    const region = svg.closest('[data-ds-system]')?.dataset.dsSystem ?? 'root';
+    const shown = [...svg.children].filter((c) => getComputedStyle(c).display !== 'none')
+      .map((c) => (c.classList.contains('ds-icon__default') ? 'default' : (c.getAttribute('href') ?? '').split('/').pop().replace(/-[0-9a-f]{12}\.svg/, '')));
+    const box = svg.getBoundingClientRect();
+    const key = `${svg.dataset.dsIcon} in ${region}@${page}: ${shown.join('+') || 'nothing'}${box.width ? '' : ' (hidden)'}`;
+    out[key] = (out[key] ?? 0) + 1;
+  }
+  return out;
+}
 
 // Short clips: the same components moving.
 export const CLIPS = [
@@ -324,6 +360,12 @@ if (!only || only === 'swap') {
           await settle(page);
           const file = `${p.id}--${mode}--${skin}.jpg`;
           await page.screenshot({ path: join(SWAP_OUT, file), type: 'jpeg', quality: 82 });
+          let iconsFile = null;
+          if (p.icons) {
+            iconsFile = `${p.id}--${mode}--${skin}--icons.jpg`;
+            await page.locator(p.icons).first().screenshot({ path: join(SWAP_OUT, iconsFile), type: 'jpeg', quality: 90 });
+          }
+          const icons = await page.evaluate(iconFacts);
           const facts = await page.evaluate(() => ({
             theme: [...document.querySelectorAll('link[rel=stylesheet]')].map((l) => l.getAttribute('href')).filter((h) => !h.includes('/design-system/')),
             tokens: [...document.querySelectorAll('link[data-design-system-skin]')].map((l) => ({ skin: l.dataset.designSystemSkin, context: l.dataset.designSystemContext, region: l.dataset.designSystemRegion ?? null, href: l.getAttribute('href') })),
@@ -331,8 +373,8 @@ if (!only || only === 'swap') {
           }));
           const violations = await axe(page);
           swap.pages[p.id] ??= { ...p, captures: {} };
-          swap.pages[p.id].captures[`${mode}--${skin}`] = { file, ...facts, violations };
-          console.log('swap', p.id, mode, skin, facts.primary, 'axe', violations.length);
+          swap.pages[p.id].captures[`${mode}--${skin}`] = { file, iconsFile, ...facts, icons, violations };
+          console.log('swap', p.id, mode, skin, facts.primary, 'axe', violations.length, JSON.stringify(icons));
           await context.close();
         }
         if (p.frontendForms) ddev('drush', 'config:set', 'node.settings', 'use_admin_theme', '1', '-y');
@@ -341,11 +383,67 @@ if (!only || only === 'swap') {
     for (const p of Object.values(swap.pages)) {
       const sheets = Object.values(p.captures).map((c) => JSON.stringify(c.theme));
       p.themeUnchanged = sheets.every((t) => t === sheets[0]);
+      // The chrome skin's icons: different for each skin in the same mode.
+      const icons = SWAP.modes.map((mode) => SWAP.skins.map((skin) => JSON.stringify(p.captures[`${mode}--${skin}`]?.icons ?? {})));
+      p.iconsSwapped = icons.every((perSkin) => perSkin[0] !== '{}' && new Set(perSkin).size === perSkin.length);
     }
   }
   finally {
     writeFileSync(join(SWAP_OUT, 'report.json'), JSON.stringify(swap, null, 1));
     ddev('drush', 'ds:bind', 'chrome', 'advaita_indigo');
+  }
+}
+
+if (!only || only === 'icons') {
+  mkdirSync(ICONS_OUT, { recursive: true });
+  const icons = { generated: new Date().toISOString(), page: ICONS.page, browsers: {} };
+  const p = ICONS.page;
+  ddev('drush', 'config:set', 'node.settings', 'use_admin_theme', '0', '-y');
+  try {
+    for (const [name, type] of Object.entries(ICONS.browsers)) {
+      const engine = await type.launch();
+      icons.browsers[name] = { version: engine.version(), captures: {} };
+      try {
+        for (const skin of ICONS.skins) {
+          ddev('drush', 'ds:bind', 'chrome', skin);
+          const context = await engine.newContext({ viewport: { width: 1280, height: 900 }, ignoreHTTPSErrors: true });
+          const page = await context.newPage();
+          await page.goto(login());
+          await page.goto(BASE + p.path, { waitUntil: 'networkidle' });
+          await page.locator(p.icons).first().scrollIntoViewIfNeeded();
+          await settle(page);
+          for (const fallback of [false, true]) {
+            if (fallback) {
+              // As in a browser without container style queries: drop them.
+              await page.evaluate(() => {
+                for (const sheet of document.styleSheets) {
+                  let rules;
+                  try { rules = sheet.cssRules; } catch { continue; }
+                  for (let i = rules.length - 1; i >= 0; i--) {
+                    if (rules[i] instanceof CSSContainerRule && rules[i].conditionText.includes('--ds-system')) sheet.deleteRule(i);
+                  }
+                }
+              });
+              await page.waitForTimeout(200);
+            }
+            const file = `${name}--${skin}${fallback ? '--fallback' : ''}.jpg`;
+            await page.locator(p.icons).first().screenshot({ path: join(ICONS_OUT, file), type: 'jpeg', quality: 90 });
+            const facts = await page.evaluate(iconFacts);
+            icons.browsers[name].captures[`${skin}${fallback ? '--fallback' : ''}`] = { file, icons: facts };
+            console.log('icons', name, engine.version(), skin, fallback ? 'fallback' : '', JSON.stringify(facts));
+          }
+          await context.close();
+        }
+      }
+      finally {
+        await engine.close();
+      }
+    }
+  }
+  finally {
+    writeFileSync(join(ICONS_OUT, 'report.json'), JSON.stringify(icons, null, 1));
+    ddev('drush', 'ds:bind', 'chrome', 'advaita_indigo');
+    ddev('drush', 'config:set', 'node.settings', 'use_admin_theme', '1', '-y');
   }
 }
 
