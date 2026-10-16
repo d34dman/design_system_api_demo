@@ -7,7 +7,9 @@ namespace Drupal\ds_scope_poc\Hook;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Hook\Attribute\Hook;
+use Drupal\Core\Render\Element;
 use Drupal\Core\Render\Markup;
+use Drupal\Core\Routing\AdminContext;
 use Drupal\Core\Theme\ThemeManagerInterface;
 use Drupal\design_system_api\ContextCss;
 use Drupal\ds_scope_poc\Systems;
@@ -20,35 +22,115 @@ use Drupal\ds_scope_poc\Systems;
  */
 class DsScopePocHooks {
 
+  /**
+   * Form element types and the contract pattern Form API would give them.
+   */
+  private const PATTERNS = [
+    'textfield' => 'ds-input',
+    'search' => 'ds-input',
+    'email' => 'ds-input',
+    'number' => 'ds-input',
+    'tel' => 'ds-input',
+    'url' => 'ds-input',
+    'password' => 'ds-input',
+    'entity_autocomplete' => 'ds-input',
+    'select' => 'ds-input',
+    'textarea' => 'ds-input',
+    'checkbox' => 'ds-checkbox',
+    'submit' => 'ds-button',
+    'button' => 'ds-button',
+  ];
+
   public function __construct(
     private Systems $systems,
     private ConfigFactoryInterface $configFactory,
     private ThemeManagerInterface $themeManager,
     private ContextCss $contextCss,
+    private AdminContext $adminContext,
   ) {}
 
   /**
    * The document belongs to the system of the theme that renders it.
+   *
+   * A theme that is both admin and default theme (Advaita) renders admin
+   * routes in the admin system and every other page in the site's.
    */
   #[Hook('preprocess_html')]
   public function preprocessHtml(array &$variables): void {
-    $admin = $this->configFactory->get('system.theme')->get('admin');
-    $variables['html_attributes']['data-ds-system'] = $this->themeManager->getActiveTheme()->getName() === $admin ? 'admin' : 'site';
+    $variables['html_attributes']['data-ds-system'] = $this->isAdminPage() ? 'admin' : 'site';
   }
 
   /**
-   * The Media Library widget: a boundary (site values) or admin UI.
+   * Whether the page renders in the admin system.
    */
-  #[Hook('field_widget_complete_media_library_widget_form_alter')]
-  public function widgetAlter(array &$field_widget_complete_form, FormStateInterface $form_state, array $context): void {
-    if (!isset($field_widget_complete_form['widget']) || !is_array($field_widget_complete_form['widget'])) {
-      return;
+  private function isAdminPage(): bool {
+    $themes = $this->configFactory->get('system.theme');
+    $active = $this->themeManager->getActiveTheme()->getName();
+    if ($themes->get('admin') === $active && $themes->get('default') === $active) {
+      return $this->adminContext->isAdminRoute();
     }
-    if ($this->systems->mediaLibraryAs() === 'admin') {
-      $field_widget_complete_form['widget']['#attributes']['data-ds-system'] = 'admin';
+    return $themes->get('admin') === $active;
+  }
+
+  /**
+   * Marks server-rendered wrappers that declare a role.
+   *
+   * @param array<string, mixed> $variables
+   *   The variables.
+   */
+  #[Hook('preprocess_fieldset')]
+  #[Hook('preprocess_container')]
+  #[Hook('preprocess_details')]
+  public function preprocessRegion(array &$variables): void {
+    $attributes = $variables['attributes'] ?? NULL;
+    $role = is_array($attributes) ? ($attributes['data-ds-role'] ?? NULL) : NULL;
+    if (is_string($role)) {
+      $variables['attributes'] = $this->systems->marker($role) + $attributes;
     }
-    else {
-      $field_widget_complete_form['widget']['#attributes']['data-ds-boundary'] = '';
+  }
+
+  /**
+   * Approach 'patterns': every form element gets its contract pattern class.
+   *
+   * Stands in for core Form API doing this for all modules (study candidate
+   * 6); the classes are a :where() floor, so any theme rule still wins.
+   *
+   * @param array<mixed> $form
+   *   The form.
+   */
+  #[Hook('form_alter')]
+  public function formAlter(array &$form, FormStateInterface $form_state, string $form_id): void {
+    if ($this->systems->formPatterns()) {
+      self::classify($form);
+    }
+  }
+
+  /**
+   * Adds pattern classes to an element and its children.
+   *
+   * @param array<mixed> $element
+   *   The element.
+   */
+  private static function classify(array &$element): void {
+    $type = $element['#type'] ?? NULL;
+    if (is_string($type) && isset(self::PATTERNS[$type])) {
+      $attributes = $element['#attributes'] ?? [];
+      if (is_array($attributes)) {
+        $classes = is_array($attributes['class'] ?? NULL) ? $attributes['class'] : [];
+        $classes[] = self::PATTERNS[$type];
+        if (self::PATTERNS[$type] === 'ds-button' && ($element['#button_type'] ?? NULL) === 'primary') {
+          $classes[] = 'ds-button--primary';
+        }
+        $attributes['class'] = $classes;
+        $element['#attributes'] = $attributes;
+      }
+    }
+    foreach (Element::children($element) as $key) {
+      if (is_array($element[$key] ?? NULL)) {
+        $child = $element[$key];
+        self::classify($child);
+        $element[$key] = $child;
+      }
     }
   }
 
@@ -59,16 +141,20 @@ class DsScopePocHooks {
     $attachments['#attached']['library'][] = 'ds_scope_poc/regions';
     $attachments['#attached']['drupalSettings']['dsScopePoc'] = [
       'strategy' => $strategy,
-      'mediaLibraryAs' => $this->systems->mediaLibraryAs(),
+      'roles' => [
+        'site' => $this->systems->marker('site'),
+        'app' => $this->systems->marker('app'),
+        'chrome' => $this->systems->marker('chrome'),
+      ],
     ];
     if ($strategy === 'none') {
       return;
     }
+    if ($this->systems->formPatterns()) {
+      $attachments['#attached']['library'][] = 'design_system_api/forms';
+    }
     if ($strategy === 'fence' || $strategy === 'fence-id') {
       $attachments['#attached']['library'][] = 'ds_scope_poc/' . $strategy;
-    }
-    if ($strategy === 'layers') {
-      $attachments['#attached']['library'][] = 'ds_scope_poc/layers';
     }
     $attachments['#attached']['html_head'][] = [
       [
@@ -86,7 +172,13 @@ class DsScopePocHooks {
    */
   private function regionCss(): string {
     $themes = $this->configFactory->get('system.theme');
-    $css = $this->rescope($this->contextCss->css((string) $themes->get('default')), 'site');
+    $site = $this->contextCss->css((string) $themes->get('default'), 'frontend');
+    // Page tokens (the stacking order) stay on the document: every system on
+    // the page shares them, including UI outside any region, such as a
+    // dialog's overlay.
+    preg_match_all('/--ds-layer-[a-z0-9-]+:[^;]+;/', $site, $matches);
+    $css = ':root { ' . implode(' ', array_unique($matches[0])) . " }\n";
+    $css .= $this->rescope($site, 'site');
     $admin = (string) $themes->get('admin');
     if ($admin === 'default_admin') {
       // Default Admin's tokens alias its own --admin-* variables, which don't
@@ -95,7 +187,7 @@ class DsScopePocHooks {
         $css .= $this->rescope((string) file_get_contents(DRUPAL_ROOT . "/core/themes/default_admin/css/_variables/variables-$file.css"), 'admin');
       }
     }
-    $css .= $this->rescope($this->contextCss->css($admin), 'admin');
+    $css .= $this->rescope($this->contextCss->css($admin, 'admin'), 'admin');
     return $css . <<<CSS
 @layer ds.base {
   [data-ds-system="admin"], [data-ds-boundary] {

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ## Description: Switch the two-design-systems POC approach (none, fence, fence-id, systems, layers, ref) or how the Media Library is marked
-## Usage: ds-scope [none|fence|fence-id|systems|layers|ref|ml-boundary|ml-admin|status]
+## Usage: ds-scope [none|fence|fence-id|systems|layers|patterns|ref|ml-boundary|ml-admin|status]
 ## Example: "ddev ds-scope systems"
 
 set -euo pipefail
@@ -16,7 +16,7 @@ rebuild() {
 }
 
 case "${1:-status}" in
-  none|fence|fence-id|systems|layers)
+  none|fence|fence-id|systems|layers|patterns)
     drush state:set ds_scope_poc.strategy "$1"
     drush config:set system.performance css.preprocess 1 -y >/dev/null
     rebuild
@@ -40,7 +40,7 @@ case "${1:-status}" in
     echo "Media Library: $(drush state:get ds_scope_poc.ml_as 2>/dev/null || echo boundary)"
     ;;
   *)
-    echo "Usage: ddev ds-scope [none|fence|fence-id|systems|layers|ref|ml-boundary|ml-admin|status]" >&2
+    echo "Usage: ddev ds-scope [none|fence|fence-id|systems|layers|patterns|ref|ml-boundary|ml-admin|status]" >&2
     exit 1
     ;;
 esac

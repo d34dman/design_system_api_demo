@@ -19,7 +19,8 @@
  *   fonts     text elements not in the browser's default font
  *   hidden    screen-reader-only text (.visually-hidden) that stays hidden
  *             (clipped, or inside a 1px box)
- *   overlap   text elements whose text doesn't overlap another element's text
+ *   overlap   text elements whose visible text doesn't overlap another
+ *             element's text (text scrolled out of its container is ignored)
  *   contrast  axe color-contrast: passing nodes / checked nodes
  *
  * The visual score is the weakest check that applies, 0 to 100: a dialog that
@@ -71,7 +72,7 @@ export function readVisual(focusSelector) {
   // readable and fonts
   const ownText = (el) => [...el.childNodes].filter((n) => n.nodeType === 3 && n.textContent.trim());
   const SKIP = new Set(['script', 'style', 'noscript', 'template', 'option', 'title']);
-  const texts = [focus, ...focus.querySelectorAll('*')].filter((el) => !SKIP.has(el.localName) && !el.closest('svg, .visually-hidden, .sr-only') && ownText(el).length && shown(el));
+  const texts = [focus, ...focus.querySelectorAll('*')].filter((el) => !SKIP.has(el.localName) && el.localName !== 'textarea' && !el.closest('svg, .visually-hidden, .sr-only') && ownText(el).length && shown(el));
 
   // The browser's defaults, from a blank document.
   const frame = document.createElement('iframe');
@@ -117,6 +118,20 @@ export function readVisual(focusSelector) {
   if (hidden.total) result.hidden = hidden;
 
   // overlap
+  // Text scrolled out of its scroll container is clipped, so it can't overlap
+  // anything on screen: only the visible part of each rect counts.
+  const visiblePart = (el, rect) => {
+    let { left, top, right, bottom } = rect;
+    for (let e = el.parentElement; e && e !== document.documentElement; e = e.parentElement) {
+      const cs = getComputedStyle(e);
+      if (cs.overflowX !== 'visible' || cs.overflowY !== 'visible') {
+        const c = e.getBoundingClientRect();
+        left = Math.max(left, c.left); top = Math.max(top, c.top);
+        right = Math.min(right, c.right); bottom = Math.min(bottom, c.bottom);
+      }
+    }
+    return right - left > 2 && bottom - top > 2 ? new DOMRect(left, top, right - left, bottom - top) : null;
+  };
   const pinnedEl = (el) => { for (let e = el; e; e = e.parentElement) if (['fixed', 'sticky'].includes(getComputedStyle(e).position)) return e; return null; };
   const boxes = [];
   for (const el of [focus, ...focus.querySelectorAll('*')]) {
@@ -125,7 +140,10 @@ export function readVisual(focusSelector) {
     for (const t of ownText(el)) {
       const range = document.createRange();
       range.selectNodeContents(t);
-      for (const rect of range.getClientRects()) if (rect.width > 2 && rect.height > 2) rects.push(rect);
+      for (const rect of range.getClientRects()) {
+        const part = rect.width > 2 && rect.height > 2 ? visiblePart(el, rect) : null;
+        if (part) rects.push(part);
+      }
     }
     if (rects.length) boxes.push({ el, rects, layer: pinnedEl(el) });
   }

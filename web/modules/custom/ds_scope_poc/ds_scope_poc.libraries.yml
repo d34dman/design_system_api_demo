@@ -15,8 +15,3 @@ fence-id:
   css:
     base:
       css/fence-id.css: {}
-
-layers:
-  css:
-    base:
-      css/layers.css: {}

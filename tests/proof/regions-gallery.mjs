@@ -2,12 +2,13 @@
  * Builds one self-contained page from out/regions/report.json and its
  * screenshots (embedded), for publishing as an artifact.
  *
- *   npm run regions:gallery [-- --out=<file>] [--notes=<file.json>] [--findings=<file.html>]
+ *   npm run regions:gallery [-- --out=<file>] [--notes=<file.json>] [--findings=<file.html>] [--approaches=a,b]
  *
  * --notes: the reading of this run, written after looking at the screenshots:
  *   { "answer": "<html>", "scenarios": { "<id>": { "look": "<what to look at>",
  *     "approaches": { "<approach>": { "verdict": "ok|warn|bad", "caption": "<text>" } } } } }
  * --findings: an HTML fragment with the write-up, inserted after the results.
+ * --approaches: show only these approaches (comma-separated ids), in report order.
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
@@ -26,8 +27,8 @@ const APPROACH = {
   none: { letter: 'A', name: 'No boundary', what: 'Today’s Drupal. The theme’s CSS and the admin CSS both apply everywhere.' },
   fence: { letter: 'B', name: 'Reset fence', what: 'Each admin area resets the styles it inherits from the theme, at one-attribute strength (seanB’s admin-section class).' },
   'fence-id': { letter: 'C', name: 'Strong reset fence', what: 'The same reset at ID strength, like core’s off-canvas dialog does.' },
-  systems: { letter: 'D', name: 'Scoped design systems', what: 'Drupal wraps each design system’s CSS so it only applies inside its own areas (CSS @scope).' },
-  layers: { letter: 'E', name: 'Scoped + page tokens', what: 'D, plus one stacking order shared by every design system on the page (concept Q18). The dialog sets its own z-index from it; Navigation’s is mapped onto it.' },
+  systems: { letter: 'D', name: 'Scoped design systems', what: 'Drupal wraps each design system’s CSS so it only applies inside its own areas (CSS @scope). Since version 5 the stacking order every system shares ships in the module, on every page (version 4 measured it separately as approach E).' },
+  layers: { letter: 'E', name: 'Scoped + page tokens', what: 'D, plus one stacking order shared by every design system on the page (concept Q18). Since version 5 the module ships that stacking order for every approach, so E and D give the same results.' },
 };
 const VERDICT = {
   ok: { icon: '✓', word: 'Works' },
@@ -44,7 +45,7 @@ const CHECKS = {
   overlap: 'No overlapping text',
 };
 
-const approaches = report.approaches;
+const approaches = args.approaches ? report.approaches.filter((a) => args.approaches.split(',').includes(a)) : report.approaches;
 const count = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven'][approaches.length] ?? approaches.length;
 const ids = Object.keys(report.scenarios);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));

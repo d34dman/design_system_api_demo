@@ -11,7 +11,7 @@ use Drupal\Core\State\StateInterface;
  */
 class Systems {
 
-  public const STRATEGIES = ['none', 'fence', 'fence-id', 'systems', 'layers', 'ref'];
+  public const STRATEGIES = ['none', 'fence', 'fence-id', 'systems', 'layers', 'patterns', 'ref'];
 
   /**
    * Path prefixes per system, from systems.json.
@@ -31,14 +31,42 @@ class Systems {
   }
 
   /**
-   * Whether each system's CSS is wrapped in @scope ('layers' adds page tokens).
+   * Whether Form API gives every form element the contract's pattern classes
+   * (approach 'patterns': 'systems' plus study candidate 6).
    */
-  public function scoped(): bool {
-    return in_array($this->strategy(), ['systems', 'layers'], TRUE);
+  public function formPatterns(): bool {
+    return $this->strategy() === 'patterns';
   }
 
   /**
-   * How the Media Library widget and dialog are marked: 'boundary' or 'admin'.
+   * Whether each system's CSS is wrapped in @scope. 'layers' was 'systems' plus
+   * page tokens; the tokens now come from design_system_api for every approach.
+   */
+  public function scoped(): bool {
+    return in_array($this->strategy(), ['systems', 'layers', 'patterns'], TRUE);
+  }
+
+  /**
+   * The region marker for a declared role.
+   *
+   * site maps to the site's system and app to the admin's. chrome maps to the
+   * admin's system, or to a boundary in the site's values: the setting
+   * `ddev ds-scope ml-admin|ml-boundary` stands in for a site builder's choice.
+   *
+   * @return array<string, string>
+   *   Marker attributes.
+   */
+  public function marker(string $role): array {
+    return match ($role) {
+      'site' => ['data-ds-system' => 'site'],
+      'app' => ['data-ds-system' => 'admin'],
+      'chrome' => $this->mediaLibraryAs() === 'admin' ? ['data-ds-system' => 'admin'] : ['data-ds-boundary' => ''],
+      default => [],
+    };
+  }
+
+  /**
+   * How chrome is mapped (the Media Library uses it): 'boundary' or 'admin'.
    */
   public function mediaLibraryAs(): string {
     return $this->state->get('ds_scope_poc.ml_as', 'boundary') === 'admin' ? 'admin' : 'boundary';

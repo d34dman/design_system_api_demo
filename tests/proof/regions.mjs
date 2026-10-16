@@ -3,7 +3,7 @@
  * boundaries under each approach (ds_scope_poc test module).
  *
  * Usage (site running, POC on: ddev ds-scope-poc on):
- *   cd tests/proof && npm run regions [-- --approaches=none,systems] [--scenarios=r1a,r4]
+ *   cd tests/proof && npm run regions [-- --approaches=none,systems] [--scenarios=r1a,r4] [--merge]
  *
  * For every scenario × approach: open the page, perform its steps, and read 31
  * computed properties of every element, grouped by the region it belongs to
@@ -157,7 +157,10 @@ function compare(got, refSite, refAdmin) {
 }
 
 mkdirSync(OUT, { recursive: true });
-const report = { base: BASE, measuredAt: new Date().toISOString(), scenarios: {}, approaches };
+// --merge: keep the other scenarios of an earlier report and replace only the
+// ones measured now (same approaches).
+const earlier = 'merge' in args ? JSON.parse(readFileSync(join(OUT, 'report.json'), 'utf8')) : null;
+const report = { base: BASE, measuredAt: new Date().toISOString(), scenarios: { ...(earlier?.scenarios ?? {}) }, approaches };
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, ignoreHTTPSErrors: true, colorScheme: 'light' });
 await (await context.newPage()).goto(ddev('drush', 'user:login', '--uri=' + BASE));
