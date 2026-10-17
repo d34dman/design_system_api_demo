@@ -2,7 +2,7 @@ name: DS Hostile
 type: theme
 base theme: olivero
 description: 'Test theme for the two-design-systems POC: Olivero plus CSS rules that leak the way real themes do. Never a site default.'
-core_version_requirement: ^12
+core_version_requirement: ^11.5 || ^12
 hidden: false
 libraries:
   - ds_hostile/leaks

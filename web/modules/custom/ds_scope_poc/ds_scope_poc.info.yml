@@ -2,7 +2,7 @@ name: 'DS scope POC'
 type: module
 description: 'Test tooling for the two-design-systems POC: region markers, tokens per region, reset fences and @scope wrapping of each system''s CSS. Demo only; never in production.'
 package: Testing
-core_version_requirement: ^12
+core_version_requirement: ^11.5 || ^12
 dependencies:
   - design_system_api:design_system_api
   - drupal:media_library

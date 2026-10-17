@@ -2,7 +2,7 @@ name: Advaita
 type: theme
 description: 'Prototype of a dual theme: one component library on the Design System API contract, serving the admin and the site design system. Demo only.'
 package: Prototype
-core_version_requirement: ^12
+core_version_requirement: ^11.5 || ^12
 base theme: false
 dependencies:
   - design_system_api:design_system_api
