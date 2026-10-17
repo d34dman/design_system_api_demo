@@ -140,7 +140,7 @@ footer { color: var(--fg-soft); font-size: 0.85rem; }
     <h1>One module, one stylesheet, every theme</h1>
     <blockquote class="claim">The Media Library, styled once against the design contract, looks native in Default Admin and Claro and plain but deliberate in Olivero and in Stark, a theme with no CSS. It follows dark mode, RTL, high contrast and forced colors, and an author rebrands it in one file without touching code.</blockquote>
     <div class="stats" id="stats"></div>
-    <p class="soft">Every screenshot on this page is captured by <code>tests/proof/capture.mjs</code> from the demo site (Drupal 12.0.0-beta1), with an axe-core scan of each cell. Rebuild it with one command; nothing here is mocked.</p>
+    <p class="soft">Every screenshot on this page is captured by <code>tests/proof/capture.mjs</code> from the demo site (Drupal 11.5.0-beta1), with an axe-core scan of each cell. Rebuild it with one command; nothing here is mocked.</p>
   </header>
 
   <section class="col" aria-labelledby="moments-h">
@@ -243,8 +243,8 @@ const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const NOTES = {
   default_admin: 'Core\'s admin theme. The adapter aliases every token to Default Admin\'s own variables, so its accent setting and its dark mode flow through. Default Admin declares dark support, so the dark cell follows the OS.',
-  claro: 'Contrib on Drupal 12. The adapter maps the contract to Claro\'s variables. Claro has no dark mode, so the dark cell stays light: module UI never turns dark on a light page.',
-  olivero: 'Contrib on Drupal 12, with no Media Library styles of its own: "before" is core\'s bare markup in a jQuery UI dialog. "After" is the contract\'s plain frontend defaults. Olivero has no dark mode, so the dark cell stays light.',
+  claro: 'In core on Drupal 11.5, contrib on 12. The adapter maps the contract to Claro\'s variables. Claro has no dark mode, so the dark cell stays light: module UI never turns dark on a light page.',
+  olivero: 'In core on Drupal 11.5, contrib on 12, with no Media Library styles of its own: "before" is core\'s bare markup in a jQuery UI dialog. "After" is the contract\'s plain frontend defaults. Olivero has no dark mode, so the dark cell stays light.',
   stark: 'No CSS at all: the strictest test of the frontend defaults. Core\'s Navigation sidebar overlaps the dialog because Stark gives dialogs no stacking order; that is outside the pilot.',
 };
 const VIEW_LABELS = { modal: 'Dialog', widget: 'Field widget' };

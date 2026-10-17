@@ -1,6 +1,6 @@
 # Design System API Demo
 
-A Drupal 12 site (`12.0.0-beta1`) for trying the [Design System API](https://www.drupal.org/project/design_system_api):
+A Drupal 11.5 site (`11.5.0-beta1`) for trying the [Design System API](https://www.drupal.org/project/design_system_api):
 one design contract, admin and frontend themes. Switch the theme and watch
 contract-based UI follow it without any theme-specific CSS.
 
@@ -34,25 +34,28 @@ npm run capture     # drives the demo with Playwright; about 12 minutes
 npm run gallery     # builds tests/proof/out/gallery/index.html
 ```
 
-## Why Drupal 12 beta
+## Why Drupal 11.5 beta
 
 The Design System API builds on core's Design Tokens API
 ([#3531854](https://www.drupal.org/project/drupal/issues/3531854)), which first ships
-in a tagged release with Drupal `12.0.0-beta1`. Drupal 12 is also the landscape the
-module is designed for: core has one admin theme (Default Admin) and no frontend theme.
+in tagged releases with Drupal `11.5.0-beta1` and `12.0.0-beta1`. The module supports
+both (`^11.5 || ^12`); the demo runs 11.5 so that contrib modules run unpatched.
+Drupal 12 is covered by the module's CI.
 
 What that means here:
 
-- PHP 8.5 (set in `.ddev/config.yaml`) and Drush `14.x-dev` (Drush 13 doesn't support
-  Drupal 12).
-- Claro and Olivero come from contrib (`drupal/claro` 3.x, `drupal/olivero` 2.x).
-- **Gin is not included:** no Gin release supports Drupal 12 yet. It returns, with the
-  Gin adapter, once it does.
-- Standard installs no content types on Drupal 12; the demo content comes as a recipe.
+- PHP 8.4 (Drupal 11.5's recommended version, set in `.ddev/config.yaml`) and Drush 13.
+- Claro and Olivero are core themes (11.5 marks them deprecated; they move to contrib
+  in Drupal 12). Default Admin is core's admin theme, as on 12.
+- Canvas, Gin and the contrib modules the demo compares (Coffee, Masquerade,
+  Paragraphs, Layout Paragraphs, Webform and others) come from `composer.json` at
+  releases that support 11.5, with no patches.
+- Standard installs no frontend theme and no content types (as on 12); the demo content
+  comes as a recipe.
 
 ## Requirements
 
-- [DDEV](https://ddev.readthedocs.io/) 1.25 or newer (PHP 8.5 support), with Docker running.
+- [DDEV](https://ddev.readthedocs.io/) 1.25 or newer, with Docker running.
 - About 2 GB of free disk space for images and dependencies.
 
 ## Quick start
@@ -78,7 +81,7 @@ branch to be published there.
 ```bash
 ddev admin-theme            # show the current admin theme and installable themes
 ddev admin-theme default_admin   # core's admin theme (experimental)
-ddev admin-theme claro           # contrib on Drupal 12
+ddev admin-theme claro           # core on Drupal 11.5, contrib on 12
 ```
 
 ## Workspace mode (for developing the modules)
@@ -101,8 +104,10 @@ How it works:
 - It also sets `COMPOSER=composer.workspace.json`. That file is generated from
   `composer.json` with a path repository for `../../apps/*` prepended
   (`.ddev/workspace/build-composer-json.php`), and has its own
-  `composer.workspace.lock`. The committed `composer.json` and `composer.lock` never
-  reference local paths.
+  `composer.workspace.lock`. It requires exactly what `composer.json` requires; only the
+  repositories differ, so the committed `composer.json` never references local paths.
+  There is no committed `composer.lock` yet: it can only be resolved once the module's
+  `1.0.x` branch is on drupal.org.
 - Generated files are gitignored. After changing `composer.json`, run
   `ddev workspace-mode on` again to regenerate.
 
@@ -154,12 +159,12 @@ node forms in the site theme, the Media Library dialog as chrome); `ddev demo st
 
 | Part | Status |
 |---|---|
-| Drupal 12.0.0-beta1 (with the Design Tokens API), Standard profile, Olivero + Default Admin, Claro installed | Ready |
+| Drupal 11.5.0-beta1 (with the Design Tokens API), Standard profile, Olivero + Default Admin, Claro installed | Ready |
 | Demo content: *Meridian*, a magazine about architecture, design and places. `scripts/demo-content.php` (after the recipe `recipes/design_system_api_demo_content`) adds a standfirst and body to Article, 12 articles by four writers, 26 photos from `assets/demo-photos` (Unsplash License, see `CREDITS.md` there), Arabic (RTL) translations of the first two, a pending draft on node 2, and rewrites the landing and Layout Paragraphs pages when they exist. Safe to run again: `ddev drush php:script ../scripts/demo-content.php` | Ready |
 | Design System API, Default Admin and Claro adapters, Media Library pilot | Ready |
 | Author brand registry for Olivero (`design-system/brand/`) | Ready |
 | Proof gallery (`tests/proof/`) | Ready |
-| Gin adapter (`design_system_api_gin`) | Waiting for a Drupal 12 release of Gin |
+| Gin adapter (`design_system_api_gin`) | Not started (Gin 5 is installed by Composer, not enabled) |
 
 ## Useful commands
 
