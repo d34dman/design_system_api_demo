@@ -61,32 +61,47 @@
 .dropbutton-toggle .ds-icon { inline-size: 1rem; block-size: 1rem; transition: transform 150ms; }
 .dropbutton-wrapper.open .dropbutton-toggle .ds-icon { transform: rotate(180deg); }
 
-/* Secondary actions: a menu under the button. */
-.dropbutton-multiple .secondary-action { display: none; }
-.dropbutton-multiple.open .dropbutton { border-end-start-radius: 0; border-end-end-radius: 0; }
-.dropbutton-multiple.open .secondary-action {
+/* Secondary actions: a menu that floats under the button, at its end
+   (js/dropbutton.js gathers them into .dropbutton-menu). */
+.dropbutton-menu { display: none; }
+.dropbutton-multiple.open .dropbutton-menu {
   position: absolute;
   z-index: var(--ds-layer-sticky);
+  inset-block-start: calc(100% + var(--ds-space-2xs));
+  inset-inline-end: 0;
   display: block;
-  inset-inline-start: calc(-1 * var(--ds-border-width-s));
-  min-inline-size: calc(100% + 2 * var(--ds-border-width-s));
-  border-inline: var(--ds-border-width-s) solid var(--ds-color-border-loud);
+  min-inline-size: max(100%, 8rem);
+  padding: var(--ds-space-s);
+  border-radius: var(--ds-radius-l);
   background: var(--ds-color-bg-raised);
-  box-shadow: var(--ds-shadow-raised);
+  box-shadow: 0 0 0 var(--ds-border-width-s) var(--ds-color-border-soft), var(--ds-shadow-overlay);
 }
-/* Each secondary item sits under the previous one. */
-.dropbutton-multiple.open .dropbutton { position: relative; flex-wrap: wrap; }
-.dropbutton-multiple.open .dropbutton { display: grid; grid-template-columns: auto auto; }
-.dropbutton-multiple.open .secondary-action { position: static; grid-column: 1 / -1; border-inline: 0; box-shadow: none; border-block-start: var(--ds-border-width-s) solid var(--ds-color-border-soft); }
-.dropbutton-multiple.open .secondary-action:last-child > * { border-end-start-radius: var(--ds-radius-m); border-end-end-radius: var(--ds-radius-m); }
-.dropbutton-multiple.open .dropbutton-widget { z-index: var(--ds-layer-sticky); box-shadow: var(--ds-shadow-raised); border-radius: var(--ds-radius-m); }
-.dropbutton-multiple.open .dropbutton { border-radius: var(--ds-radius-m); }
-.secondary-action > :hover { color: var(--ds-color-fg-loud); background: var(--ds-color-bg-surface-nested); }
+.dropbutton-menu__list { display: grid; margin: 0; padding: 0; list-style: none; }
+/* Two classes ahead of the item rules, so a primary dropbutton's colours
+   stay on its button. */
+.dropbutton-multiple .dropbutton-menu .secondary-action > a,
+.dropbutton-multiple .dropbutton-menu .secondary-action > input,
+.dropbutton-multiple .dropbutton-menu .secondary-action > button {
+  min-block-size: var(--ds-control-height-m);
+  color: var(--ds-color-fg-default);
+  padding-inline: var(--ds-space-m);
+  border-radius: var(--ds-radius-m);
+  font-size: var(--ds-font-size-m);
+  font-weight: var(--ds-font-weight-normal);
+}
+.dropbutton-multiple .dropbutton-menu .secondary-action > :is(:hover, :focus-visible) {
+  color: var(--ds-color-fg-on-action);
+  background: var(--ds-color-action-primary);
+  text-decoration: none;
+}
+.dropbutton-multiple .dropbutton-menu .secondary-action > a[href*="/delete"] { color: var(--ds-color-status-error); }
+.dropbutton-multiple .dropbutton-menu .secondary-action > a[href*="/delete"]:is(:hover, :focus-visible) {
+  color: var(--ds-color-status-error);
+  background: color-mix(in srgb, var(--ds-color-status-error) 12%, var(--ds-color-bg-raised));
+}
 
-/* In a table cell the open menu floats over the next rows. */
-td .dropbutton-multiple.open .dropbutton-widget { position: absolute; inset-block-start: 0; inset-inline-start: 0; }
+/* In a table cell the menu floats over the next rows. */
 td .dropbutton-wrapper { min-block-size: var(--ds-control-height-m); }
-td .dropbutton-multiple { min-inline-size: 8rem; }
 
 /* Primary dropbuttons ("Save" with more actions, Paragraphs "Add"). */
 .dropbutton--primary .dropbutton,

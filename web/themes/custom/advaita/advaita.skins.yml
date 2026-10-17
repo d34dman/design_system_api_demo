@@ -517,6 +517,8 @@ advaita_canvas_ui:
       color.fg.loud: '#111111'
       font.family.base: [-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif]
       font.family.heading: '{font.family.base}'
+      # Radix Themes sets controls, labels and tabs at 500 (headings at 700).
+      font.weight.strong: 500
       font.size.xs: '0.6875rem'
       font.size.s: '0.75rem'
       font.size.m: '0.875rem'

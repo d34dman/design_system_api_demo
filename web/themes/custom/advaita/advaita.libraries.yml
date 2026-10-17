@@ -60,6 +60,7 @@ dropbutton:
     js/dropbutton.js: {}
   dependencies:
     - advaita/icons
+    - core/once
 
 vertical-tabs:
   css:
