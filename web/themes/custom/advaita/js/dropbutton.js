@@ -17,7 +17,7 @@
         const menu = document.createElement('li');
         menu.className = 'dropbutton-menu';
         const inner = document.createElement('ul');
-        inner.className = 'dropbutton-menu__list';
+        inner.className = 'dropbutton-menu__list ds-menu';
         inner.append(...items);
         menu.append(inner);
         list.append(menu);

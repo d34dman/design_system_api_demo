@@ -31,113 +31,22 @@ label.option {
   color: var(--ds-color-status-error);
 }
 
-.form-text,
-.form-email,
-.form-url,
-.form-search,
-.form-tel,
-.form-number,
-.form-date,
-.form-time,
-.form-password,
-.form-autocomplete,
-.form-select,
-.form-textarea,
-input.form-file {
-  box-sizing: border-box;
-  max-inline-size: 100%;
-  min-block-size: var(--ds-control-height-m);
-  margin: 0;
-  padding-block: 0;
-  padding-inline: var(--ds-space-s);
-  color: var(--ds-color-fg-default);
-  border: var(--ds-border-width-s) solid var(--ds-color-border-input);
-  border-radius: var(--ds-radius-m);
-  background-color: var(--ds-color-bg-input);
-  font: inherit;
-  font-size: var(--ds-font-size-m);
-  line-height: var(--ds-font-line-height-tight);
-  transition: border-color 120ms, box-shadow 120ms;
-}
+/* Fields, selects, checkboxes and buttons are the Design System API's
+   patterns (Advaita opts in, D25): here only their widths and layout. */
 .form-text,
 .form-email,
 .form-url,
 .form-search,
 .form-autocomplete,
 .form-password { inline-size: min(100%, 36rem); }
-/* One line: exactly the control height, as buttons are. */
-:is(.form-text, .form-email, .form-url, .form-search, .form-tel, .form-number, .form-date, .form-time, .form-password, .form-autocomplete, .form-select:not([multiple])) { block-size: var(--ds-control-height-m); }
-.form-textarea { inline-size: 100%; min-block-size: 6rem; padding-block: var(--ds-space-xs); resize: vertical; }
-.form-select[multiple] { padding-block: var(--ds-space-xs); }
-
-.form-text:hover,
-.form-select:hover,
-.form-textarea:hover,
-.form-email:hover,
-.form-autocomplete:hover { border-color: var(--ds-color-border-loud); }
-
-.form-text:focus,
-.form-email:focus,
-.form-url:focus,
-.form-search:focus,
-.form-tel:focus,
-.form-number:focus,
-.form-date:focus,
-.form-time:focus,
-.form-password:focus,
-.form-autocomplete:focus,
-.form-select:focus,
-.form-textarea:focus {
-  border-color: var(--ds-color-action-primary);
-  outline: none;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ds-color-focus) 30%, transparent);
-}
-:is(.form-text, .form-select, .form-textarea, .form-email, .form-autocomplete)::placeholder {
-  color: var(--ds-color-fg-soft);
-  opacity: 1;
-}
-
-.form-select {
-  /* A thin chevron, two strokes in fg.soft, as the dropbutton's. */
-  --advaita-chevron-stroke: 0.09em;
-  padding-inline-end: calc(var(--ds-space-s) * 2 + 1em);
-  background-image:
-    linear-gradient(45deg, transparent calc(50% - var(--advaita-chevron-stroke)), var(--ds-color-fg-soft) calc(50% - var(--advaita-chevron-stroke)) calc(50% + var(--advaita-chevron-stroke)), transparent calc(50% + var(--advaita-chevron-stroke))),
-    linear-gradient(-45deg, transparent calc(50% - var(--advaita-chevron-stroke)), var(--ds-color-fg-soft) calc(50% - var(--advaita-chevron-stroke)) calc(50% + var(--advaita-chevron-stroke)), transparent calc(50% + var(--advaita-chevron-stroke)));
-  background-repeat: no-repeat;
-  background-position:
-    right calc(var(--ds-space-s) + 0.32em) center,
-    right var(--ds-space-s) center;
-  background-size: 0.32em 0.32em;
-  appearance: none;
-}
-[dir="rtl"] .form-select {
-  background-position:
-    left var(--ds-space-s) center,
-    left calc(var(--ds-space-s) + 0.32em) center;
-}
-.form-select[multiple] { background-image: none; padding-inline-end: var(--ds-space-s); }
-
+.form-textarea { inline-size: 100%; resize: vertical; }
 .form-checkbox,
-.form-radio {
-  inline-size: 1.05rem;
-  block-size: 1.05rem;
-  margin: 0;
-  margin-inline-end: var(--ds-space-xs);
-  vertical-align: -0.15em;
-  accent-color: var(--ds-color-action-primary);
-}
+.form-radio { margin-inline-end: var(--ds-space-xs); vertical-align: -0.15em; }
 .form-type-checkbox,
 .form-type-radio { margin-block: var(--ds-space-xs); }
 .form-checkboxes .form-item,
 .form-radios .form-item { margin-block: var(--ds-space-2xs); }
-
 .form-disabled label { color: var(--ds-color-fg-disabled); }
-:is(.form-text, .form-select, .form-textarea):disabled {
-  color: var(--ds-color-fg-disabled);
-  background-color: var(--ds-color-bg-surface-nested);
-  border-color: var(--ds-color-border-soft);
-}
 
 .description,
 .form-item .description,
@@ -195,17 +104,3 @@ fieldset legend { padding-inline: var(--ds-space-2xs); }
 .ck.ck-toolbar { border-color: var(--ds-color-border-input); background: var(--ds-color-bg-surface-nested); }
 .ck.ck-editor__top .ck-sticky-panel .ck-toolbar { border-start-start-radius: var(--ds-radius-m); border-start-end-radius: var(--ds-radius-m); }
 .ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable { border-end-start-radius: var(--ds-radius-m); border-end-end-radius: var(--ds-radius-m); }
-
-input[type="file"]::file-selector-button {
-  margin-inline-end: var(--ds-space-s);
-  padding-block: var(--ds-space-2xs);
-  padding-inline: var(--ds-space-s);
-  color: var(--ds-color-fg-default);
-  border: var(--ds-border-width-s) solid var(--ds-color-border-loud);
-  border-radius: var(--ds-radius-m);
-  background: var(--ds-color-bg-surface);
-  font: inherit;
-  font-weight: var(--ds-font-weight-strong);
-  cursor: pointer;
-}
-input[type="file"]::file-selector-button:hover { background: var(--ds-color-bg-surface-nested); }

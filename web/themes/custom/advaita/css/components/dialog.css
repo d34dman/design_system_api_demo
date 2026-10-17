@@ -46,25 +46,9 @@
   border: 0;
   border-block-start: var(--ds-border-width-s) solid var(--ds-color-border-default);
   border-radius: 0 0 var(--ds-radius-l) var(--ds-radius-l);
-  background: var(--ds-color-bg-surface-nested);
-}
-.ui-dialog.ui-widget .ui-dialog-buttonpane .ui-button.button,
-.ui-dialog.ui-widget .ui-dialog-buttonpane .ui-button {
-  margin-block: 0;
-  margin-inline: 0 var(--ds-space-xs);
-  padding-block: var(--ds-space-xs);
-  padding-inline: var(--ds-space-m);
-  color: var(--ds-color-fg-default);
-  border: var(--ds-border-width-s) solid var(--ds-color-border-loud);
-  border-radius: var(--ds-radius-m);
   background: var(--ds-color-bg-surface);
-  font: inherit;
-  font-size: var(--ds-font-size-s);
-  font-weight: var(--ds-font-weight-strong);
 }
-.ui-dialog.ui-widget .ui-dialog-buttonpane .ui-button.button--primary {
-  color: var(--ds-color-fg-on-action);
-  border-color: var(--ds-color-action-primary);
-  background: var(--ds-color-action-primary);
-}
+/* The buttons are the patterns' (core copies the form's ds-button classes
+   onto them); here only their spacing. */
+.ui-dialog.ui-widget .ui-dialog-buttonpane .ui-button { margin-block: 0; margin-inline: 0 var(--ds-space-xs); }
 .ui-widget-overlay.ui-front { background: rgb(10 12 18 / 0.55); opacity: 1; }

@@ -66,6 +66,10 @@ vertical-tabs:
   css:
     component:
       css/components/vertical-tabs.css: {}
+  js:
+    js/vertical-tabs.js: {}
+  dependencies:
+    - core/once
 
 autocomplete:
   css:

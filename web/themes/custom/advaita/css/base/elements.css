@@ -53,12 +53,15 @@ h4, h5, h6 { font-size: var(--ds-font-size-m); }
 
 p { margin-block: 0 var(--ds-space-m); }
 
-a {
+/* Links at zero specificity: theme CSS loads after module CSS, so a plain
+   `a` rule would beat the Design System API's patterns (tabs, lists, menus)
+   that draw links as controls. */
+:where(a) {
   color: var(--ds-color-fg-link);
   text-decoration-thickness: 1px;
   text-underline-offset: 0.18em;
 }
-a:hover { color: var(--ds-color-action-primary-hover); text-decoration-thickness: 2px; }
+:where(a):hover { color: var(--ds-color-action-primary-hover); text-decoration-thickness: 2px; }
 
 code, kbd, pre, samp {
   font-family: var(--ds-font-family-mono);

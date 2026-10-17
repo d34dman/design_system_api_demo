@@ -1,23 +1,8 @@
 /**
  * @file
- * Local actions ("+ Add content").
+ * Local actions ("+ Add content"): soft buttons from the patterns.
  */
 .action-links { display: flex; flex-wrap: wrap; gap: var(--ds-space-xs); margin: 0; padding: 0; list-style: none; }
+.block-local-actions-block ul { display: flex; flex-wrap: wrap; gap: var(--ds-space-xs); margin: 0; padding: 0; list-style: none; }
 /* Under the tabs, clear of the tab line and of the header's edge. */
 .action-links-block { margin-block: var(--ds-space-m); }
-/* A plus drawn in CSS, at the size of an icon beside the label. */
-.button-action { gap: var(--ds-space-s); }
-.button-action::before {
-  content: "";
-  flex: none;
-  inline-size: 1.1em;
-  block-size: 1.1em;
-  background:
-    linear-gradient(currentColor, currentColor) center / 100% 0.125em no-repeat,
-    linear-gradient(currentColor, currentColor) center / 0.125em 100% no-repeat;
-  border-radius: 0.0625em;
-}
-.block-local-actions-block ul { display: flex; flex-wrap: wrap; gap: var(--ds-space-xs); margin: 0; padding: 0; list-style: none; }
-@media (forced-colors: active) {
-  .button-action::before { content: "+"; inline-size: auto; block-size: auto; background: none; line-height: 1; }
-}
