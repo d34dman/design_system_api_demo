@@ -1,0 +1,101 @@
+--- a/canvas.info.yml
++++ b/canvas.info.yml
+@@ -2,7 +2,7 @@
+ description: Empowers content creators to build experiences by composing components, with as much freedom as site builders allow, all without needing to write code.
+ type: module
+ package: Drupal Canvas
+-core_version_requirement: ^11.3
++core_version_requirement: ^11.3 || ^12
+ php: 8.3
+ configure: entity.component.collection
+ dependencies:
+--- a/src/Block/BlockManagerDecorator.php
++++ b/src/Block/BlockManagerDecorator.php
+@@ -105,15 +105,15 @@
+   /**
+    * {@inheritdoc}
+    */
+-  public function getSortedDefinitions(?array $definitions = NULL): array {
+-    return $this->decorated->getSortedDefinitions($definitions);
++  public function getSortedDefinitions(?array $definitions = NULL, string $label_key = 'label'): array {
++    return $this->decorated->getSortedDefinitions($definitions, $label_key);
+   }
+ 
+   /**
+    * {@inheritdoc}
+    */
+-  public function getGroupedDefinitions(?array $definitions = NULL): array {
+-    return $this->decorated->getGroupedDefinitions($definitions);
++  public function getGroupedDefinitions(?array $definitions = NULL, string $label_key = 'label'): array {
++    return $this->decorated->getGroupedDefinitions($definitions, $label_key);
+   }
+ 
+   /**
+--- a/src/Form/ComponentListBuilder.php
++++ b/src/Form/ComponentListBuilder.php
+@@ -6,6 +6,7 @@
+ 
+ use Drupal\canvas\Audit\ComponentAudit;
+ use Drupal\canvas\Entity\Component;
++use Drupal\Core\Cache\CacheableMetadata;
+ use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
+ use Drupal\Core\Entity\EntityInterface;
+ use Drupal\Core\Entity\EntityStorageInterface;
+@@ -75,8 +76,8 @@
+     return $row + parent::buildRow($entity);
+   }
+ 
+-  public function getOperations(EntityInterface $entity): array {
+-    return parent::getOperations($entity) + [
++  public function getOperations(EntityInterface $entity, ?CacheableMetadata $cacheability = NULL): array {
++    return parent::getOperations($entity, $cacheability) + [
+       'audit' => [
+         'title' => $this->t('Audit'),
+         'url' => Url::fromRoute('entity.component.audit', ['component' => $entity->id()]),
+--- a/src/TypedData/BetterEntityDataDefinition.php
++++ b/src/TypedData/BetterEntityDataDefinition.php
+@@ -132,21 +132,21 @@
+    * {@inheritdoc}
+    */
+   public function getEntityTypeId() {
+-    return $this->definition['constraints']['EntityType'] ?? NULL;
++    return $this->definition['constraints']['EntityType']['type'] ?? NULL;
+   }
+ 
+   /**
+    * {@inheritdoc}
+    */
+   public function setEntityTypeId($entity_type_id) {
+-    return $this->addConstraint('EntityType', $entity_type_id);
++    return $this->addConstraint('EntityType', ['type' => $entity_type_id]);
+   }
+ 
+   /**
+    * {@inheritdoc}
+    */
+   public function getBundles() {
+-    $bundle = $this->definition['constraints']['Bundle'] ?? NULL;
++    $bundle = $this->definition['constraints']['Bundle']['bundle'] ?? NULL;
+     return \is_string($bundle) ? [$bundle] : $bundle;
+   }
+ 
+@@ -155,7 +155,7 @@
+    */
+   public function setBundles(?array $bundles = NULL) {
+     if (isset($bundles)) {
+-      $this->addConstraint('Bundle', $bundles);
++      $this->addConstraint('Bundle', ['bundle' => $bundles]);
+       $this->propertyDefinitions = NULL;
+     }
+     else {
+--- a/src/Plugin/Canvas/ComponentSource/BlockComponent.php
++++ b/src/Plugin/Canvas/ComponentSource/BlockComponent.php
+@@ -200,7 +200,7 @@
+         new class() implements BreadcrumbBuilderInterface {
+           use StringTranslationTrait;
+ 
+-          public function applies(RouteMatchInterface $route_match) {
++          public function applies(RouteMatchInterface $route_match, \Drupal\Core\Cache\CacheableMetadata $cacheable_metadata) {
+              return TRUE;
+           }
+ 
