@@ -48,7 +48,7 @@ input.form-file {
   max-inline-size: 100%;
   min-block-size: var(--ds-control-height-m);
   margin: 0;
-  padding-block: var(--ds-space-xs);
+  padding-block: 0;
   padding-inline: var(--ds-space-s);
   color: var(--ds-color-fg-default);
   border: var(--ds-border-width-s) solid var(--ds-color-border-input);
@@ -65,7 +65,10 @@ input.form-file {
 .form-search,
 .form-autocomplete,
 .form-password { inline-size: min(100%, 36rem); }
-.form-textarea { inline-size: 100%; min-block-size: 6rem; resize: vertical; }
+/* One line: exactly the control height, as buttons are. */
+:is(.form-text, .form-email, .form-url, .form-search, .form-tel, .form-number, .form-date, .form-time, .form-password, .form-autocomplete, .form-select:not([multiple])) { block-size: var(--ds-control-height-m); }
+.form-textarea { inline-size: 100%; min-block-size: 6rem; padding-block: var(--ds-space-xs); resize: vertical; }
+.form-select[multiple] { padding-block: var(--ds-space-xs); }
 
 .form-text:hover,
 .form-select:hover,
@@ -95,21 +98,23 @@ input.form-file {
 }
 
 .form-select {
+  /* A thin chevron, two strokes in fg.soft, as the dropbutton's. */
+  --advaita-chevron-stroke: 0.09em;
   padding-inline-end: calc(var(--ds-space-s) * 2 + 1em);
   background-image:
-    linear-gradient(45deg, transparent 50%, currentcolor 50%),
-    linear-gradient(135deg, currentcolor 50%, transparent 50%);
+    linear-gradient(45deg, transparent calc(50% - var(--advaita-chevron-stroke)), var(--ds-color-fg-soft) calc(50% - var(--advaita-chevron-stroke)) calc(50% + var(--advaita-chevron-stroke)), transparent calc(50% + var(--advaita-chevron-stroke))),
+    linear-gradient(-45deg, transparent calc(50% - var(--advaita-chevron-stroke)), var(--ds-color-fg-soft) calc(50% - var(--advaita-chevron-stroke)) calc(50% + var(--advaita-chevron-stroke)), transparent calc(50% + var(--advaita-chevron-stroke)));
   background-repeat: no-repeat;
   background-position:
-    right calc(var(--ds-space-s) + 0.4em) center,
+    right calc(var(--ds-space-s) + 0.32em) center,
     right var(--ds-space-s) center;
-  background-size: 0.4em 0.4em;
+  background-size: 0.32em 0.32em;
   appearance: none;
 }
 [dir="rtl"] .form-select {
   background-position:
     left var(--ds-space-s) center,
-    left calc(var(--ds-space-s) + 0.4em) center;
+    left calc(var(--ds-space-s) + 0.32em) center;
 }
 .form-select[multiple] { background-image: none; padding-inline-end: var(--ds-space-s); }
 

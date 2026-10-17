@@ -9,7 +9,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border: var(--ds-border-width-s) solid var(--ds-color-border-loud);
+  border: var(--ds-border-width-s) solid var(--ds-color-border-input);
   border-radius: var(--ds-radius-m);
   background: var(--ds-color-bg-surface);
 }
