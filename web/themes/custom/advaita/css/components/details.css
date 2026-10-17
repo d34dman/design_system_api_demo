@@ -4,7 +4,7 @@
  */
 details.details {
   margin-block: var(--ds-space-m);
-  border: 1px solid var(--ds-color-border-default);
+  border: var(--ds-border-width-s) solid var(--ds-color-border-default);
   border-radius: var(--ds-radius-l);
   background: var(--ds-color-bg-surface);
 }
@@ -35,7 +35,7 @@ details.details > summary::before {
 [dir="rtl"] details.details > summary::before { transform: rotate(135deg); }
 details.details[open] > summary::before { transform: rotate(45deg); }
 details.details > summary:hover { background: var(--ds-color-bg-surface-nested); }
-details.details[open] > summary { border-end-start-radius: 0; border-end-end-radius: 0; border-block-end: 1px solid var(--ds-color-border-soft); }
+details.details[open] > summary { border-end-start-radius: 0; border-end-end-radius: 0; border-block-end: var(--ds-border-width-s) solid var(--ds-color-border-soft); }
 details.details > .details-wrapper,
 details.details > :not(summary) { margin-inline: var(--ds-space-m); }
 details.details > :last-child { margin-block-end: var(--ds-space-m); }

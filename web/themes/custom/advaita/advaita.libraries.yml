@@ -18,6 +18,7 @@ global:
       css/components/node.css: {}
       css/components/admin-list.css: {}
       css/components/node-form.css: {}
+      css/components/ckeditor.css: {}
   js:
     js/mode.js: {}
   dependencies:

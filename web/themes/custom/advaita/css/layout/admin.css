@@ -7,7 +7,7 @@
 .admin-header {
   padding-block: var(--ds-space-m) 0;
   padding-inline: var(--ds-space-xl);
-  border-block-end: 1px solid var(--ds-color-border-default);
+  border-block-end: var(--ds-border-width-s) solid var(--ds-color-border-default);
   background: var(--ds-color-bg-surface);
 }
 .admin-header__top {
@@ -15,7 +15,7 @@
   gap: var(--ds-space-m);
   align-items: center;
   justify-content: space-between;
-  min-block-size: 2rem;
+  min-block-size: var(--ds-control-height-s);
   margin-block-end: var(--ds-space-xs);
 }
 .admin-header .page-title { font-size: var(--ds-font-size-xl); letter-spacing: -0.015em; }
@@ -50,7 +50,7 @@
   margin-inline: calc(var(--ds-space-xl) * -1);
   padding-block: var(--ds-space-s);
   padding-inline: var(--ds-space-xl);
-  border-block-start: 1px solid var(--ds-color-border-default);
+  border-block-start: var(--ds-border-width-s) solid var(--ds-color-border-default);
   background: color-mix(in srgb, var(--ds-color-bg-surface) 92%, transparent);
   backdrop-filter: blur(6px);
 }
@@ -62,7 +62,7 @@
   padding-block: var(--ds-space-2xs);
   padding-inline: var(--ds-space-xs) var(--ds-space-s);
   color: var(--ds-color-fg-soft);
-  border: 1px solid var(--ds-color-border-default);
+  border: var(--ds-border-width-s) solid var(--ds-color-border-default);
   border-radius: 999px;
   background: transparent;
   font: inherit;

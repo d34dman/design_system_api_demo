@@ -1,0 +1,41 @@
+/**
+ * @file
+ * CKEditor 5 on contract tokens: its colour, radius and type variables take the
+ * values of the region the editor renders in. Panels CKEditor appends to the
+ * body (balloons, dropdowns) take the page's.
+ */
+.ck.ck-editor,
+.ck-body-wrapper {
+  --ck-color-base-foreground: var(--ds-color-bg-surface-nested);
+  --ck-color-base-background: var(--ds-color-bg-input);
+  --ck-color-base-border: var(--ds-color-border-input);
+  --ck-color-base-text: var(--ds-color-fg-default);
+  --ck-color-text: var(--ds-color-fg-default);
+  --ck-color-focus-border: var(--ds-color-focus);
+  --ck-color-toolbar-background: var(--ds-color-bg-surface-nested);
+  --ck-color-toolbar-border: var(--ds-color-border-input);
+  --ck-color-button-default-background: transparent;
+  --ck-color-button-default-hover-background: var(--ds-color-bg-selected);
+  --ck-color-button-default-active-background: var(--ds-color-bg-selected);
+  --ck-color-button-on-background: var(--ds-color-bg-selected);
+  --ck-color-button-on-hover-background: var(--ds-color-bg-selected);
+  --ck-color-button-on-color: var(--ds-color-fg-loud);
+  --ck-color-dropdown-panel-background: var(--ds-color-bg-raised);
+  --ck-color-dropdown-panel-border: var(--ds-color-border-default);
+  --ck-color-panel-background: var(--ds-color-bg-raised);
+  --ck-color-panel-border: var(--ds-color-border-default);
+  --ck-color-list-background: var(--ds-color-bg-raised);
+  --ck-color-list-button-hover-background: var(--ds-color-bg-selected);
+  --ck-color-list-button-on-background: var(--ds-color-action-primary);
+  --ck-color-list-button-on-text: var(--ds-color-fg-on-action);
+  --ck-color-input-background: var(--ds-color-bg-input);
+  --ck-color-input-border: var(--ds-color-border-input);
+  --ck-color-input-text: var(--ds-color-fg-default);
+  --ck-color-labeled-field-label-background: var(--ds-color-bg-raised);
+  --ck-color-tooltip-background: var(--ds-color-fg-loud);
+  --ck-color-tooltip-text: var(--ds-color-bg-surface);
+  --ck-border-radius: var(--ds-radius-m);
+  --ck-font-face: var(--ds-font-family-base);
+  --ck-font-size-base: var(--ds-font-size-s);
+}
+.ck.ck-editor__main > .ck-editor__editable { color: var(--ds-color-fg-default); background: var(--ds-color-bg-input); font-size: var(--ds-font-size-m); line-height: var(--ds-font-line-height-base); }

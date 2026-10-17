@@ -1,23 +1,63 @@
 /**
  * @file
- * Content on site pages.
+ * Content on site pages: listings of cards, articles, landing pages.
  */
 .advaita-site .site-main__content > * + * { margin-block-start: var(--ds-space-m); }
-.advaita-site .page-title { font-size: var(--ds-font-size-2xl); font-weight: 600; letter-spacing: -0.02em; font-variation-settings: "opsz" 120; }
-.advaita-site article { max-inline-size: 44rem; }
-.advaita-site article footer { display: flex; gap: var(--ds-space-xs); align-items: center; margin-block-end: var(--ds-space-l); color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-s); }
-.advaita-site article footer img { inline-size: 2rem; block-size: 2rem; border-radius: 50%; }
-.advaita-site .node__content { font-size: 1.0625rem; line-height: 1.7; }
-.advaita-site .node__content h2 { margin-block-start: var(--ds-space-xl); font-size: var(--ds-font-size-l); }
+.advaita-site .page-title { margin-block-end: 0; font-size: var(--ds-font-size-2xl); font-weight: 600; letter-spacing: -0.02em; font-variation-settings: "opsz" 120; }
+.advaita-site .block-page-title-block:has(.page-title:empty) { display: none; }
+/* Forms on site pages: a working title, not a headline. */
+.advaita-site .site-main__content:has(.entity-form) .page-title { font-size: var(--ds-font-size-xl); letter-spacing: -0.01em; }
+.advaita-site .feed-icon { display: none; }
+.advaita-site .content-header:not(:has(.page-title:not(:empty), .tabs, .action-links)) { display: none; }
+
+/* Byline: author · date. */
+.advaita-site .node__meta { display: flex; flex-wrap: wrap; gap: 0 var(--ds-space-xs); align-items: baseline; margin: 0; color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-s); }
+.advaita-site .node__author { color: var(--ds-color-fg-default); font-weight: var(--ds-font-weight-strong); }
+.advaita-site .node__author a { color: inherit; text-decoration: none; }
+.advaita-site .node__author a:hover { text-decoration: underline; }
+.advaita-site .node__date::before { content: "·"; margin-inline-end: var(--ds-space-xs); color: var(--ds-color-fg-soft); }
+/* In a teaser card the byline is two lines: wrapped, the dot would start the second. */
+.advaita-site .node--view-mode-teaser .node__meta { flex-direction: column; }
+.advaita-site .node--view-mode-teaser .node__date::before { content: none; }
+
+/* An article on its own page. */
+.advaita-site .node--view-mode-full { display: grid; gap: var(--ds-space-l); max-inline-size: 48rem; }
+.advaita-site .node--view-mode-full .node__content { display: grid; gap: var(--ds-space-l); font-size: calc(var(--ds-font-size-m) * 1.0625); line-height: calc(var(--ds-font-line-height-base) + 0.2); }
+.advaita-site .node--view-mode-full .layout__region { display: grid; gap: var(--ds-space-l); }
+.advaita-site .node--view-mode-full .field--name-field-standfirst { max-inline-size: 38em; color: var(--ds-color-fg-loud); font-family: var(--ds-font-family-heading); font-size: var(--ds-font-size-l); line-height: calc(var(--ds-font-line-height-tight) + 0.2); text-wrap: pretty; }
+.advaita-site .node--view-mode-full .field--name-body { max-inline-size: 38em; }
+.advaita-site .node--view-mode-full .field--name-body p:last-child { margin-block-end: 0; }
+.advaita-site .node--view-mode-full .node__content h2 { margin-block-start: var(--ds-space-l); font-size: var(--ds-font-size-l); }
+.advaita-site .node--view-mode-full .field--name-field-media.field__items { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: var(--ds-space-s); }
+.advaita-site .node--view-mode-full .field--name-field-media img { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--ds-radius-l); box-shadow: var(--ds-shadow-raised); }
+.advaita-site .node--view-mode-full .field--name-field-media.field__items > .field__item:first-child:nth-last-child(odd) { grid-column: 1 / -1; }
+.advaita-site .node--view-mode-full .field--name-field-media.field__items > .field__item:first-child:nth-last-child(odd) img { aspect-ratio: 16 / 9; }
+
+/* Landing page sections: a lead, then sections divided by a rule. */
+.advaita-site .field--name-field-sections.field__items { display: grid; }
+.advaita-site .field--name-field-sections > .field__item { padding-block: var(--ds-space-l); border-block-start: var(--ds-border-width-s) solid var(--ds-color-border-soft); }
+.advaita-site .field--name-field-sections > .field__item:first-child { padding-block-start: 0; border-block-start: 0; color: var(--ds-color-fg-loud); font-family: var(--ds-font-family-heading); font-size: var(--ds-font-size-l); line-height: calc(var(--ds-font-line-height-tight) + 0.15); text-wrap: pretty; }
+
+/* Listings: teasers as cards in a grid, image first. */
+.advaita-site .views-element-container > div:has(> .views-row) { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: var(--ds-space-l); }
+.advaita-site .node--view-mode-teaser { display: flex; flex-direction: column; gap: var(--ds-space-xs); block-size: 100%; overflow: hidden; padding-block-end: var(--ds-space-m); border: var(--ds-border-width-s) solid var(--ds-color-border-soft); border-radius: var(--ds-radius-l); background: var(--ds-color-bg-surface); box-shadow: var(--ds-shadow-raised); }
+.advaita-site .node--view-mode-teaser > :not(.node__content) { margin: 0; padding-inline: var(--ds-space-m); }
+.advaita-site .node--view-mode-teaser .node__content { display: contents; }
+.advaita-site .node--view-mode-teaser .field--name-field-media { order: -1; margin-block-end: var(--ds-space-xs); }
+.advaita-site .node--view-mode-teaser .field--name-field-standfirst { order: 1; display: -webkit-box; overflow: hidden; padding-inline: var(--ds-space-m); color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-s); -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; }
+.advaita-site .node--view-mode-teaser .field--name-field-media > .field__item:not(:first-child),
+.advaita-site .node--view-mode-teaser .block-extra-field-blocknodearticlelinks,
+.advaita-site .node--view-mode-teaser .links { display: none; }
+.advaita-site .node--view-mode-teaser .field--name-field-media img { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 16 / 10; object-fit: cover; }
+.advaita-site .node--view-mode-teaser .node__title { font-size: var(--ds-font-size-l); line-height: var(--ds-font-line-height-tight); }
+.advaita-site .node--view-mode-teaser .node__title a { color: var(--ds-color-fg-loud); text-decoration: none; }
+.advaita-site .node--view-mode-teaser .node__title a:hover { color: var(--ds-color-action-primary); }
+.advaita-site .node--view-mode-teaser:has(.node__title a:focus-visible) { outline: var(--ds-focus-ring-width) solid var(--ds-color-focus); outline-offset: var(--ds-focus-ring-offset); }
+.advaita-site .node--view-mode-teaser .node__title a:focus-visible { outline: none; }
+
 .advaita-site .field__label { color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-xs); font-weight: var(--ds-font-weight-strong); letter-spacing: 0.04em; text-transform: uppercase; }
 .advaita-site .field--label-inline { display: flex; gap: var(--ds-space-xs); align-items: baseline; }
 .advaita-site .field--label-inline .field__label::after { content: ":"; }
-.advaita-site .field--type-image img,
-.advaita-site .field--type-entity-reference img { border-radius: var(--ds-radius-l); }
-.advaita-site .field--name-field-tags .field__items,
-.advaita-site .field--name-field-tags > div:not(.field__label) { display: flex; flex-wrap: wrap; gap: var(--ds-space-2xs); }
+.advaita-site .field--name-field-tags .field__items { display: flex; flex-wrap: wrap; gap: var(--ds-space-2xs); }
 .advaita-site .field--name-field-tags a { padding-block: 0.15em; padding-inline: 0.6em; border-radius: 999px; background: var(--ds-color-action-primary-soft); font-size: var(--ds-font-size-xs); text-decoration: none; }
-.advaita-site .node--view-mode-teaser { padding-block-end: var(--ds-space-l); border-block-end: 1px solid var(--ds-color-border-default); }
-.advaita-site .node--view-mode-teaser h2 { font-size: var(--ds-font-size-xl); }
-.advaita-site .node--view-mode-teaser h2 a { color: var(--ds-color-fg-loud); text-decoration: none; }
 .advaita-site .links.inline { display: flex; gap: var(--ds-space-s); margin: 0; padding: 0; list-style: none; font-size: var(--ds-font-size-s); }

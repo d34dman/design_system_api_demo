@@ -11,6 +11,11 @@
 # The theme carries no values: the site binds them (skins-and-modes plan, M3), e.g.
 #   drush ds:bind site advaita_paper && drush ds:bind chrome advaita_indigo
 # advaita_ember is a third, warm chrome to swap in without touching the theme.
+# advaita_canvas (chrome) and advaita_atelier (site) differ in structure as well as
+# colour: edge widths, control heights, spacing, type scale, line height and shadows.
+# Bound together, a chrome region on a site page reads as another system, not as a
+# highlighted section:
+#   drush ds:bind site advaita_atelier && drush ds:bind chrome advaita_canvas
 # Typefaces are fonts declared in advaita.fonts.yml ({font: <id>}, plan M4): the module
 # writes the family stack and the @font-face rules of every bound skin's fonts.
 # Icons (plan M5): the chrome skins name an icon pack from advaita.icons.yml and map
@@ -59,6 +64,8 @@ advaita_paper:
       radius.l: '0.875rem'
       font.size.xl: '2rem'
       font.size.2xl: '2.75rem'
+      control.height.s: '1.875rem'
+      control.height.m: '2.375rem'
     mode=dark:
       palette.accent-1: '#0b1f1b'
       palette.accent-2: '#102c26'
@@ -152,6 +159,8 @@ advaita_indigo:
       radius.l: '0.625rem'
       font.size.xl: '1.5rem'
       font.size.2xl: '1.875rem'
+      control.height.s: '1.875rem'
+      control.height.m: '2.375rem'
     mode=dark:
       palette.accent-1: '#0d1030'
       palette.accent-2: '#151a40'
@@ -210,7 +219,7 @@ advaita_ember:
     base:
       palette.accent-1: '#ffffff'
       palette.accent-2: '#fff6f0'
-      palette.accent-3: '#fde8db'
+      palette.accent-3: '#feefe5'
       palette.accent-4: '#fbd9c4'
       palette.accent-5: '#f8c7aa'
       palette.accent-6: '#f2ad87'
@@ -240,6 +249,8 @@ advaita_ember:
       radius.l: '1rem'
       font.size.xl: '1.5rem'
       font.size.2xl: '1.875rem'
+      control.height.s: '1.875rem'
+      control.height.m: '2.375rem'
     mode=dark:
       palette.accent-1: '#2a1206'
       palette.accent-2: '#36180a'
@@ -281,3 +292,280 @@ advaita_ember:
       palette.neutral-10: '#3d372f'
       palette.neutral-11: '#2e2924'
       palette.neutral-12: '#0c0a08'
+
+advaita_canvas:
+  label: 'Advaita canvas'
+  description: 'A tool chrome in the manner of an editor canvas: hairline edges, near-flat surfaces, compact controls, 14px type, violet actions.'
+  color_schemes: [light, dark]
+  icons:
+    pack: advaita_tabler
+    map:
+      close: x
+      chevron: chevron-down
+      drag: grip-vertical
+      menu: menu-2
+      warning: alert-triangle
+      error: alert-circle
+      info: info-circle
+  values:
+    base:
+      palette.accent-1: '#ffffff'
+      palette.accent-2: '#f8f7ff'
+      palette.accent-3: '#efedfe'
+      palette.accent-4: '#e5e1fd'
+      palette.accent-5: '#d9d3fc'
+      palette.accent-6: '#c9c0f8'
+      palette.accent-7: '#b1a4f0'
+      palette.accent-8: '#6e56cf'
+      palette.accent-9: '#6e56cf'
+      palette.accent-10: '#5b45b8'
+      palette.accent-11: '#5640a8'
+      palette.accent-12: '#2f2265'
+      palette.neutral-1: '#f9f9f9'
+      palette.neutral-2: '#ffffff'
+      palette.neutral-3: '#f4f4f4'
+      palette.neutral-4: '#efefef'
+      palette.neutral-5: '#ebebeb'
+      palette.neutral-6: '#ededed'
+      palette.neutral-7: '#e3e3e3'
+      palette.neutral-8: '#8b8b8b'
+      palette.neutral-9: '#767676'
+      palette.neutral-10: '#646464'
+      palette.neutral-11: '#5a5a5a'
+      palette.neutral-12: '#1c1c1c'
+      color.fg.loud: '#111111'
+      color.fg.disabled: '#757575'
+      font.family.base: { font: inter }
+      font.family.heading: '{font.family.base}'
+      font.size.xs: '0.75rem'
+      font.size.s: '0.8125rem'
+      font.size.m: '0.875rem'
+      font.size.l: '1rem'
+      font.size.xl: '1.25rem'
+      font.size.2xl: '1.5rem'
+      font.line-height.tight: 1.2
+      font.line-height.base: 1.5
+      space.2xs: '0.25rem'
+      space.xs: '0.375rem'
+      space.s: '0.5rem'
+      space.m: '0.75rem'
+      space.l: '1.25rem'
+      space.xl: '1.75rem'
+      radius.s: '0.25rem'
+      radius.m: '0.375rem'
+      radius.l: '0.5rem'
+      border.width.s: '1px'
+      border.width.m: '1px'
+      control.height.s: '1.75rem'
+      control.height.m: '2rem'
+      shadow.raised: '0 1px 1px rgb(0 0 0 / 0.04)'
+      shadow.overlay: '0 0 0 1px rgb(0 0 0 / 0.06), 0 8px 24px rgb(0 0 0 / 0.1)'
+    mode=dark:
+      palette.accent-1: '#14121f'
+      palette.accent-2: '#1b1525'
+      palette.accent-3: '#291f43'
+      palette.accent-4: '#33255b'
+      palette.accent-5: '#3c2e69'
+      palette.accent-6: '#473876'
+      palette.accent-7: '#56468b'
+      palette.accent-8: '#a594f9'
+      palette.accent-9: '#a594f9'
+      palette.accent-10: '#b9aafc'
+      palette.accent-11: '#cdc2ff'
+      palette.accent-12: '#e6e0ff'
+      palette.neutral-1: '#111111'
+      palette.neutral-2: '#191919'
+      palette.neutral-3: '#202020'
+      palette.neutral-4: '#262626'
+      palette.neutral-5: '#2d2d2d'
+      palette.neutral-6: '#242424'
+      palette.neutral-7: '#2e2e2e'
+      palette.neutral-8: '#7b7b7b'
+      palette.neutral-9: '#9b9b9b'
+      palette.neutral-10: '#a8a8a8'
+      palette.neutral-11: '#b4b4b4'
+      palette.neutral-12: '#eeeeee'
+      color.fg.loud: '#ffffff'
+      color.fg.disabled: '#858585'
+      color.bg.input: '#1c1c1c'
+
+advaita_atelier:
+  label: 'Advaita atelier'
+  description: 'A premium site: ivory and ink, generous whitespace, large serif headings, tall controls, soft depth instead of lines.'
+  color_schemes: [light, dark]
+  values:
+    base:
+      palette.accent-1: '#ffffff'
+      palette.accent-2: '#f7f3ec'
+      palette.accent-3: '#efe8dc'
+      palette.accent-4: '#e6dccb'
+      palette.accent-5: '#dacdb6'
+      palette.accent-6: '#c9b796'
+      palette.accent-7: '#b09a74'
+      palette.accent-8: '#7a5c2e'
+      palette.accent-9: '#1f1b16'
+      palette.accent-10: '#3a332a'
+      palette.accent-11: '#14110d'
+      palette.accent-12: '#0a0806'
+      palette.neutral-1: '#fbf9f5'
+      palette.neutral-2: '#ffffff'
+      palette.neutral-3: '#f6f2ea'
+      palette.neutral-4: '#f2ede3'
+      palette.neutral-5: '#eee8dc'
+      palette.neutral-6: '#efe9de'
+      palette.neutral-7: '#e6dece'
+      palette.neutral-8: '#8a8172'
+      palette.neutral-9: '#756d60'
+      palette.neutral-10: '#655e52'
+      palette.neutral-11: '#57514a'
+      palette.neutral-12: '#1f1c18'
+      color.fg.loud: '#0e0c0a'
+      color.fg.disabled: '#7e7567'
+      font.family.base: { font: public_sans }
+      font.family.heading: { font: fraunces }
+      font.weight.strong: 500
+      font.size.xs: '0.875rem'
+      font.size.s: '1rem'
+      font.size.m: '1.125rem'
+      font.size.l: '1.5rem'
+      font.size.xl: '2.5rem'
+      font.size.2xl: '3.75rem'
+      font.line-height.tight: 1.1
+      font.line-height.base: 1.7
+      space.2xs: '0.5rem'
+      space.xs: '0.75rem'
+      space.s: '1.25rem'
+      space.m: '1.75rem'
+      space.l: '2.5rem'
+      space.xl: '4rem'
+      radius.s: '0.5rem'
+      radius.m: '1rem'
+      radius.l: '1.75rem'
+      border.width.s: '1px'
+      border.width.m: '2px'
+      control.height.s: '2.75rem'
+      control.height.m: '3.5rem'
+      shadow.raised: '0 1px 2px rgb(31 27 22 / 0.04), 0 12px 32px rgb(31 27 22 / 0.07)'
+      shadow.overlay: '0 2px 6px rgb(31 27 22 / 0.06), 0 32px 80px rgb(31 27 22 / 0.18)'
+    mode=dark:
+      palette.accent-1: '#12100d'
+      palette.accent-2: '#1c1813'
+      palette.accent-3: '#2e281f'
+      palette.accent-4: '#3a3227'
+      palette.accent-5: '#463c2f'
+      palette.accent-6: '#574a39'
+      palette.accent-7: '#76654c'
+      palette.accent-8: '#d8b47a'
+      palette.accent-9: '#f1ebe0'
+      palette.accent-10: '#ffffff'
+      palette.accent-11: '#ffffff'
+      palette.accent-12: '#ffffff'
+      palette.neutral-1: '#12100d'
+      palette.neutral-2: '#1a1714'
+      palette.neutral-3: '#23201b'
+      palette.neutral-4: '#2a2620'
+      palette.neutral-5: '#312c25'
+      palette.neutral-6: '#28241e'
+      palette.neutral-7: '#3a342b'
+      palette.neutral-8: '#8f8676'
+      palette.neutral-9: '#a59b8a'
+      palette.neutral-10: '#b0a695'
+      palette.neutral-11: '#bdb3a2'
+      palette.neutral-12: '#f1ebe0'
+      color.fg.loud: '#ffffff'
+      color.fg.disabled: '#8f8676'
+      color.bg.input: '#1e1b17'
+      shadow.raised: '0 1px 2px rgb(0 0 0 / 0.3), 0 12px 32px rgb(0 0 0 / 0.35)'
+      shadow.overlay: '0 2px 6px rgb(0 0 0 / 0.4), 0 32px 80px rgb(0 0 0 / 0.6)'
+
+advaita_canvas_ui:
+  label: 'Canvas UI'
+  description: 'A chrome that matches the Drupal Canvas editor: Radix gray and blue, the system font, 14px text and 12px small text, 24 and 32px controls, 3-6px corners. Canvas itself is untouched.'
+  color_schemes: [light, dark]
+  values:
+    base:
+      # Radix Themes as Canvas configures it (accentColor blue, gray, radius medium,
+      # scaling 100%). Departures, for the contract's pairs: the accent's solid
+      # steps are a shade darker than Radix blue-11 (blue-9 #0090ff takes white text
+      # at 3.3:1; blue-11 is 4.25:1 on blue-3, the selected background),
+      # steps 8-9 are Radix gray-10 and darker (gray-8 is 1.9:1 on white), focus is
+      # blue-9 on a gray-2 page (on gray-3 it is 2.9:1).
+      palette.accent-1: '#ffffff'
+      palette.accent-2: '#f4faff'
+      palette.accent-3: '#e6f4fe'
+      palette.accent-4: '#d5efff'
+      palette.accent-5: '#c2e5ff'
+      palette.accent-6: '#acd8fc'
+      palette.accent-7: '#8ec8f6'
+      palette.accent-8: '#0090ff'
+      palette.accent-9: '#0b6bc0'
+      palette.accent-10: '#0a5ca3'
+      palette.accent-11: '#0b6bc0'
+      palette.accent-12: '#113264'
+      palette.neutral-1: '#f9f9f9'
+      palette.neutral-2: '#ffffff'
+      palette.neutral-3: '#f0f0f0'
+      palette.neutral-4: '#e8e8e8'
+      palette.neutral-5: '#e0e0e0'
+      palette.neutral-6: '#e0e0e0'
+      palette.neutral-7: '#d9d9d9'
+      palette.neutral-8: '#838383'
+      palette.neutral-9: '#7b7b7b'
+      palette.neutral-10: '#6f6f6f'
+      palette.neutral-11: '#60646c'
+      palette.neutral-12: '#202020'
+      color.fg.loud: '#111111'
+      font.family.base: [-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif]
+      font.family.heading: '{font.family.base}'
+      font.size.xs: '0.6875rem'
+      font.size.s: '0.75rem'
+      font.size.m: '0.875rem'
+      font.size.l: '1rem'
+      font.size.xl: '1.125rem'
+      font.size.2xl: '1.5rem'
+      font.line-height.tight: 1.33
+      font.line-height.base: 1.43
+      # The steps Canvas uses from Radix's 4px scale: 8px around the top bar,
+      # 12-16px in panels.
+      space.2xs: '0.25rem'
+      space.xs: '0.375rem'
+      space.s: '0.5rem'
+      space.m: '0.75rem'
+      space.l: '1rem'
+      space.xl: '1.5rem'
+      radius.s: '0.1875rem'
+      radius.m: '0.25rem'
+      radius.l: '0.375rem'
+      border.width.s: '1px'
+      border.width.m: '1px'
+      control.height.s: '1.5rem'
+      control.height.m: '2rem'
+      shadow.raised: '0 0 0 1px rgb(0 0 0 / 0.05), 0 1px 3px rgb(0 0 0 / 0.07)'
+      shadow.overlay: '0 0 0 1px rgb(0 0 0 / 0.05), 0 12px 60px rgb(0 0 0 / 0.15), 0 12px 32px -16px rgb(0 0 0 / 0.12)'
+    mode=dark:
+      # Canvas ships light only; dark is Radix's own dark gray and blue.
+      palette.accent-1: '#0d1520'
+      palette.accent-2: '#111927'
+      palette.accent-3: '#0d2847'
+      palette.accent-4: '#003362'
+      palette.accent-5: '#004074'
+      palette.accent-6: '#104d87'
+      palette.accent-7: '#205d9e'
+      palette.accent-8: '#3b9eff'
+      palette.accent-9: '#0090ff'
+      palette.accent-10: '#3b9eff'
+      palette.accent-11: '#70b8ff'
+      palette.accent-12: '#c2e6ff'
+      palette.neutral-1: '#111111'
+      palette.neutral-2: '#191919'
+      palette.neutral-3: '#222222'
+      palette.neutral-4: '#2a2a2a'
+      palette.neutral-5: '#313131'
+      palette.neutral-6: '#3a3a3a'
+      palette.neutral-7: '#484848'
+      palette.neutral-8: '#6e6e6e'
+      palette.neutral-9: '#7b7b7b'
+      palette.neutral-10: '#9b9b9b'
+      palette.neutral-11: '#b4b4b4'
+      palette.neutral-12: '#eeeeee'
+      color.fg.loud: '#ffffff'

@@ -9,7 +9,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border: 1px solid var(--ds-color-border-loud);
+  border: var(--ds-border-width-s) solid var(--ds-color-border-loud);
   border-radius: var(--ds-radius-m);
   background: var(--ds-color-bg-surface);
 }
@@ -23,7 +23,7 @@
   display: flex;
   align-items: center;
   inline-size: 100%;
-  min-block-size: 2.125rem;
+  min-block-size: calc(var(--ds-control-height-m) - 2 * var(--ds-border-width-s));
   margin: 0;
   padding-block: var(--ds-space-2xs);
   padding-inline: var(--ds-space-s);
@@ -43,7 +43,7 @@
 .dropbutton-single .dropbutton-action:first-child > * { border-radius: var(--ds-radius-m); }
 .dropbutton-action > :hover { color: var(--ds-color-fg-loud); background: var(--ds-color-bg-surface-nested); }
 
-.dropbutton-toggle { display: flex; border-inline-start: 1px solid var(--ds-color-border-default); }
+.dropbutton-toggle { display: flex; border-inline-start: var(--ds-border-width-s) solid var(--ds-color-border-default); }
 .dropbutton-toggle button {
   display: grid;
   place-items: center;
@@ -68,16 +68,16 @@
   position: absolute;
   z-index: var(--ds-layer-sticky);
   display: block;
-  inset-inline-start: -1px;
-  min-inline-size: calc(100% + 2px);
-  border-inline: 1px solid var(--ds-color-border-loud);
+  inset-inline-start: calc(-1 * var(--ds-border-width-s));
+  min-inline-size: calc(100% + 2 * var(--ds-border-width-s));
+  border-inline: var(--ds-border-width-s) solid var(--ds-color-border-loud);
   background: var(--ds-color-bg-raised);
   box-shadow: var(--ds-shadow-raised);
 }
 /* Each secondary item sits under the previous one. */
 .dropbutton-multiple.open .dropbutton { position: relative; flex-wrap: wrap; }
 .dropbutton-multiple.open .dropbutton { display: grid; grid-template-columns: auto auto; }
-.dropbutton-multiple.open .secondary-action { position: static; grid-column: 1 / -1; border-inline: 0; box-shadow: none; border-block-start: 1px solid var(--ds-color-border-soft); }
+.dropbutton-multiple.open .secondary-action { position: static; grid-column: 1 / -1; border-inline: 0; box-shadow: none; border-block-start: var(--ds-border-width-s) solid var(--ds-color-border-soft); }
 .dropbutton-multiple.open .secondary-action:last-child > * { border-end-start-radius: var(--ds-radius-m); border-end-end-radius: var(--ds-radius-m); }
 .dropbutton-multiple.open .dropbutton-widget { z-index: var(--ds-layer-sticky); box-shadow: var(--ds-shadow-raised); border-radius: var(--ds-radius-m); }
 .dropbutton-multiple.open .dropbutton { border-radius: var(--ds-radius-m); }
@@ -85,7 +85,7 @@
 
 /* In a table cell the open menu floats over the next rows. */
 td .dropbutton-multiple.open .dropbutton-widget { position: absolute; inset-block-start: 0; inset-inline-start: 0; }
-td .dropbutton-wrapper { min-block-size: 2.25rem; }
+td .dropbutton-wrapper { min-block-size: var(--ds-control-height-m); }
 td .dropbutton-multiple { min-inline-size: 8rem; }
 
 /* Primary dropbuttons ("Save" with more actions, Paragraphs "Add"). */

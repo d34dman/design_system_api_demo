@@ -46,17 +46,17 @@ label.option {
 input.form-file {
   box-sizing: border-box;
   max-inline-size: 100%;
-  min-block-size: 2.375rem;
+  min-block-size: var(--ds-control-height-m);
   margin: 0;
   padding-block: var(--ds-space-xs);
   padding-inline: var(--ds-space-s);
   color: var(--ds-color-fg-default);
-  border: 1px solid var(--ds-color-border-input);
+  border: var(--ds-border-width-s) solid var(--ds-color-border-input);
   border-radius: var(--ds-radius-m);
   background-color: var(--ds-color-bg-input);
   font: inherit;
   font-size: var(--ds-font-size-s);
-  line-height: 1.4;
+  line-height: var(--ds-font-line-height-tight);
   transition: border-color 120ms, box-shadow 120ms;
 }
 .form-text,
@@ -95,21 +95,21 @@ input.form-file {
 }
 
 .form-select {
-  padding-inline-end: calc(var(--ds-space-s) * 2 + 0.75em);
+  padding-inline-end: calc(var(--ds-space-s) * 2 + 1em);
   background-image:
     linear-gradient(45deg, transparent 50%, currentcolor 50%),
     linear-gradient(135deg, currentcolor 50%, transparent 50%);
   background-repeat: no-repeat;
   background-position:
-    right calc(var(--ds-space-s) + 0.3em) center,
+    right calc(var(--ds-space-s) + 0.4em) center,
     right var(--ds-space-s) center;
-  background-size: 0.3em 0.3em;
+  background-size: 0.4em 0.4em;
   appearance: none;
 }
 [dir="rtl"] .form-select {
   background-position:
     left var(--ds-space-s) center,
-    left calc(var(--ds-space-s) + 0.3em) center;
+    left calc(var(--ds-space-s) + 0.4em) center;
 }
 .form-select[multiple] { background-image: none; padding-inline-end: var(--ds-space-s); }
 
@@ -140,7 +140,7 @@ input.form-file {
   margin-block-start: var(--ds-space-2xs);
   color: var(--ds-color-fg-soft);
   font-size: var(--ds-font-size-xs);
-  line-height: 1.45;
+  line-height: var(--ds-font-line-height-base);
 }
 
 .form-item--error .form-text,
@@ -148,14 +148,14 @@ input.form-file {
 .form-item--error .form-textarea,
 .form-text.error,
 .form-select.error,
-.form-textarea.error { border-color: var(--ds-color-status-error); border-width: 2px; }
+.form-textarea.error { border-color: var(--ds-color-status-error); border-width: var(--ds-border-width-m); }
 .form-item--error-message { margin-block-start: var(--ds-space-2xs); color: var(--ds-color-status-error); font-size: var(--ds-font-size-xs); font-weight: var(--ds-font-weight-strong); }
 
 fieldset {
   min-inline-size: 0;
   margin-inline: 0;
   padding: var(--ds-space-m);
-  border: 1px solid var(--ds-color-border-default);
+  border: var(--ds-border-width-s) solid var(--ds-color-border-default);
   border-radius: var(--ds-radius-l);
   background: var(--ds-color-bg-surface);
 }
@@ -196,7 +196,7 @@ input[type="file"]::file-selector-button {
   padding-block: var(--ds-space-2xs);
   padding-inline: var(--ds-space-s);
   color: var(--ds-color-fg-default);
-  border: 1px solid var(--ds-color-border-loud);
+  border: var(--ds-border-width-s) solid var(--ds-color-border-loud);
   border-radius: var(--ds-radius-m);
   background: var(--ds-color-bg-surface);
   font: inherit;

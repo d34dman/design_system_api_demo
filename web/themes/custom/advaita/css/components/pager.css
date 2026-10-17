@@ -1,4 +1,4 @@
 .pager__items { display: flex; flex-wrap: wrap; gap: var(--ds-space-2xs); justify-content: center; margin-block: var(--ds-space-m); padding: 0; list-style: none; }
-.pager__item a { display: grid; place-items: center; min-inline-size: 2.25rem; min-block-size: 2.25rem; padding-inline: var(--ds-space-xs); color: var(--ds-color-fg-default); border-radius: var(--ds-radius-m); font-size: var(--ds-font-size-s); text-decoration: none; }
+.pager__item a { display: grid; place-items: center; min-inline-size: var(--ds-control-height-m); min-block-size: var(--ds-control-height-m); padding-inline: var(--ds-space-xs); color: var(--ds-color-fg-default); border-radius: var(--ds-radius-m); font-size: var(--ds-font-size-s); text-decoration: none; }
 .pager__item a:hover { background: var(--ds-color-bg-surface-nested); }
 .pager__item.is-active a { color: var(--ds-color-fg-on-action); background: var(--ds-color-action-primary); }

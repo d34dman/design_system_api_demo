@@ -5,7 +5,7 @@
 .panel {
   margin-block-end: var(--ds-space-m);
   padding: var(--ds-space-m);
-  border: 1px solid var(--ds-color-border-default);
+  border: var(--ds-border-width-s) solid var(--ds-color-border-default);
   border-radius: var(--ds-radius-l);
   background: var(--ds-color-bg-surface);
 }
@@ -25,7 +25,7 @@
 .admin-list > li,
 .admin-list dt {
   padding: var(--ds-space-s) var(--ds-space-m);
-  border: 1px solid var(--ds-color-border-default);
+  border: var(--ds-border-width-s) solid var(--ds-color-border-default);
   border-radius: var(--ds-radius-m);
   background: var(--ds-color-bg-surface);
 }

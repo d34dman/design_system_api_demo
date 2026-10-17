@@ -7,7 +7,7 @@
   display: grid;
   grid-template-columns: minmax(10rem, 15rem) minmax(0, 1fr);
   margin-block: var(--ds-space-m);
-  border: 1px solid var(--ds-color-border-default);
+  border: var(--ds-border-width-s) solid var(--ds-color-border-default);
   border-radius: var(--ds-radius-l);
   background: var(--ds-color-bg-surface);
   overflow: hidden;
@@ -16,7 +16,7 @@
   margin: 0;
   padding: var(--ds-space-xs);
   list-style: none;
-  border-inline-end: 1px solid var(--ds-color-border-default);
+  border-inline-end: var(--ds-border-width-s) solid var(--ds-color-border-default);
   background: var(--ds-color-bg-surface-nested);
 }
 .vertical-tabs__menu-item a {
@@ -31,9 +31,9 @@
 .vertical-tabs__menu-item.is-selected a {
   color: var(--ds-color-fg-loud);
   background: var(--ds-color-bg-surface);
-  box-shadow: inset 3px 0 0 var(--ds-color-action-primary), var(--ds-shadow-raised);
+  box-shadow: inset calc(var(--ds-border-width-m) + var(--ds-border-width-s)) 0 0 var(--ds-color-action-primary), var(--ds-shadow-raised);
 }
-[dir="rtl"] .vertical-tabs__menu-item.is-selected a { box-shadow: inset -3px 0 0 var(--ds-color-action-primary), var(--ds-shadow-raised); }
+[dir="rtl"] .vertical-tabs__menu-item.is-selected a { box-shadow: inset calc(-1 * (var(--ds-border-width-m) + var(--ds-border-width-s))) 0 0 var(--ds-color-action-primary), var(--ds-shadow-raised); }
 .vertical-tabs__menu-item-title { display: block; font-size: var(--ds-font-size-s); }
 .vertical-tabs__menu-item-summary { display: block; color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-xs); }
 .vertical-tabs__panes { padding: var(--ds-space-m); }
@@ -42,5 +42,5 @@ details.vertical-tabs__pane > summary { display: none; }
 details.vertical-tabs__pane > :not(summary) { margin-inline: 0; }
 @media (max-width: 40rem) {
   .vertical-tabs { grid-template-columns: 1fr; }
-  .vertical-tabs__menu { border-inline-end: 0; border-block-end: 1px solid var(--ds-color-border-default); }
+  .vertical-tabs__menu { border-inline-end: 0; border-block-end: var(--ds-border-width-s) solid var(--ds-color-border-default); }
 }

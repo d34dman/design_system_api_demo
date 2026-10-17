@@ -11,18 +11,19 @@ button.form-submit {
   gap: var(--ds-space-xs);
   align-items: center;
   justify-content: center;
-  min-block-size: 2.375rem;
+  min-block-size: var(--ds-control-height-m);
   margin: 0;
   padding-block: var(--ds-space-xs);
   padding-inline: var(--ds-space-m);
   color: var(--ds-color-fg-default);
-  border: 1px solid var(--ds-color-border-loud);
+  border: var(--ds-border-width-s) solid color-mix(in srgb, var(--ds-color-border-loud) 45%, var(--ds-color-border-default));
   border-radius: var(--ds-radius-m);
   background: var(--ds-color-bg-surface);
+  box-shadow: var(--ds-shadow-raised);
   font: inherit;
   font-size: var(--ds-font-size-s);
   font-weight: var(--ds-font-weight-strong);
-  line-height: 1.2;
+  line-height: var(--ds-font-line-height-tight);
   text-decoration: none;
   cursor: pointer;
   transition: background-color 120ms, border-color 120ms, box-shadow 120ms;
@@ -40,6 +41,7 @@ input[type="submit"]:active { box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.12); }
 
 .button--primary,
 input.button--primary {
+  box-shadow: none;
   color: var(--ds-color-fg-on-action);
   border-color: var(--ds-color-action-primary);
   background: var(--ds-color-action-primary);
@@ -64,7 +66,7 @@ a.button--danger {
 .field-add-more-submit,
 .paragraphs-dropbutton-wrapper input,
 td .button {
-  min-block-size: 1.875rem;
+  min-block-size: var(--ds-control-height-s);
   padding-block: var(--ds-space-2xs);
   padding-inline: var(--ds-space-s);
   font-size: var(--ds-font-size-xs);

@@ -23,15 +23,19 @@ body {
   font-family: var(--ds-font-family-base);
   font-size: var(--ds-font-size-m);
   font-weight: var(--ds-font-weight-normal);
-  line-height: 1.55;
+  line-height: var(--ds-font-line-height-base);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
 
-/* A region of another system resets what it would otherwise inherit. */
-[data-ds-system] {
+/* A region of another system resets what it would otherwise inherit. The
+   page root carries its own system's marker too; resetting it would set the
+   root font size, and every rem with it, to the context's body size. */
+[data-ds-system]:not(:root) {
   color: var(--ds-color-fg-default);
   font-family: var(--ds-font-family-base);
+  font-size: var(--ds-font-size-m);
+  line-height: var(--ds-font-line-height-base);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -39,7 +43,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--ds-color-fg-loud);
   font-family: var(--ds-font-family-heading);
   font-weight: var(--ds-font-weight-strong);
-  line-height: 1.2;
+  line-height: var(--ds-font-line-height-tight);
   text-wrap: balance;
 }
 h1 { font-size: var(--ds-font-size-2xl); }
@@ -70,7 +74,7 @@ pre {
 hr {
   margin-block: var(--ds-space-l);
   border: 0;
-  border-block-start: 1px solid var(--ds-color-border-default);
+  border-block-start: var(--ds-border-width-s) solid var(--ds-color-border-default);
 }
 
 img, video { max-inline-size: 100%; block-size: auto; }

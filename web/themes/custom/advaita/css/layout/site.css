@@ -5,7 +5,7 @@
 .site { display: flex; flex-direction: column; min-block-size: 100vh; }
 
 .site-header {
-  border-block-end: 1px solid var(--ds-color-border-default);
+  border-block-end: var(--ds-border-width-s) solid var(--ds-color-border-default);
   background: var(--ds-color-bg-surface);
 }
 .site-header__inner,
@@ -56,35 +56,43 @@
   vertical-align: -0.05em;
 }
 
-.site__breadcrumb { padding-block-start: var(--ds-space-m); }
+.site__breadcrumb { padding-block-start: var(--ds-space-m); font-size: var(--ds-font-size-s); }
 .site__highlighted { display: grid; gap: var(--ds-space-s); padding-block-start: var(--ds-space-m); }
 .site__highlighted:empty { display: none; }
+/* Regions that render only an empty wrapper take no room. */
+.site__breadcrumb:not(:has(nav, ol)),
+.site__highlighted:not(:has(> * > :not([data-drupal-messages-fallback]))),
+.site-main__content > div:not(:has(*)) { display: none; }
 
 .site-main {
   flex: 1;
   display: grid;
   gap: var(--ds-space-xl);
-  padding-block: var(--ds-space-xl);
+  padding-block: var(--ds-space-l) var(--ds-space-xl);
 }
 .site-main:focus { outline: none; }
 @media (min-width: 60rem) {
-  .site-main--with-sidebar { grid-template-columns: minmax(0, 1fr) 18rem; }
+  .site-main--with-sidebar { grid-template-columns: minmax(0, 1fr) minmax(16rem, 20em); }
 }
 .site-main__content { min-inline-size: 0; }
 .site-main__sidebar { display: grid; align-content: start; gap: var(--ds-space-l); }
 .site-main__sidebar > * {
   padding: var(--ds-space-m);
-  border: 1px solid var(--ds-color-border-soft);
+  border: var(--ds-border-width-s) solid var(--ds-color-border-soft);
   border-radius: var(--ds-radius-l);
   background: var(--ds-color-bg-surface);
 }
 .site-main__sidebar h2 { font-size: var(--ds-font-size-l); }
+.site-main__sidebar :is(form, .form-item, .form-actions) { margin-block: 0; }
 
 .site-footer {
   margin-block-start: auto;
-  border-block-start: 1px solid var(--ds-color-border-default);
+  border-block-start: var(--ds-border-width-s) solid var(--ds-color-border-default);
   color: var(--ds-color-fg-soft);
   background: var(--ds-color-bg-surface-nested);
   font-size: var(--ds-font-size-s);
 }
 .site-footer__inner { padding-block: var(--ds-space-l); }
+
+.site-branding__slogan { color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-s); }
+@media (max-width: 72rem) { .site-branding__slogan { display: none; } }

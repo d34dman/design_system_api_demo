@@ -4,7 +4,7 @@
  */
 .entity-form { display: grid; gap: 0 var(--ds-space-l); }
 @media (min-width: 64rem) {
-  .entity-form { grid-template-columns: minmax(0, 1fr) 20rem; align-items: start; }
+  .entity-form { grid-template-columns: minmax(0, 1fr) minmax(18rem, 22em); align-items: start; }
   .entity-form__aside { position: sticky; inset-block-start: var(--ds-space-m); }
   .entity-form__actions { grid-column: 1 / -1; }
 }
