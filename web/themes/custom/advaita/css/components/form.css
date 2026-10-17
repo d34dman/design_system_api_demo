@@ -55,7 +55,7 @@ input.form-file {
   border-radius: var(--ds-radius-m);
   background-color: var(--ds-color-bg-input);
   font: inherit;
-  font-size: var(--ds-font-size-s);
+  font-size: var(--ds-font-size-m);
   line-height: var(--ds-font-line-height-tight);
   transition: border-color 120ms, box-shadow 120ms;
 }

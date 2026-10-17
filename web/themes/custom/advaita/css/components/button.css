@@ -1,6 +1,12 @@
 /**
  * @file
  * Buttons: Form API submits, .button links and core's local action links.
+ *
+ * Four looks, from contract colours only: surface (the default: a surface
+ * with an inner ring), solid (primary), soft (an accent tint: local actions
+ * and the submits of listing forms) and ghost (no fill: icon buttons, the
+ * mode toggle). A resting button has no drop shadow; only floating things
+ * do. Text follows the control height: m in m controls, s in s controls.
  */
 .button,
 input[type="submit"],
@@ -13,17 +19,17 @@ button.form-submit {
   justify-content: center;
   min-block-size: var(--ds-control-height-m);
   margin: 0;
-  padding-block: var(--ds-space-xs);
+  padding-block: 0;
   padding-inline: var(--ds-space-m);
   color: var(--ds-color-fg-default);
-  border: var(--ds-border-width-s) solid color-mix(in srgb, var(--ds-color-border-loud) 45%, var(--ds-color-border-default));
+  border: 0;
   border-radius: var(--ds-radius-m);
   background: var(--ds-color-bg-surface);
-  box-shadow: var(--ds-shadow-raised);
+  box-shadow: inset 0 0 0 var(--ds-border-width-s) color-mix(in srgb, var(--ds-color-border-loud) 45%, var(--ds-color-border-default));
   font: inherit;
-  font-size: var(--ds-font-size-s);
+  font-size: var(--ds-font-size-m);
   font-weight: var(--ds-font-weight-strong);
-  line-height: var(--ds-font-line-height-tight);
+  line-height: 1;
   text-decoration: none;
   cursor: pointer;
   transition: background-color 120ms, border-color 120ms, box-shadow 120ms;
@@ -37,27 +43,51 @@ button.form-submit:hover {
   text-decoration: none;
 }
 .button:active,
-input[type="submit"]:active { box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.12); }
+input[type="submit"]:active { background: var(--ds-color-bg-selected); }
 
 .button--primary,
 input.button--primary {
   box-shadow: none;
   color: var(--ds-color-fg-on-action);
-  border-color: var(--ds-color-action-primary);
   background: var(--ds-color-action-primary);
 }
 .button--primary:hover,
 input.button--primary:hover {
   color: var(--ds-color-fg-on-action);
-  border-color: var(--ds-color-action-primary-hover);
   background: var(--ds-color-action-primary-hover);
 }
+
+/* Soft: local actions ("+ Add content") and the submits of listing forms
+   (Filter, Apply to selected items). */
+.button-action,
+.button--soft,
+.views-exposed-form .form-actions input[type="submit"]:not(.button--primary),
+.views-form .form-actions input[type="submit"]:not(.button--primary) {
+  color: var(--ds-color-action-primary);
+  background: var(--ds-color-action-primary-soft);
+  box-shadow: none;
+}
+.button-action:hover,
+.button--soft:hover,
+.views-exposed-form .form-actions input[type="submit"]:not(.button--primary):hover,
+.views-form .form-actions input[type="submit"]:not(.button--primary):hover {
+  color: var(--ds-color-action-primary);
+  background: color-mix(in srgb, var(--ds-color-action-primary) 10%, var(--ds-color-action-primary-soft));
+}
+
+/* Ghost: no fill until hovered. */
+.button--ghost {
+  color: var(--ds-color-fg-default);
+  background: transparent;
+  box-shadow: none;
+}
+.button--ghost:hover { background: var(--ds-color-bg-surface-nested); }
 
 .button--danger,
 a.button--danger {
   color: var(--ds-color-status-error);
-  border-color: transparent;
   background: transparent;
+  box-shadow: none;
 }
 .button--danger:hover { color: var(--ds-color-status-error); background: var(--ds-color-bg-surface-nested); }
 
@@ -67,17 +97,16 @@ a.button--danger {
 .paragraphs-dropbutton-wrapper input,
 td .button {
   min-block-size: var(--ds-control-height-s);
-  padding-block: var(--ds-space-2xs);
   padding-inline: var(--ds-space-s);
-  font-size: var(--ds-font-size-xs);
+  font-size: var(--ds-font-size-s);
 }
 
 .button:disabled,
 .button.is-disabled,
 input[type="submit"]:disabled {
   color: var(--ds-color-fg-disabled);
-  border-color: var(--ds-color-border-soft);
   background: var(--ds-color-bg-surface-nested);
+  box-shadow: inset 0 0 0 var(--ds-border-width-s) var(--ds-color-border-soft);
   cursor: default;
 }
 
@@ -94,6 +123,6 @@ input[type="submit"]:disabled {
 }
 
 @media (forced-colors: active) {
-  .button, input[type="submit"] { border-color: ButtonText; }
+  .button, input[type="submit"] { border: var(--ds-border-width-s) solid ButtonText; }
   .button--primary, input.button--primary { forced-color-adjust: none; color: HighlightText; background: Highlight; border-color: Highlight; }
 }
