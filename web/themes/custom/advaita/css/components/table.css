@@ -1,48 +1,12 @@
 /**
  * @file
- * Tables.
+ * Tables: the table pattern (ds-table) draws them; Advaita sets the space
+ * around them, the sort arrow and the empty message, and lets the row's
+ * name read as a link.
  */
-table {
-  inline-size: 100%;
-  margin-block: var(--ds-space-m);
-  border-collapse: separate;
-  border-spacing: 0;
-  font-size: var(--ds-font-size-s);
-}
-caption { padding-block-end: var(--ds-space-xs); color: var(--ds-color-fg-soft); text-align: start; }
-th,
-td {
-  padding-block: var(--ds-space-xs);
-  padding-inline: var(--ds-space-s);
-  border-block-end: var(--ds-border-width-s) solid var(--ds-color-border-soft);
-  text-align: start;
-  vertical-align: middle;
-}
-thead th {
-  color: var(--ds-color-fg-soft);
-  border-block-end: var(--ds-border-width-s) solid var(--ds-color-border-default);
-  background: var(--ds-color-bg-surface-nested);
-  font-size: var(--ds-font-size-xs);
-  font-weight: var(--ds-font-weight-strong);
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-}
-thead th a { color: inherit; text-decoration: none; }
-thead th a:hover { color: var(--ds-color-fg-loud); }
-th.is-active a { color: var(--ds-color-fg-loud); }
-
-table.table {
-  overflow: hidden;
-  border: var(--ds-border-width-s) solid var(--ds-color-border-default);
-  border-radius: var(--ds-radius-l);
-  background: var(--ds-color-bg-surface);
-}
-table.table thead th:first-child { border-start-start-radius: var(--ds-radius-l); }
-table.table thead th:last-child { border-start-end-radius: var(--ds-radius-l); }
-table.table tbody tr:last-child > * { border-block-end: 0; }
-table.table tbody tr:hover > * { background: color-mix(in srgb, var(--ds-color-bg-surface-nested) 55%, transparent); }
-tr.selected > td { background: var(--ds-color-bg-selected); }
-td.priority-low, th.priority-low { color: var(--ds-color-fg-soft); }
+table { inline-size: 100%; margin-block: var(--ds-space-m); }
+/* Low-priority columns (views responsive tables) read as secondary; their headers stay the header colour. */
+td.priority-low { color: var(--ds-color-fg-soft); }
 .tablesort { display: inline-block; inline-size: 0.6em; block-size: 0.6em; margin-inline-start: 0.3em; border-inline: 0.3em solid transparent; border-block-start: 0.4em solid currentcolor; }
 .tablesort--asc { transform: rotate(180deg); }
 td.empty, .empty.message { padding: var(--ds-space-l); color: var(--ds-color-fg-soft); text-align: center; }
@@ -58,8 +22,9 @@ td.empty, .empty.message { padding: var(--ds-space-l); color: var(--ds-color-fg-
 .views-exposed-form .form-actions { margin: 0; }
 .views-exposed-form .form-text { inline-size: 14rem; }
 
-/* Links in rows read as the row's name: underlined on hover only. */
-td a:not(.button) { color: inherit; text-decoration: none; }
-td:is(.views-field-title, :first-child) a:not(.button) { color: var(--ds-color-fg-loud); font-weight: var(--ds-font-weight-strong); }
-td a:not(.button):hover { color: var(--ds-color-fg-link); text-decoration: underline; }
-td a:not(.button):focus-visible { text-decoration: underline; }
+/* Links in rows read as the row's name: underlined on hover only. Buttons
+   and the items of a row's menu keep their own look. */
+td a:not(.button, .ds-button, .ds-menu a) { color: inherit; text-decoration: none; }
+td:is(.views-field-title, :first-child) a:not(.button, .ds-button, .ds-menu a) { color: var(--ds-color-fg-loud); font-weight: var(--ds-font-weight-strong); }
+td a:not(.button, .ds-button, .ds-menu a):hover { color: var(--ds-color-fg-link); text-decoration: underline; }
+td a:not(.button, .ds-button, .ds-menu a):focus-visible { text-decoration: underline; }

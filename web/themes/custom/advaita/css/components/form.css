@@ -53,7 +53,7 @@ label.option {
 .fieldset-description {
   margin-block-start: var(--ds-space-2xs);
   color: var(--ds-color-fg-soft);
-  font-size: var(--ds-font-size-xs);
+  font-size: var(--ds-font-size-s);
   line-height: var(--ds-font-line-height-base);
 }
 
@@ -69,7 +69,7 @@ fieldset {
   min-inline-size: 0;
   margin-inline: 0;
   padding: var(--ds-space-m);
-  border: var(--ds-border-width-s) solid var(--ds-color-border-default);
+  border: var(--ds-border-width-s) solid var(--ds-color-border-soft);
   border-radius: var(--ds-radius-l);
   background: var(--ds-color-bg-surface);
 }
@@ -98,9 +98,9 @@ fieldset legend { padding-inline: var(--ds-space-2xs); }
 .form-managed-file { display: flex; flex-wrap: wrap; gap: var(--ds-space-xs); align-items: center; }
 .image-widget { display: flex; gap: var(--ds-space-s); align-items: flex-start; }
 
-/* CKEditor 5 sits in the region's surface and borders. */
-.ck.ck-editor__main > .ck-editor__editable:not(.ck-focused) { border-color: var(--ds-color-border-input); }
+/* CKEditor 5 sits in the region's surface and takes a field's soft edge (D26). */
+.ck.ck-editor__main > .ck-editor__editable:not(.ck-focused) { border-color: var(--ds-color-border-default); }
 .ck.ck-editor__main > .ck-editor__editable { background: var(--ds-color-bg-input); color: var(--ds-color-fg-default); }
-.ck.ck-toolbar { border-color: var(--ds-color-border-input); background: var(--ds-color-bg-surface-nested); }
+.ck.ck-toolbar { border-color: var(--ds-color-border-default); background: var(--ds-color-bg-surface-nested); }
 .ck.ck-editor__top .ck-sticky-panel .ck-toolbar { border-start-start-radius: var(--ds-radius-m); border-start-end-radius: var(--ds-radius-m); }
 .ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable { border-end-start-radius: var(--ds-radius-m); border-end-end-radius: var(--ds-radius-m); }

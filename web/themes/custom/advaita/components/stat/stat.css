@@ -1,21 +1,26 @@
+/* A Radix card holding one figure: a soft ring, no coloured bar. The status
+   is a badge beside the label; the figure stays in the text colour. */
 .stat {
-  --_tone: var(--ds-color-border-default);
   display: grid;
   align-content: start;
   gap: var(--ds-space-2xs);
-  padding: var(--ds-space-m);
+  padding: var(--ds-space-l);
   color: var(--ds-color-fg-default);
-  border: 1px solid var(--ds-color-border-default);
   border-radius: var(--ds-radius-l);
   background: var(--ds-color-bg-surface);
-  box-shadow: inset 0 3px 0 var(--_tone);
+  box-shadow: inset 0 0 0 var(--ds-border-width-s) var(--ds-color-border-soft);
   text-decoration: none;
-  transition: border-color 120ms, box-shadow 120ms, transform 120ms;
 }
-.stat--success { --_tone: var(--ds-color-status-success); }
-.stat--warning { --_tone: var(--ds-color-status-warning); }
-.stat--danger { --_tone: var(--ds-color-status-error); }
-a.stat:hover { color: var(--ds-color-fg-default); border-color: var(--ds-color-border-loud); box-shadow: inset 0 3px 0 var(--_tone), var(--ds-shadow-raised); }
-.stat__label { color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-xs); font-weight: var(--ds-font-weight-strong); letter-spacing: 0.03em; text-transform: uppercase; }
-.stat__value { color: var(--ds-color-fg-loud); font-family: var(--ds-font-family-heading); font-size: var(--ds-font-size-2xl); font-weight: 650; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; line-height: 1.1; }
+@media (prefers-reduced-motion: no-preference) {
+  .stat { transition: box-shadow 120ms, background-color 120ms; }
+}
+a.stat:hover {
+  color: var(--ds-color-fg-default);
+  background: color-mix(in srgb, var(--ds-color-bg-surface-nested) 50%, var(--ds-color-bg-surface));
+  box-shadow: inset 0 0 0 var(--ds-border-width-s) var(--ds-color-border-default);
+}
+.stat__head { display: flex; flex-wrap: wrap; gap: var(--ds-space-xs); align-items: center; justify-content: space-between; min-block-size: 1.25rem; }
+.stat__label { color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-m); font-weight: var(--ds-font-weight-strong); }
+.stat__value { color: var(--ds-color-fg-loud); font-size: var(--ds-font-size-2xl); font-weight: var(--ds-font-weight-strong); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; line-height: var(--ds-font-line-height-tight); }
 .stat__hint { color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-s); }
+@media (forced-colors: active) { .stat { border: 1px solid CanvasText; } }

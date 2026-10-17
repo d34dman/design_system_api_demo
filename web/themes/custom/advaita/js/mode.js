@@ -27,6 +27,7 @@
         const sync = () => {
           button.setAttribute('aria-pressed', String(isDark()));
           label.textContent = isDark() ? Drupal.t('Light mode') : Drupal.t('Dark mode');
+          button.title = label.textContent;
         };
         sync();
         button.addEventListener('click', () => {

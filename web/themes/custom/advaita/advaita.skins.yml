@@ -480,17 +480,22 @@ advaita_atelier:
 
 advaita_canvas_ui:
   label: 'Canvas UI'
-  description: 'A chrome that matches the Drupal Canvas editor: Radix gray and blue, the system font, 14px text and 12px small text, 24 and 32px controls, 3-6px corners. Canvas itself is untouched.'
+  description: 'A chrome that matches the Drupal Canvas editor: Radix slate and blue, white panels, the system font, 14px text and 12px small text, 24 and 32px controls, 3-6px corners. Canvas itself is untouched.'
   color_schemes: [light, dark]
   values:
     base:
-      # Radix Themes as Canvas configures it (accentColor blue, gray, radius medium,
-      # scaling 100%). Departures, for the contract's pairs: the accent's solid
-      # steps are a shade darker than Radix blue-11 (blue-9 #0090ff takes white text
-      # at 3.3:1; blue-11 is 4.25:1 on blue-3, the selected background),
-      # steps 8-9 are Radix gray-10 and darker (gray-8 is 1.9:1 on white), focus is
-      # blue-9 on a gray-2 page (on gray-3 it is 2.9:1).
-      palette.accent-1: '#ffffff'
+      # Radix Themes as Canvas configures it: accentColor blue, gray "auto" (which
+      # Radix pairs with blue as slate), panelBackground solid (white panels),
+      # radius medium, scaling 100%. The ramps are Radix blue and slate, with four
+      # departures for the contract's pairs:
+      # - accent 9 and 11 (solid fill, link and selected text) are Radix blue-11
+      #   #0d74ce made 3% darker, #0c6fc8: blue-9 #0090ff takes white at 3.3:1,
+      #   and blue-11 is 4.25:1 on blue-3, the selected background (4.54 now);
+      #   accent 10 (hover) is a further step darker;
+      # - accent 8 (focus) is blue-9: blue-8 is 2.3:1 on the page;
+      # - neutral 8 and 9 are slate-9 and slate-10 (slate-8 is 1.9:1 on white);
+      #   neutral 10 sits between slate-10 and slate-11.
+      palette.accent-1: '#fbfdff'
       palette.accent-2: '#f4faff'
       palette.accent-3: '#e6f4fe'
       palette.accent-4: '#d5efff'
@@ -498,22 +503,28 @@ advaita_canvas_ui:
       palette.accent-6: '#acd8fc'
       palette.accent-7: '#8ec8f6'
       palette.accent-8: '#0090ff'
-      palette.accent-9: '#0b6bc0'
-      palette.accent-10: '#0a5ca3'
-      palette.accent-11: '#0b6bc0'
+      palette.accent-9: '#0c6fc8'
+      palette.accent-10: '#0a5fab'
+      palette.accent-11: '#0c6fc8'
       palette.accent-12: '#113264'
-      palette.neutral-1: '#f9f9f9'
-      palette.neutral-2: '#ffffff'
-      palette.neutral-3: '#f0f0f0'
-      palette.neutral-4: '#e8e8e8'
-      palette.neutral-5: '#e0e0e0'
-      palette.neutral-6: '#e0e0e0'
-      palette.neutral-7: '#d9d9d9'
-      palette.neutral-8: '#838383'
-      palette.neutral-9: '#7b7b7b'
-      palette.neutral-10: '#6f6f6f'
+      palette.neutral-1: '#fcfcfd'
+      palette.neutral-2: '#f9f9fb'
+      palette.neutral-3: '#f0f0f3'
+      palette.neutral-4: '#e8e8ec'
+      palette.neutral-5: '#e0e1e6'
+      palette.neutral-6: '#d9d9e0'
+      palette.neutral-7: '#cdced6'
+      palette.neutral-8: '#8b8d98'
+      palette.neutral-9: '#80838d'
+      palette.neutral-10: '#6f727b'
       palette.neutral-11: '#60646c'
-      palette.neutral-12: '#202020'
+      palette.neutral-12: '#1c2024'
+      # Canvas's panels, menus and fields are white (Radix panel-solid and
+      # surface) on a slate-2 page.
+      color.bg.canvas: '{palette.neutral-2}'
+      color.bg.surface: '#ffffff'
+      color.bg.raised: '#ffffff'
+      color.bg.input: '#ffffff'
       color.fg.loud: '#111111'
       font.family.base: [-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif]
       font.family.heading: '{font.family.base}'
@@ -545,7 +556,9 @@ advaita_canvas_ui:
       shadow.raised: '0 0 0 1px rgb(0 0 0 / 0.05), 0 1px 3px rgb(0 0 0 / 0.07)'
       shadow.overlay: '0 0 0 1px rgb(0 0 0 / 0.05), 0 12px 60px rgb(0 0 0 / 0.15), 0 12px 32px -16px rgb(0 0 0 / 0.12)'
     mode=dark:
-      # Canvas ships light only; dark is Radix's own dark gray and blue.
+      # Canvas ships light only; dark is Radix's dark blue and slate, with the
+      # same departures (focus blue-9, neutral 8 and 9 slate-9 and slate-10).
+      # Surfaces are the contract's own steps (panel-solid is slate-2 in Radix).
       palette.accent-1: '#0d1520'
       palette.accent-2: '#111927'
       palette.accent-3: '#0d2847'
@@ -558,16 +571,20 @@ advaita_canvas_ui:
       palette.accent-10: '#3b9eff'
       palette.accent-11: '#70b8ff'
       palette.accent-12: '#c2e6ff'
-      palette.neutral-1: '#111111'
-      palette.neutral-2: '#191919'
-      palette.neutral-3: '#222222'
-      palette.neutral-4: '#2a2a2a'
-      palette.neutral-5: '#313131'
-      palette.neutral-6: '#3a3a3a'
-      palette.neutral-7: '#484848'
-      palette.neutral-8: '#6e6e6e'
-      palette.neutral-9: '#7b7b7b'
-      palette.neutral-10: '#9b9b9b'
-      palette.neutral-11: '#b4b4b4'
-      palette.neutral-12: '#eeeeee'
+      palette.neutral-1: '#111113'
+      palette.neutral-2: '#18191b'
+      palette.neutral-3: '#212225'
+      palette.neutral-4: '#272a2d'
+      palette.neutral-5: '#2e3135'
+      palette.neutral-6: '#363a3f'
+      palette.neutral-7: '#43484e'
+      palette.neutral-8: '#696e77'
+      palette.neutral-9: '#777b84'
+      palette.neutral-10: '#8b8f98'
+      palette.neutral-11: '#b0b4ba'
+      palette.neutral-12: '#edeef0'
+      color.bg.canvas: '{palette.neutral-1}'
+      color.bg.surface: '{palette.neutral-2}'
+      color.bg.raised: '{palette.neutral-4}'
+      color.bg.input: '{palette.neutral-3}'
       color.fg.loud: '#ffffff'

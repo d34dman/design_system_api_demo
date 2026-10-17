@@ -9,6 +9,7 @@ use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
+use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Url;
 use Drupal\design_system_api\Binding\Binding;
 use Drupal\design_system_api\ContextCss;
@@ -28,6 +29,7 @@ final class DashboardController implements ContainerInjectionInterface {
     private readonly ThemeHandlerInterface $themeHandler,
     private readonly Binding $binding,
     private readonly SkinRegistry $skins,
+    private readonly LanguageManagerInterface $languageManager,
   ) {}
 
   /**
@@ -47,15 +49,12 @@ final class DashboardController implements ContainerInjectionInterface {
     $build = [
       '#cache' => ['tags' => ['node_list', 'media_list'], 'max-age' => 0],
       'stats' => [
-        '#type' => 'component',
-        '#component' => 'design_system_api:tiles',
-        '#props' => ['gap' => 'm', 'min' => 'm'],
-        '#slots' => ['content' => [
-          $this->stat('Published', (string) $published, sprintf('of %d content items', $all), Url::fromRoute('system.admin_content')->toString()),
-          $this->stat('Waiting for review', (string) count($drafts), count($drafts) ? 'Drafts with a newer revision than the live one' : 'Nothing to review', Url::fromRoute('content_moderation.admin_moderated_content')->toString(), count($drafts) ? 'warning' : 'success'),
-          $this->stat('Media items', (string) $media, sprintf('%d without alternative text', count($no_alt)), Url::fromRoute('entity.media.collection')->toString(), count($no_alt) ? 'danger' : 'neutral'),
-          $this->stat('Languages', (string) count(\Drupal::languageManager()->getLanguages()), 'Content in English and Arabic', NULL),
-        ]],
+        '#type' => 'container',
+        '#attributes' => ['class' => ['dashboard-stats']],
+        'published' => $this->stat('Published', (string) $published, sprintf('of %d content items', $all), Url::fromRoute('system.admin_content')->toString()),
+        'review' => $this->stat('Waiting for review', (string) count($drafts), count($drafts) ? 'Drafts with a newer revision than the live one' : 'Nothing to review', Url::fromRoute('content_moderation.admin_moderated_content')->toString(), count($drafts) ? 'warning' : 'success', count($drafts) ? 'Needs review' : 'Clear'),
+        'media' => $this->stat('Media items', (string) $media, sprintf('%d without alternative text', count($no_alt)), Url::fromRoute('entity.media.collection')->toString(), count($no_alt) ? 'danger' : 'success', count($no_alt) ? 'Missing alt text' : 'All described'),
+        'languages' => $this->stat('Languages', (string) count($this->languageManager->getLanguages()), 'Content in English and Arabic', NULL),
       ],
       'grid' => [
         '#type' => 'container',
@@ -64,7 +63,7 @@ final class DashboardController implements ContainerInjectionInterface {
           '#type' => 'link',
           '#title' => 'All content',
           '#url' => Url::fromRoute('system.admin_content'),
-          '#attributes' => ['class' => ['button', 'button--small']],
+          '#attributes' => ['class' => ['ds-button', 'ds-button--small']],
         ]),
         'review' => $this->panel('Review queue', 'Drafts waiting to be published.', $this->reviewList($drafts), '1'),
         'systems' => $this->panel('Design systems on this site', 'Both are Advaita: one set of components, two sets of tokens.', $this->systems(), '2'),
@@ -74,7 +73,11 @@ final class DashboardController implements ContainerInjectionInterface {
         ] : [
           '#type' => 'component',
           '#component' => 'advaita:empty-state',
-          '#props' => ['heading' => 'Every image has alternative text', 'text' => sprintf('All %d media items checked.', $media), 'tone' => 'success'],
+          '#props' => [
+            'heading' => 'Every image has alternative text',
+            'text' => sprintf('All %d media items checked.', $media),
+            'tone' => 'success',
+          ],
         ], '1'),
         'activity' => $this->panel('Activity', 'Latest revisions, newest first.', $this->activity(), 'full'),
       ],
@@ -88,11 +91,18 @@ final class DashboardController implements ContainerInjectionInterface {
    * @return array<string, mixed>
    *   A render array.
    */
-  private function stat(string $label, string $value, string $hint, ?string $href, string $tone = 'neutral'): array {
+  private function stat(string $label, string $value, string $hint, ?string $href, string $tone = 'neutral', ?string $status = NULL): array {
     return [
       '#type' => 'component',
       '#component' => 'advaita:stat',
-      '#props' => ['label' => $label, 'value' => $value, 'hint' => $hint, 'href' => $href, 'tone' => $tone],
+      '#props' => [
+        'label' => $label,
+        'value' => $value,
+        'hint' => $hint,
+        'href' => $href,
+        'tone' => $tone,
+        'status' => $status,
+      ],
     ];
   }
 
@@ -175,7 +185,9 @@ final class DashboardController implements ContainerInjectionInterface {
         ['data' => [
           '#type' => 'component',
           '#component' => 'advaita:badge',
-          '#props' => $node->isPublished() ? ['label' => 'Published', 'tone' => 'success'] : ['label' => 'Unpublished', 'tone' => 'neutral'],
+          '#props' => $node->isPublished()
+            ? ['label' => 'Published', 'tone' => 'success']
+            : ['label' => 'Unpublished', 'tone' => 'neutral'],
         ]],
         $this->dateFormatter->formatTimeDiffSince($node->getChangedTime()) . ' ago',
         ['data' => [
@@ -220,7 +232,14 @@ final class DashboardController implements ContainerInjectionInterface {
         '#context' => [
           'url' => Url::fromRoute('entity.node.latest_version', ['node' => $draft->id()])->toString(),
           'title' => $draft->label(),
-          'badge' => ['#type' => 'component', '#component' => 'advaita:badge', '#props' => ['label' => (string) ($draft->moderation_state->value ?? 'draft'), 'tone' => 'warning']],
+          'badge' => [
+            '#type' => 'component',
+            '#component' => 'advaita:badge',
+            '#props' => [
+              'label' => ucfirst((string) ($draft->moderation_state->value ?? 'draft')),
+              'tone' => 'warning',
+            ],
+          ],
           'meta' => sprintf('By %s, %s ago', $draft->getRevisionUser()?->getDisplayName() ?? 'unknown', $this->dateFormatter->formatTimeDiffSince($draft->getRevisionCreationTime())),
         ],
       ];
@@ -240,9 +259,19 @@ final class DashboardController implements ContainerInjectionInterface {
     $cards = [];
     $theme = $this->themeHandler->getDefault();
     $bindings = $this->binding->effective();
-    foreach (['site' => ['site', 'Site', 'Fraunces / Public Sans', 'Articles, landing pages, everything visitors see.'], 'admin' => ['chrome', 'Admin', 'Inter', 'This dashboard, forms, lists, Media Library.']] as $system => [$context, $name, $face, $summary]) {
+    $systems = [
+      'site' => ['site', 'Site', 'Articles, landing pages, everything visitors see.'],
+      'admin' => ['chrome', 'Admin', 'This dashboard, forms, lists, Media Library.'],
+    ];
+    foreach ($systems as $system => [$context, $name, $summary]) {
       $bound = $bindings[$context];
       $result = $bound->skin === NULL ? $this->contextCss->resolveAll($theme, $bound->role()) : $this->contextCss->resolveBinding($bound);
+      $base = $result['values']['base'] ?? [];
+      $faces = array_unique(array_filter([
+        $this->typeface($base['font.family.heading'] ?? ''),
+        $this->typeface($base['font.family.base'] ?? ''),
+      ]));
+      $face = implode(' / ', $faces);
       $name .= ': ' . ($bound->skin === NULL ? 'theme' : ($this->skins->get($bound->skin)?->label() ?? $bound->skin));
       $cards[] = [
         '#type' => 'component',
@@ -251,7 +280,7 @@ final class DashboardController implements ContainerInjectionInterface {
           'name' => $name,
           'system' => $system,
           'summary' => $summary,
-          'typeface' => $face,
+          'typeface' => $face === '' ? NULL : $face,
           'tokens' => count($result['values']['base'] ?? []),
           'problems' => count($result['problems']),
         ],
@@ -263,6 +292,30 @@ final class DashboardController implements ContainerInjectionInterface {
       '#props' => ['gap' => 's', 'min' => 'l'],
       '#slots' => ['content' => $cards],
     ];
+  }
+
+  /**
+   * The first family of a font stack, named for people.
+   *
+   * A stack that starts with the platform's own font (-apple-system,
+   * system-ui and the like) is the system font, whatever comes after it.
+   *
+   * @param string $stack
+   *   A resolved font.family value, e.g. "Fraunces, Georgia, serif".
+   *
+   * @return string
+   *   The first family ("Fraunces"), "System UI", or '' for an empty stack.
+   */
+  private function typeface(string $stack): string {
+    $first = trim(explode(',', $stack)[0], " \t\n\"'");
+    if ($first === '') {
+      return '';
+    }
+    $system = [
+      '-apple-system', 'blinkmacsystemfont', 'system-ui', 'ui-sans-serif', 'ui-serif',
+      'ui-monospace', 'ui-rounded', 'sans-serif', 'serif', 'monospace',
+    ];
+    return in_array(strtolower($first), $system, TRUE) ? 'System UI' : $first;
   }
 
   /**

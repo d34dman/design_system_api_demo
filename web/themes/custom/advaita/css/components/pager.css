@@ -1,4 +1,15 @@
-.pager__items { display: flex; flex-wrap: wrap; gap: var(--ds-space-2xs); justify-content: center; margin-block: var(--ds-space-m); padding: 0; list-style: none; }
-.pager__item a { display: grid; place-items: center; min-inline-size: var(--ds-control-height-m); min-block-size: var(--ds-control-height-m); padding-inline: var(--ds-space-xs); color: var(--ds-color-fg-default); border-radius: var(--ds-radius-m); font-size: var(--ds-font-size-s); text-decoration: none; }
-.pager__item a:hover { background: var(--ds-color-bg-surface-nested); }
-.pager__item.is-active a { color: var(--ds-color-fg-on-action); background: var(--ds-color-action-primary); }
+/**
+ * @file
+ * Pagers: the pager pattern (ds-pager) places itself; Advaita sets the
+ * space around it and turns the chevron for previous and next.
+ */
+/* In a grid of rows (a views grid on the site), a row of its own. */
+.pager { grid-column: 1 / -1; margin-block: var(--ds-space-m); }
+.pager .ds-icon { inline-size: 1rem; block-size: 1rem; }
+.pager__item--previous .ds-icon { transform: rotate(90deg); }
+.pager__item--next .ds-icon { transform: rotate(-90deg); }
+[dir="rtl"] .pager__item--previous .ds-icon { transform: rotate(-90deg); }
+[dir="rtl"] .pager__item--next .ds-icon { transform: rotate(90deg); }
+/* Previous and next with a word sit a little closer to their chevron. */
+.pager__item--previous a:has(.ds-icon + span) { padding-inline-start: var(--ds-space-xs); }
+.pager__item--next a:has(span + .ds-icon) { padding-inline-end: var(--ds-space-xs); }

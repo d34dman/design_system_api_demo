@@ -1,54 +1,104 @@
 /**
  * @file
- * Dialogs (jQuery UI). Two classes outrank jQuery UI's own skin.
+ * Dialogs (jQuery UI) in the manner of a Radix Dialog: one raised panel with
+ * 24px padding, the title on the panel (no titlebar band), the close button
+ * a ghost icon button in its corner, the buttons at the end with no rule
+ * above them. Two classes outrank jQuery UI's own skin. Only the generic
+ * dialog: the Media Library's dialog is the pilot's own (its chrome, with a
+ * titlebar and a footer), so it is left out; only the close button is
+ * every dialog's.
  */
-.ui-dialog.ui-widget {
-  padding: 0;
+.ui-dialog.ui-widget:not(.media-library-widget-modal) {
+  padding: var(--ds-space-xl);
   color: var(--ds-color-fg-default);
-  border: var(--ds-border-width-s) solid var(--ds-color-border-default);
+  border: 0;
   border-radius: var(--ds-radius-l);
-  background: var(--ds-color-bg-surface);
+  background: var(--ds-color-bg-raised);
   box-shadow: var(--ds-shadow-overlay);
   font-family: var(--ds-font-family-base);
   font-size: var(--ds-font-size-m);
+  line-height: var(--ds-font-line-height-base);
 }
-.ui-dialog.ui-widget .ui-dialog-titlebar {
-  padding-block: var(--ds-space-s);
-  padding-inline: var(--ds-space-m);
+.ui-dialog.ui-widget:not(.media-library-widget-modal) .ui-dialog-titlebar {
+  position: relative;
+  margin-block-end: var(--ds-space-s);
+  padding: 0;
+  padding-inline-end: calc(var(--ds-control-height-m) + var(--ds-space-s));
   color: var(--ds-color-fg-loud);
   border: 0;
-  border-block-end: var(--ds-border-width-s) solid var(--ds-color-border-default);
-  border-radius: var(--ds-radius-l) var(--ds-radius-l) 0 0;
-  background: var(--ds-color-bg-surface);
+  border-radius: 0;
+  background: none;
 }
-.ui-dialog.ui-widget .ui-dialog-title { font-family: var(--ds-font-family-heading); font-size: var(--ds-font-size-l); font-weight: var(--ds-font-weight-strong); }
+.ui-dialog.ui-widget:not(.media-library-widget-modal) .ui-dialog-title {
+  float: none;
+  inline-size: auto;
+  margin: 0;
+  overflow: visible;
+  font-family: var(--ds-font-family-heading);
+  font-size: var(--ds-font-size-l);
+  font-weight: var(--ds-font-weight-strong);
+  line-height: var(--ds-font-line-height-tight);
+  white-space: normal;
+}
+
+/* The close button, in every dialog: a ghost icon button with the
+   contract's close icon (js/dialog.js); its text stays its name. */
 .ui-dialog.ui-widget .ui-dialog-titlebar-close {
-  inline-size: 2rem;
-  block-size: 2rem;
-  margin-block-start: -1rem;
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: var(--ds-space-s);
+  inline-size: var(--ds-control-height-m);
+  block-size: var(--ds-control-height-m);
+  margin: 0;
+  margin-block-start: calc(var(--ds-control-height-m) / -2);
+  padding: 0;
+  overflow: hidden;
   color: var(--ds-color-fg-soft);
   border: 0;
   border-radius: var(--ds-radius-m);
   background: transparent;
+  box-shadow: none;
 }
 .ui-dialog.ui-widget .ui-dialog-titlebar-close:hover { color: var(--ds-color-fg-loud); background: var(--ds-color-bg-surface-nested); }
-.ui-dialog.ui-widget .ui-dialog-titlebar-close .ui-icon { background: none; text-indent: 0; overflow: hidden; color: transparent; }
-.ui-dialog.ui-widget .ui-dialog-titlebar-close { position: absolute; inset-inline-end: var(--ds-space-s); inset-block-start: 50%; overflow: hidden; }
+.ui-dialog.ui-widget .ui-dialog-titlebar-close:focus-visible { outline: var(--ds-focus-ring-width) solid var(--ds-color-focus); outline-offset: 0; }
 .ui-dialog.ui-widget .ui-dialog-titlebar-close .ui-button-icon,
 .ui-dialog.ui-widget .ui-dialog-titlebar-close .ui-icon { display: none; }
-/* The contract's close icon (js/dialog.js); the button's text stays its name. */
-.ui-dialog.ui-widget .ui-dialog-titlebar-close .ds-icon { position: absolute; inset: 0; margin: auto; inline-size: 1.25rem; block-size: 1.25rem; }
-.ui-dialog.ui-widget .ui-dialog-content { padding: var(--ds-space-m); color: inherit; background: none; }
-.ui-dialog.ui-widget .ui-dialog-buttonpane {
-  margin: 0;
-  padding-block: var(--ds-space-s);
-  padding-inline: var(--ds-space-m);
-  border: 0;
-  border-block-start: var(--ds-border-width-s) solid var(--ds-color-border-default);
-  border-radius: 0 0 var(--ds-radius-l) var(--ds-radius-l);
-  background: var(--ds-color-bg-surface);
+.ui-dialog.ui-widget .ui-dialog-titlebar-close .ds-icon { position: absolute; inset: 0; margin: auto; inline-size: 1rem; block-size: 1rem; }
+/* In the generic dialog, its corner on the panel's. */
+.ui-dialog.ui-widget:not(.media-library-widget-modal) .ui-dialog-titlebar-close {
+  inset-block-start: calc(var(--ds-space-xs) * -1);
+  inset-inline-end: calc(var(--ds-space-xs) * -1);
+  margin-block-start: 0;
 }
-/* The buttons are the patterns' (core copies the form's ds-button classes
-   onto them); here only their spacing. */
-.ui-dialog.ui-widget .ui-dialog-buttonpane .ui-button { margin-block: 0; margin-inline: 0 var(--ds-space-xs); }
-.ui-widget-overlay.ui-front { background: rgb(10 12 18 / 0.55); opacity: 1; }
+
+.ui-dialog.ui-widget:not(.media-library-widget-modal) .ui-dialog-content { padding: 0; color: inherit; background: none; }
+.ui-dialog.ui-widget:not(.media-library-widget-modal) .ui-dialog-content > :last-child { margin-block-end: 0; }
+
+/* The buttons at the end, after the text; core copies the form's
+   ds-button classes onto them, so their look is the patterns'. */
+.ui-dialog.ui-widget:not(.media-library-widget-modal) .ui-dialog-buttonpane {
+  margin: 0;
+  margin-block-start: var(--ds-space-l);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+.ui-dialog.ui-widget:not(.media-library-widget-modal) .ui-dialog-buttonpane .ui-dialog-buttonset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-space-s);
+  justify-content: flex-end;
+  float: none;
+}
+.ui-dialog.ui-widget:not(.media-library-widget-modal) .ui-dialog-buttonpane .ui-button { margin: 0; }
+
+/* The overlay dims the page: the text colour in light mode, the page's own
+   darkest step in dark mode. */
+.ui-widget-overlay.ui-front {
+  background: light-dark(
+    color-mix(in srgb, var(--ds-color-fg-default) 40%, transparent),
+    color-mix(in srgb, var(--ds-color-bg-canvas) 75%, transparent)
+  );
+  opacity: 1;
+}

@@ -1,6 +1,9 @@
 {% set tag = href ? 'a' : 'div' %}
 <{{ tag }} class="stat stat--{{ tone|default('neutral') }}"{% if href %} href="{{ href }}"{% endif %}>
-  <span class="stat__label">{{ label }}</span>
+  <span class="stat__head">
+    <span class="stat__label">{{ label }}</span>
+    {% if status %}{{ include('advaita:badge', {label: status, tone: tone == 'danger' ? 'danger' : tone}, with_context = false) }}{% endif %}
+  </span>
   <span class="stat__value">{{ value }}</span>
   {% if hint %}<span class="stat__hint">{{ hint }}</span>{% endif %}
 </{{ tag }}>

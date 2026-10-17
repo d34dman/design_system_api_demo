@@ -1,63 +1,39 @@
 /**
  * @file
- * Dropbutton: core's dropbutton.js markup. Replaces core's dropbutton.css.
+ * Dropbutton: core's dropbutton.js markup as a split button. The action and
+ * the toggle are the button pattern (js/dropbutton.js adds .ds-button);
+ * Advaita joins them into one control: square inner corners, the toggle's
+ * ring over the action's end so one line divides them. Replaces core's
+ * dropbutton.css.
  */
 .dropbutton-wrapper { position: relative; display: inline-flex; vertical-align: middle; }
 .dropbutton-widget { position: relative; display: inline-flex; }
-.dropbutton {
-  display: inline-flex;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border: var(--ds-border-width-s) solid var(--ds-color-border-input);
-  border-radius: var(--ds-radius-m);
-  background: var(--ds-color-bg-surface);
-}
-.dropbutton > li { margin: 0; padding: 0; }
-/* The button's own action; the menu's items are the menu pattern's. */
-.dropbutton-action:not(.secondary-action) > a,
-.dropbutton-action:not(.secondary-action) > input,
-.dropbutton-action:not(.secondary-action) > button {
-  display: flex;
-  align-items: center;
-  inline-size: 100%;
-  min-block-size: calc(var(--ds-control-height-m) - 2 * var(--ds-border-width-s));
-  margin: 0;
-  padding-block: var(--ds-space-2xs);
-  padding-inline: var(--ds-space-s);
-  color: var(--ds-color-fg-default);
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  font: inherit;
-  font-size: var(--ds-font-size-m);
-  font-weight: var(--ds-font-weight-strong);
-  text-align: start;
-  text-decoration: none;
-  white-space: nowrap;
-  cursor: pointer;
-}
-.dropbutton-action:first-child > * { border-start-start-radius: var(--ds-radius-m); border-end-start-radius: var(--ds-radius-m); }
-.dropbutton-single .dropbutton-action:first-child > * { border-radius: var(--ds-radius-m); }
-.dropbutton-action:not(.secondary-action) > :hover { color: var(--ds-color-fg-loud); background: var(--ds-color-bg-surface-nested); }
+.dropbutton { display: inline-flex; margin: 0; padding: 0; list-style: none; }
+.dropbutton > li:not(.dropbutton-menu) { display: flex; margin: 0; padding: 0; }
 
-.dropbutton-toggle { display: flex; border-inline-start: var(--ds-border-width-s) solid var(--ds-color-border-default); }
-.dropbutton-toggle button {
-  display: grid;
-  place-items: center;
-  inline-size: 2rem;
-  padding: 0;
-  color: var(--ds-color-fg-default);
-  border: 0;
-  border-start-end-radius: var(--ds-radius-m);
-  border-end-end-radius: var(--ds-radius-m);
-  background: transparent;
-  cursor: pointer;
+.dropbutton-multiple .dropbutton > .dropbutton-action > .ds-button {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
 }
-.dropbutton-toggle button:hover { background: var(--ds-color-bg-surface-nested); }
+.dropbutton-toggle > .ds-button {
+  position: relative;
+  min-inline-size: var(--ds-control-height-m);
+  margin-inline-start: calc(var(--ds-border-width-s) * -1);
+  padding-inline: 0;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+td .dropbutton-toggle > .ds-button { min-inline-size: var(--ds-control-height-s); }
+/* The hovered or focused half draws its ring over the other's. */
+.dropbutton > li > .ds-button:is(:hover, :focus-visible) { position: relative; z-index: 1; }
+
 /* The contract's chevron icon (js/dropbutton.js), turned over when open. */
-.dropbutton-toggle .ds-icon { inline-size: 1rem; block-size: 1rem; transition: transform 150ms; }
+.dropbutton-toggle .ds-icon { inline-size: 1rem; block-size: 1rem; }
+td .dropbutton-toggle .ds-icon { inline-size: 0.875rem; block-size: 0.875rem; }
 .dropbutton-wrapper.open .dropbutton-toggle .ds-icon { transform: rotate(180deg); }
+@media (prefers-reduced-motion: no-preference) {
+  .dropbutton-toggle .ds-icon { transition: transform 150ms; }
+}
 
 /* Secondary actions: the menu pattern (ds-menu, js/dropbutton.js gathers
    them), floated under the button's end. */
@@ -70,26 +46,4 @@
   display: block;
   min-inline-size: max(100%, 8rem);
 }
-/* Delete in the error colour. */
-.dropbutton-multiple .dropbutton-menu .secondary-action > a[href*="/delete"] { color: var(--ds-color-status-error); }
-.dropbutton-multiple .dropbutton-menu .secondary-action > a[href*="/delete"]:is(:hover, :focus-visible) {
-  color: var(--ds-color-status-error);
-  background: color-mix(in srgb, var(--ds-color-status-error) 12%, var(--ds-color-bg-raised));
-}
-
-/* In a table cell the menu floats over the next rows. */
-td .dropbutton-wrapper { min-block-size: var(--ds-control-height-m); }
-
-/* Primary dropbuttons ("Save" with more actions, Paragraphs "Add"). */
-.dropbutton--primary .dropbutton,
-.form-actions .dropbutton-wrapper .dropbutton { border-color: var(--ds-color-action-primary); background: var(--ds-color-action-primary); }
-.dropbutton--primary .dropbutton-action:not(.secondary-action) > *,
-.form-actions .dropbutton-action:not(.secondary-action) > * { color: var(--ds-color-fg-on-action); }
-.dropbutton--primary .dropbutton-action > :hover,
-.form-actions .dropbutton-action:not(.secondary-action) > :hover { color: var(--ds-color-fg-on-action); background: var(--ds-color-action-primary-hover); }
-.dropbutton--primary .dropbutton-toggle button,
-.form-actions .dropbutton-toggle button { color: var(--ds-color-fg-on-action); }
-.dropbutton--primary .dropbutton-toggle,
-.form-actions .dropbutton-toggle { border-inline-start-color: color-mix(in srgb, var(--ds-color-fg-on-action) 35%, transparent); }
-.dropbutton--primary .dropbutton-toggle button:hover,
-.form-actions .dropbutton-toggle button:hover { background: var(--ds-color-action-primary-hover); }
+.dropbutton-menu__list > li { margin: 0; padding: 0; }

@@ -1,7 +1,7 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
 name: Stat
 status: experimental
-description: 'Dashboard: one figure with its label and a hint. Optional link to where the figure comes from.'
+description: 'Dashboard: one figure with its label and a hint, as a Radix card. Optional link to where the figure comes from, and a status badge in the tone.'
 props:
   type: object
   required: [label, value]
@@ -14,3 +14,4 @@ props:
       type: string
       enum: [neutral, success, warning, danger]
       default: neutral
+    status: { type: [string, 'null'], title: 'Status badge (in the tone)' }

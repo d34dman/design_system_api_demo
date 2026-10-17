@@ -4,23 +4,32 @@
  */
 .admin { display: flex; flex-direction: column; min-block-size: 100vh; }
 
+/* One surface, as in Canvas: the header and the page share the surface and
+   a 1px soft line divides them, no band and no shadow. Panels and cards on
+   the page carry their own soft ring. Rhythm 16 / 8 / 12: 16 around the
+   header, 8 from breadcrumb to title, 12 from title to tabs. */
+body.advaita-admin { background: var(--ds-color-bg-surface); }
+
 .admin-header {
-  padding-block: var(--ds-space-m) 0;
+  padding-block: var(--ds-space-l) 0;
   padding-inline: var(--ds-space-xl);
-  border-block-end: var(--ds-border-width-s) solid var(--ds-color-border-default);
+  border-block-end: var(--ds-border-width-s) solid var(--ds-color-border-soft);
   background: var(--ds-color-bg-surface);
 }
 .admin-header__top {
   display: flex;
-  gap: var(--ds-space-m);
+  gap: var(--ds-space-l);
   align-items: center;
   justify-content: space-between;
-  min-block-size: var(--ds-control-height-s);
-  margin-block-end: var(--ds-space-xs);
+  min-block-size: var(--ds-control-height-m);
+  margin-block-end: var(--ds-space-s);
 }
-.admin-header .page-title { font-size: var(--ds-font-size-xl); letter-spacing: -0.015em; }
-.admin-header .tabs--primary { margin-block-start: var(--ds-space-s); }
-.admin-header:not(:has(.tabs--primary)) { padding-block-end: var(--ds-space-m); }
+.admin-header .page-title { margin-block-end: 0; font-size: var(--ds-font-size-xl); letter-spacing: -0.01em; }
+.admin-header .tabs--primary { margin-block: var(--ds-space-m) 0; }
+.admin-header .action-links-block { margin-block: var(--ds-space-m) 0; }
+.admin-header__main { padding-block-end: var(--ds-space-l); }
+/* Page tabs sit on the header's line, like Radix's tab nav. */
+.admin-header__main:has(.tabs--primary):not(:has(.action-links-block, .block-local-actions-block)) { padding-block-end: 0; }
 
 .admin-main {
   flex: 1;
@@ -55,29 +64,144 @@
   backdrop-filter: blur(6px);
 }
 
-.mode-toggle {
-  display: inline-flex;
-  gap: var(--ds-space-xs);
-  align-items: center;
-  padding-block: var(--ds-space-2xs);
-  padding-inline: var(--ds-space-xs) var(--ds-space-s);
-  color: var(--ds-color-fg-soft);
-  border: var(--ds-border-width-s) solid var(--ds-color-border-default);
-  border-radius: 999px;
-  background: transparent;
-  font: inherit;
-  font-size: var(--ds-font-size-xs);
-  cursor: pointer;
+/* The light/dark switch: a ghost icon button (.ds-button--ghost); its
+   name is the visually hidden label, which mode.js keeps current. */
+.mode-toggle.ds-button {
+  flex: none;
+  justify-content: center;
+  inline-size: var(--ds-control-height-m);
+  block-size: var(--ds-control-height-m);
+  min-inline-size: 0;
+  padding: 0;
 }
 .mode-toggle::before {
   content: "";
-  inline-size: 0.875rem;
-  block-size: 0.875rem;
+  flex: none;
+  inline-size: 1rem;
+  block-size: 1rem;
   border-radius: 50%;
   background: linear-gradient(90deg, currentcolor 50%, transparent 50%);
   box-shadow: inset 0 0 0 1.5px currentcolor;
 }
-.mode-toggle:hover { color: var(--ds-color-fg-default); border-color: var(--ds-color-border-loud); }
 
 /* A region holding only the messages placeholder takes no space. */
 .admin-main > :has(> [data-drupal-messages-fallback]:only-child) { display: none; }
+
+/* Status report --------------------------------------------------------
+   Core's markup (system module templates), drawn as Radix cards: the
+   counters and the general information as rows of cards, each group of
+   requirements as one card of rows. */
+.system-status-report-counters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(12rem, 100%), 1fr));
+  gap: var(--ds-space-l);
+}
+.system-status-report-counters__item,
+.system-status-report-counters__item--third-width,
+.system-status-report-counters__item--half-width {
+  display: flex;
+  gap: var(--ds-space-xs);
+  align-items: center;
+  inline-size: auto;
+  margin: 0;
+  padding: var(--ds-space-m) var(--ds-space-l);
+  border-radius: var(--ds-radius-l);
+  background: var(--ds-color-bg-surface);
+  box-shadow: inset 0 0 0 var(--ds-border-width-s) var(--ds-color-border-soft);
+  font-weight: var(--ds-font-weight-strong);
+  text-align: start;
+}
+.system-status-report-counters__item a { margin-inline-start: auto; font-weight: var(--ds-font-weight-normal); }
+.system-status-counter__status-icon { inline-size: 1rem; block-size: 1rem; }
+.system-status-counter__status-icon::before { background-position: center; }
+
+/* Core prints the general information as loose siblings of the counters
+   and the requirements; the block they share is the grid. */
+:where(.admin-main) :has(> .system-status-general-info__item) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr));
+  gap: var(--ds-space-l);
+}
+:where(.admin-main) :has(> .system-status-general-info__item) > :not(.system-status-general-info__item) { grid-column: 1 / -1; }
+:where(.admin-main) :has(> .system-status-general-info__item) > h2 { margin-block: var(--ds-space-s) 0; font-size: var(--ds-font-size-l); }
+.system-status-general-info__item {
+  margin: 0;
+  padding: var(--ds-space-l);
+  border: 0;
+  border-radius: var(--ds-radius-l);
+  background: var(--ds-color-bg-surface);
+  box-shadow: inset 0 0 0 var(--ds-border-width-s) var(--ds-color-border-soft);
+}
+.system-status-general-info__item-title {
+  margin-block: 0 var(--ds-space-xs);
+  padding: 0;
+  color: var(--ds-color-fg-soft);
+  border: 0;
+  font-family: var(--ds-font-family-base);
+  font-size: var(--ds-font-size-s);
+  font-weight: var(--ds-font-weight-strong);
+}
+.system-status-general-info__item { font-size: var(--ds-font-size-m); }
+.system-status-general-info__item h4 { margin-block: var(--ds-space-s) 0; color: var(--ds-color-fg-soft); font-family: var(--ds-font-family-base); font-size: var(--ds-font-size-s); font-weight: var(--ds-font-weight-normal); }
+.system-status-general-info__item-title + h4 { margin-block-start: 0; }
+
+:where(.admin-main) :has(> .system-status-report__entry) > h3 { margin-block: var(--ds-space-xl) var(--ds-space-s); font-size: var(--ds-font-size-l); }
+.system-status-report__entry {
+  margin: 0;
+  border-block-end: var(--ds-border-width-s) solid var(--ds-color-border-soft);
+}
+.system-status-report__entry:first-of-type { border-block-start: var(--ds-border-width-s) solid var(--ds-color-border-soft); }
+.system-status-report__status-title {
+  display: flex;
+  align-items: center;
+  min-block-size: 2.75rem;
+  padding-block: var(--ds-space-s);
+  padding-inline: 2.5rem var(--ds-space-s);
+  color: var(--ds-color-fg-default);
+  font-weight: var(--ds-font-weight-strong);
+  list-style: none;
+  cursor: pointer;
+}
+.system-status-report__status-title::-webkit-details-marker { display: none; }
+.system-status-report__status-title:hover { background: color-mix(in srgb, var(--ds-color-bg-surface-nested) 50%, var(--ds-color-bg-surface)); }
+.system-status-report__status-title::after {
+  content: "";
+  flex: none;
+  inline-size: 0.4em;
+  block-size: 0.4em;
+  margin-inline: auto 0.25em;
+  border-block-end: var(--ds-border-width-m) solid var(--ds-color-fg-soft);
+  border-inline-end: var(--ds-border-width-m) solid var(--ds-color-fg-soft);
+  transform: translateY(-0.1em) rotate(45deg);
+}
+.system-status-report__entry[open] > .system-status-report__status-title::after { transform: translateY(0.1em) rotate(-135deg); }
+.system-status-report__status-icon::before { inset-block-start: 50%; inset-inline-start: 0.75rem; translate: 0 -50%; }
+.system-status-report__entry__value {
+  padding-block: 0 var(--ds-space-m);
+  padding-inline: 2.5rem var(--ds-space-s);
+  font-size: var(--ds-font-size-m);
+}
+.system-status-report__entry__value .description { margin-block-start: var(--ds-space-2xs); color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-s); }
+.system-status-report__entry__value .description > :last-child { margin-block-end: 0; }
+
+/* Modules list --------------------------------------------------------- */
+.system-modules td,
+.system-modules-uninstall td { vertical-align: top; }
+.system-modules label,
+.system-modules-uninstall label { color: var(--ds-color-fg-default); font-size: var(--ds-font-size-m); font-weight: var(--ds-font-weight-strong); }
+.system-modules .module-description { display: block; color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-m); }
+.system-modules td details.module-details { margin-block-start: var(--ds-space-2xs); color: var(--ds-color-fg-soft); line-height: var(--ds-font-line-height-base); }
+.system-modules td details.module-details > summary {
+  display: inline-flex;
+  color: var(--ds-color-fg-soft);
+  font-size: var(--ds-font-size-s);
+  font-weight: var(--ds-font-weight-strong);
+  cursor: pointer;
+}
+.system-modules td details.module-details > summary:hover { color: var(--ds-color-fg-default); }
+.system-modules td details a { color: var(--ds-color-fg-link); }
+.system-modules .requirements { padding-block: var(--ds-space-2xs); }
+.admin-requirements,
+.admin-required { color: var(--ds-color-fg-soft); font-size: var(--ds-font-size-s); }
+.admin-enabled { color: var(--ds-color-status-success); }
+.admin-missing { color: var(--ds-color-status-error); }
