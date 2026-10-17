@@ -26,6 +26,13 @@ echo "== Pilot CSS (expected: pass)"
 "$STYLELINT" --config "$TOOL/index.js" "web/modules/contrib/design_system_api/modules/design_system_api_media_library/css/*.css" \
   && echo "✔ no problems"
 echo
+echo "== Admin chrome CSS (expected: pass)"
+CHROME="web/modules/contrib/design_system_api/modules/design_system_api_chrome"
+"$STYLELINT" --config "$TOOL/index.js" "$CHROME/css/*.css" \
+  && echo "✔ no problems"
+echo "hex colors:   $(grep -rEoi '#[0-9a-f]{3,8}\b' "$CHROME" --include='*.css' | wc -l | tr -d ' ')"
+echo "theme names:  $(grep -rEiw --exclude-dir=tests 'default_admin|claro|olivero|gin|stark|advaita' "$CHROME" | wc -l | tr -d ' ')"
+echo
 echo "== Seeded bad file (expected: fail)"
 "$STYLELINT" --config "$TOOL/index.js" tests/lint/seeded-bad.css
 echo

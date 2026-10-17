@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+
+## Description: Put the site into one of the demo setups (themes, skin bindings, where node forms render, how the Media Library is marked)
+## Usage: demo [stock|claro|colour|ember|structure|skins <site> <chrome>|status] [--forms=site|admin] [--ml=admin|boundary] [--no-login]
+## Example: "ddev demo structure", "ddev demo colour --forms=admin", "ddev demo skins advaita_atelier advaita_ember", "ddev demo stock"
+
+set -euo pipefail
+
+usage() {
+  cat >&2 <<'EOF'
+Usage: ddev demo <preset> [options]
+
+Presets
+  stock                  Olivero + Default Admin, both contexts bound to the theme (the
+                         state every proof script restores)
+  claro                  Olivero + Claro, bound to the theme
+  colour                 Advaita, site advaita_paper + chrome advaita_indigo (skins differ in colour)
+  ember                  Advaita, site advaita_paper + chrome advaita_ember
+  structure              Advaita, site advaita_atelier + chrome advaita_canvas (skins differ in structure)
+  skins <site> <chrome>  Advaita with any two skins (ddev drush ds:skins lists them)
+  status                 What the site uses now
+
+Options
+  --forms=site|admin     Node forms in the site theme (default: site, so admin UI shows on site pages)
+                         or on admin routes
+  --ml=admin|boundary    Media Library dialog as chrome (default for Advaita presets) or in the
+                         site's values (default for stock and claro)
+  --no-login             Don't print a login link
+EOF
+  exit 1
+}
+
+status() {
+  echo "Frontend theme: $(drush config:get system.theme default --format=string)"
+  echo "Admin theme:    $(drush config:get system.theme admin --format=string)"
+  echo "Node forms:     $([ "$(drush config:get node.settings use_admin_theme --format=string)" = 1 ] && echo 'admin routes' || echo 'site theme')"
+  echo "Media Library:  $(drush state:get ds_scope_poc.ml_as 2>/dev/null || echo boundary)"
+  drush ds:binding
+}
+
+preset="${1:-status}"
+shift || true
+site='' chrome='' frontend='advaita' admin='advaita' ml='admin' forms='site' login=1
+
+case "$preset" in
+  stock) frontend='olivero' admin='default_admin' site='theme' chrome='theme' ml='boundary' ;;
+  claro) frontend='olivero' admin='claro' site='theme' chrome='theme' ml='boundary' ;;
+  colour|color) site='advaita_paper' chrome='advaita_indigo' ;;
+  ember) site='advaita_paper' chrome='advaita_ember' ;;
+  structure) site='advaita_atelier' chrome='advaita_canvas' ;;
+  skins)
+    [ $# -ge 2 ] || usage
+    site="$1" chrome="$2"
+    shift 2
+    ;;
+  status) status; exit 0 ;;
+  -h|--help|help) usage ;;
+  *) echo "Unknown preset: $preset" >&2; usage ;;
+esac
+
+for arg in "$@"; do
+  case "$arg" in
+    --forms=site|--forms=admin) forms="${arg#--forms=}" ;;
+    --ml=admin|--ml=boundary) ml="${arg#--ml=}" ;;
+    --no-login) login=0 ;;
+    *) echo "Unknown option: $arg" >&2; usage ;;
+  esac
+done
+
+# Check the skins before changing anything, so a typo leaves the site as it was.
+known="$(drush php:eval 'echo implode(" ", array_keys(\Drupal::service(\Drupal\design_system_api\Skin\SkinRegistry::class)->all()));')"
+for skin in "$site" "$chrome"; do
+  if [ "$skin" != theme ] && [[ " $known " != *" $skin "* ]]; then
+    echo "Unknown skin: $skin. Known: theme $known" >&2
+    exit 1
+  fi
+done
+
+drush theme:install "$frontend" "$admin" -y >/dev/null 2>&1
+drush config:set system.theme default "$frontend" -y >/dev/null
+drush config:set system.theme admin "$admin" -y >/dev/null
+drush config:set node.settings use_admin_theme "$([ "$forms" = admin ] && echo 1 || echo 0)" -y >/dev/null
+# ds:bind validates the skin and refuses an unknown one.
+drush ds:bind site "$site"
+drush ds:bind chrome "$chrome"
+# The two-systems POC: no scoping approach, and the Media Library mapping.
+drush state:set ds_scope_poc.strategy none
+drush state:set ds_scope_poc.ml_as "$ml"
+# As ds-scope does: aggregate names don't change with the mapping, so drop them.
+rm -f /var/www/html/web/sites/default/files/css/*
+drush php:eval '\Drupal::service("asset.query_string")->reset(); \Drupal\Core\Cache\Cache::invalidateTags(["ds_scope_poc"]);'
+drush cache:rebuild >/dev/null 2>&1
+
+echo
+status
+if [ "$login" = 1 ]; then
+  echo
+  echo "Log in: $(drush user:login --uri="${DDEV_PRIMARY_URL}")"
+fi
+if [ "$frontend" = advaita ]; then
+  cat <<'EOF'
+
+Pages to show
+  /node                 listing (site)
+  /node/2               article with the Masquerade block (chrome region on a site page)
+  /node/3/edit          Paragraphs widget (chrome) inside a site form
+  /node/2/edit          then "Add media": the Media Library dialog
+  /admin/dashboard      admin page with the site's card inside it
+  /admin/appearance/design-system/binding   swap skins in the UI
+EOF
+fi

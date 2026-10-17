@@ -143,6 +143,9 @@ ddev drush ds:bind chrome advaita_ember    # the same theme with a warm chrome
 ddev drush ds:binding                      # what each context uses
 ```
 
+`ddev demo colour|ember|structure` does all of this in one step (Advaita as both themes,
+node forms in the site theme, the Media Library dialog as chrome); `ddev demo stock` goes back.
+
 `tests/proof/advaita.mjs` binds paper and indigo, captures, swaps the chrome to ember
 (`out/advaita-skin-swap/`) and binds both contexts back to `theme` at the end;
 `contrib.mjs` binds them for the Advaita column only.
@@ -152,7 +155,7 @@ ddev drush ds:binding                      # what each context uses
 | Part | Status |
 |---|---|
 | Drupal 12.0.0-beta1 (with the Design Tokens API), Standard profile, Olivero + Default Admin, Claro installed | Ready |
-| Demo content recipe (`recipes/design_system_api_demo_content`): Article with a Media Library field, 12 generated images, Arabic (RTL), content editing in the frontend theme | Ready |
+| Demo content: *Meridian*, a magazine about architecture, design and places. `scripts/demo-content.php` (after the recipe `recipes/design_system_api_demo_content`) adds a standfirst and body to Article, 12 articles by four writers, 26 photos from `assets/demo-photos` (Unsplash License, see `CREDITS.md` there), Arabic (RTL) translations of the first two, a pending draft on node 2, and rewrites the landing and Layout Paragraphs pages when they exist. Safe to run again: `ddev drush php:script ../scripts/demo-content.php` | Ready |
 | Design System API, Default Admin and Claro adapters, Media Library pilot | Ready |
 | Author brand registry for Olivero (`design-system/brand/`) | Ready |
 | Proof gallery (`tests/proof/`) | Ready |
@@ -163,6 +166,7 @@ ddev drush ds:binding                      # what each context uses
 | Command | What it does |
 |---|---|
 | `ddev install-demo` | Install from scratch and print a login link |
+| `ddev demo <preset>` | Switch demo setups: `stock`, `claro`, `colour` (paper + indigo), `ember`, `structure` (atelier + canvas), `skins <site> <chrome>`, `status`; options `--forms=site\|admin`, `--ml=admin\|boundary`, `--no-login`. Prints the state, a login link and the pages to show |
 | `ddev drush uli` | New login link |
 | `ddev admin-theme <name>` | Switch admin theme |
 | `ddev frontend-theme <name>` | Switch frontend theme (`olivero`, `stark`) |
