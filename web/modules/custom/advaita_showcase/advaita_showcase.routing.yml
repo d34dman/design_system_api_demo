@@ -7,3 +7,12 @@ advaita_showcase.dashboard:
     _permission: 'access content overview'
   options:
     _admin_route: TRUE
+advaita_showcase.spec_sheet:
+  path: '/admin/advaita/spec'
+  defaults:
+    _form: '\Drupal\advaita_showcase\Form\SpecSheetForm'
+    _title: 'Spec sheet'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE

@@ -1,0 +1,154 @@
+<!doctype html>
+<!--
+  The Radix reference: the components Drupal Canvas's UI uses, rendered with
+  Canvas's own compiled CSS (Radix Themes as Canvas configures it: accent blue,
+  gray auto = slate, radius medium, scaling 100%, solid panels). Never edited
+  to match Drupal; it is the ground truth the probe compares against.
+
+  Markup follows Radix Themes 3 (class names as the components render them).
+  Every sample has a data-spec id; the kitchen-sink page in Drupal has the same
+  ids on its elements. probe.mjs measures both.
+
+  Open with ?mode=dark for Radix's dark appearance.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Radix reference (Canvas)</title>
+<link rel="stylesheet" href="../../../web/modules/contrib/canvas/ui/dist/assets/index.css">
+<style>
+  /* Canvas's base.css hides overflow and paints the editor's grey: undo for a sheet. */
+  html, body { overflow: auto !important; }
+  body { margin: 0; background: var(--color-panel-solid) !important; }
+  .sheet { display: grid; gap: 24px; padding: 24px; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  section > h2:first-child { margin: 0 0 8px; font: 600 12px/1 var(--default-font-family); color: var(--gray-11); text-transform: uppercase; letter-spacing: .04em; }
+  .page { padding: 16px; background: var(--gray-2); }
+  .static-dialog { position: relative; inset: auto; display: block; }
+</style>
+<script>
+  if (new URLSearchParams(location.search).get('mode') === 'dark') document.documentElement.classList.add('dark');
+  else document.documentElement.classList.add('light');
+</script>
+</head>
+<body>
+<div class="radix-themes" data-is-root-theme="true" data-accent-color="blue" data-gray-color="slate" data-has-background="false" data-panel-background="solid" data-radius="medium" data-scaling="100%">
+<div class="sheet">
+
+<section>
+  <h2>Button (size 2 = 32px, size 1 = 24px)</h2>
+  <div class="row">
+    <button class="rt-reset rt-BaseButton rt-r-size-2 rt-variant-solid rt-Button" data-spec="button-solid">Save</button>
+    <button class="rt-reset rt-BaseButton rt-r-size-2 rt-variant-surface rt-Button" data-spec="button-surface">Add media</button>
+    <button class="rt-reset rt-BaseButton rt-r-size-2 rt-variant-soft rt-Button" data-spec="button-soft">Filter</button>
+    <button class="rt-reset rt-BaseButton rt-r-size-2 rt-variant-outline rt-Button" data-spec="button-outline">Outline</button>
+    <button class="rt-reset rt-BaseButton rt-r-size-2 rt-variant-surface rt-Button" data-accent-color="gray" data-spec="button-neutral">Edit</button>
+    <button class="rt-reset rt-BaseButton rt-r-size-2 rt-variant-ghost rt-Button" data-accent-color="gray" data-spec="button-ghost">Ghost</button>
+    <button class="rt-reset rt-BaseButton rt-r-size-2 rt-variant-soft rt-Button" data-accent-color="red" data-spec="button-danger">Remove</button>
+    <button class="rt-reset rt-BaseButton rt-r-size-2 rt-variant-solid rt-Button" data-accent-color="red" data-spec="button-danger-solid">Delete</button>
+    <button class="rt-reset rt-BaseButton rt-r-size-2 rt-variant-solid rt-Button" disabled data-disabled="true" data-spec="button-disabled">Disabled</button>
+  </div>
+  <div class="row">
+    <button class="rt-reset rt-BaseButton rt-r-size-1 rt-variant-surface rt-Button" data-spec="button-small">Small</button>
+    <button class="rt-reset rt-BaseButton rt-r-size-1 rt-variant-surface rt-Button" data-accent-color="gray" data-spec="button-small-neutral">Edit</button>
+    <button class="rt-reset rt-BaseButton rt-r-size-2 rt-variant-ghost rt-IconButton" data-accent-color="gray" aria-label="Dark mode" data-spec="icon-button-ghost"><svg width="15" height="15" viewBox="0 0 15 15" fill="currentColor"><circle cx="7.5" cy="7.5" r="6"/></svg></button>
+  </div>
+</section>
+
+<section>
+  <h2>Fields (size 2)</h2>
+  <div class="row">
+    <div class="rt-TextFieldRoot rt-r-size-2 rt-variant-surface" data-spec="textfield"><input class="rt-reset rt-TextFieldInput" value="Meridian" aria-label="Text"></div>
+    <div class="rt-TextFieldRoot rt-r-size-2 rt-variant-surface" data-spec="textfield-placeholder"><input class="rt-reset rt-TextFieldInput" placeholder="Search" aria-label="Search"></div>
+    <div class="rt-TextFieldRoot rt-r-size-2 rt-variant-surface" data-spec="textfield-disabled"><input class="rt-reset rt-TextFieldInput" value="Disabled" disabled aria-label="Disabled"></div>
+    <button type="button" class="rt-reset rt-SelectTrigger rt-r-size-2 rt-variant-surface" data-spec="select"><span class="rt-SelectTriggerInner"><span>- Any -</span></span><svg width="9" height="9" viewBox="0 0 9 9" fill="currentcolor" class="rt-SelectIcon"><path d="M0.135232 3.15803C0.324102 2.95657 0.640521 2.94637 0.841971 3.13523L4.5 6.56464L8.158 3.13523C8.3595 2.94637 8.6759 2.95657 8.8648 3.15803C9.0536 3.35949 9.0434 3.67591 8.842 3.86477L4.84197 7.6148C4.64964 7.7951 4.35036 7.7951 4.15803 7.6148L0.158031 3.86477C-0.0434285 3.67591 -0.0536285 3.35949 0.135232 3.15803Z"/></svg></button>
+  </div>
+  <div class="row">
+    <div class="rt-TextAreaRoot rt-r-size-2 rt-variant-surface" data-spec="textarea"><textarea class="rt-reset rt-TextAreaInput" aria-label="Text area">Text</textarea></div>
+  </div>
+  <div class="row">
+    <span class="rt-Text rt-r-size-2 rt-r-weight-medium" data-spec="label">Site name</span>
+    <span class="rt-Text rt-r-size-1" style="color: var(--gray-11)" data-spec="description">How this is used depends on your site's theme.</span>
+    <a href="#" class="rt-Text rt-reset rt-Link rt-underline-auto" data-spec="link">Reset your password</a>
+  </div>
+</section>
+
+<section>
+  <h2>Checkbox, radio, switch (size 2)</h2>
+  <div class="row">
+    <button type="button" role="checkbox" aria-checked="false" data-state="unchecked" aria-label="Off" class="rt-reset rt-BaseCheckboxRoot rt-CheckboxRoot rt-r-size-2 rt-variant-surface" data-spec="checkbox"></button>
+    <button type="button" role="checkbox" aria-checked="true" data-state="checked" aria-label="On" class="rt-reset rt-BaseCheckboxRoot rt-CheckboxRoot rt-r-size-2 rt-variant-surface" data-spec="checkbox-checked"><span data-state="checked" class="rt-BaseCheckboxIndicator rt-CheckboxIndicator"><svg width="9" height="9" viewBox="0 0 9 9" fill="currentcolor" class="rt-BaseCheckboxIndicatorIcon rt-CheckboxIndicatorIcon"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.53547 0.62293C8.88226 0.849446 8.97976 1.3142 8.75325 1.66099L4.5083 8.1599C4.38833 8.34356 4.19397 8.4655 3.9764 8.49358C3.75883 8.52167 3.53987 8.45309 3.3772 8.30591L0.616113 5.80777C0.308959 5.52987 0.285246 5.05559 0.563148 4.74844C0.84105 4.44128 1.31533 4.41757 1.62249 4.69547L3.73256 6.60459L7.49741 0.840706C7.72393 0.493916 8.18868 0.396414 8.53547 0.62293Z"/></svg></span></button>
+    <button type="button" role="checkbox" aria-checked="true" data-state="checked" disabled data-disabled="" aria-label="Disabled" class="rt-reset rt-BaseCheckboxRoot rt-CheckboxRoot rt-r-size-2 rt-variant-surface" data-spec="checkbox-disabled"><span data-state="checked" class="rt-BaseCheckboxIndicator rt-CheckboxIndicator"></span></button>
+    <input type="radio" name="r" aria-label="Off" class="rt-reset rt-BaseRadioRoot rt-RadioRoot rt-r-size-2 rt-variant-surface" data-spec="radio">
+    <input type="radio" name="r" checked aria-label="On" class="rt-reset rt-BaseRadioRoot rt-RadioRoot rt-r-size-2 rt-variant-surface" data-spec="radio-checked">
+    <button type="button" role="switch" aria-checked="true" data-state="checked" aria-label="Switch" class="rt-reset rt-SwitchRoot rt-r-size-2 rt-variant-surface" data-spec="switch"><span data-state="checked" class="rt-SwitchThumb"></span></button>
+  </div>
+</section>
+
+<section>
+  <h2>Tab nav (page tabs, size 2; secondary, size 1)</h2>
+  <nav class="rt-TabNavRoot" aria-label="Primary"><ul class="rt-reset rt-BaseTabList rt-TabNavList rt-r-size-2" data-spec="tabs">
+    <li class="rt-TabNavItem"><a href="#" aria-current="page" data-active="" class="rt-reset rt-BaseTabListTrigger rt-TabNavLink" data-spec="tab-active"><span class="rt-BaseTabListTriggerInner rt-TabNavLinkInner">Content</span><span class="rt-BaseTabListTriggerInnerHidden rt-TabNavLinkInnerHidden">Content</span></a></li>
+    <li class="rt-TabNavItem"><a href="#" class="rt-reset rt-BaseTabListTrigger rt-TabNavLink" data-spec="tab"><span class="rt-BaseTabListTriggerInner rt-TabNavLinkInner">Blocks</span><span class="rt-BaseTabListTriggerInnerHidden rt-TabNavLinkInnerHidden">Blocks</span></a></li>
+  </ul></nav>
+  <nav class="rt-TabNavRoot" aria-label="Secondary"><ul class="rt-reset rt-BaseTabList rt-TabNavList rt-r-size-1" data-spec="tabs-small">
+    <li class="rt-TabNavItem"><a href="#" aria-current="page" data-active="" class="rt-reset rt-BaseTabListTrigger rt-TabNavLink" data-spec="tab-small-active"><span class="rt-BaseTabListTriggerInner rt-TabNavLinkInner">Overview</span><span class="rt-BaseTabListTriggerInnerHidden rt-TabNavLinkInnerHidden">Overview</span></a></li>
+    <li class="rt-TabNavItem"><a href="#" class="rt-reset rt-BaseTabListTrigger rt-TabNavLink" data-spec="tab-small"><span class="rt-BaseTabListTriggerInner rt-TabNavLinkInner">Moderated content</span><span class="rt-BaseTabListTriggerInnerHidden rt-TabNavLinkInnerHidden">Moderated content</span></a></li>
+  </ul></nav>
+</section>
+
+<section>
+  <h2>Segmented control (size 1)</h2>
+  <div class="rt-SegmentedControlRoot rt-r-size-1 rt-variant-surface" data-spec="segmented" style="--segmented-control-indicator-left: 0; --segmented-control-indicator-width: 50%">
+    <button type="button" class="rt-reset rt-SegmentedControlItem" data-state="on" aria-checked="true" role="radio" data-spec="segmented-active"><span class="rt-SegmentedControlItemSeparator"></span><span class="rt-SegmentedControlItemLabel"><span class="rt-SegmentedControlItemLabelActive">Table</span><span class="rt-SegmentedControlItemLabelInactive" aria-hidden="true">Table</span></span></button>
+    <button type="button" class="rt-reset rt-SegmentedControlItem" data-state="off" aria-checked="false" role="radio" data-spec="segmented-item"><span class="rt-SegmentedControlItemSeparator"></span><span class="rt-SegmentedControlItemLabel"><span class="rt-SegmentedControlItemLabelActive">Grid</span><span class="rt-SegmentedControlItemLabelInactive" aria-hidden="true">Grid</span></span></button>
+    <div class="rt-SegmentedControlIndicator"></div>
+  </div>
+</section>
+
+<section>
+  <h2>Dropdown menu (size 2, solid)</h2>
+  <div class="rt-PopperContent rt-BaseMenuContent rt-DropdownMenuContent rt-r-size-2 rt-variant-solid" role="menu" data-spec="menu" style="position: static; inline-size: 12rem">
+    <div class="rt-BaseMenuViewport rt-DropdownMenuViewport">
+      <div role="menuitem" data-highlighted="" class="rt-reset rt-BaseMenuItem rt-DropdownMenuItem" data-spec="menu-item-highlighted">Translate</div>
+      <div role="menuitem" class="rt-reset rt-BaseMenuItem rt-DropdownMenuItem" data-spec="menu-item">View</div>
+      <div role="menuitem" data-accent-color="red" class="rt-reset rt-BaseMenuItem rt-DropdownMenuItem" data-spec="menu-item-danger">Delete</div>
+      <div role="menuitem" data-accent-color="red" data-highlighted="" class="rt-reset rt-BaseMenuItem rt-DropdownMenuItem" data-spec="menu-item-danger-highlighted">Delete</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Table (size 2, ghost)</h2>
+  <div class="rt-TableRoot rt-r-size-2 rt-variant-ghost"><table class="rt-TableRootTable" data-spec="table">
+    <thead class="rt-TableHeader"><tr class="rt-TableRow"><th class="rt-TableCell rt-TableColumnHeaderCell" data-spec="table-header">Title</th><th class="rt-TableCell rt-TableColumnHeaderCell">Status</th></tr></thead>
+    <tbody class="rt-TableBody"><tr class="rt-TableRow" data-spec="table-row"><td class="rt-TableCell" data-spec="table-cell">About Meridian</td><td class="rt-TableCell">Published</td></tr>
+    <tr class="rt-TableRow"><td class="rt-TableCell">Issue 14</td><td class="rt-TableCell">Published</td></tr></tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Badge, callout, card</h2>
+  <div class="row">
+    <span class="rt-reset rt-Badge rt-r-size-1 rt-variant-soft" data-accent-color="green" data-spec="badge-success">Published</span>
+    <span class="rt-reset rt-Badge rt-r-size-1 rt-variant-soft" data-accent-color="amber" data-spec="badge-warning">Draft</span>
+    <span class="rt-reset rt-Badge rt-r-size-1 rt-variant-soft" data-accent-color="gray" data-spec="badge-neutral">Unpublished</span>
+  </div>
+  <div class="rt-CalloutRoot rt-r-size-2 rt-variant-soft" data-accent-color="green" data-spec="callout-status"><p class="rt-Text rt-CalloutText">Saved the configuration.</p></div>
+  <div class="rt-CalloutRoot rt-r-size-2 rt-variant-soft" data-accent-color="red" data-spec="callout-error"><p class="rt-Text rt-CalloutText">The name is required.</p></div>
+  <div class="rt-CalloutRoot rt-r-size-2 rt-variant-soft" data-accent-color="amber" data-spec="callout-warning"><p class="rt-Text rt-CalloutText">Check the changes.</p></div>
+  <div class="rt-reset rt-BaseCard rt-Card rt-r-size-2 rt-variant-surface" data-spec="card">Card content</div>
+</section>
+
+<section>
+  <h2>Dialog (size 3) and alert dialog</h2>
+  <div class="rt-BaseDialogContent rt-DialogContent rt-r-size-3 static-dialog" role="dialog" aria-labelledby="dt" data-spec="dialog" style="max-inline-size: 450px">
+    <h2 id="dt" class="rt-Heading rt-r-size-5 rt-r-mb-2" data-spec="dialog-title">Delete content?</h2>
+    <p class="rt-Text rt-r-size-2" data-spec="dialog-text">This action cannot be undone.</p>
+  </div>
+</section>
+
+</div>
+</div>
+</body>
+</html>
