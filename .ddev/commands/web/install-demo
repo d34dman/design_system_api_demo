@@ -9,7 +9,7 @@ set -euo pipefail
 composer install --no-interaction
 drush site:install standard --account-name=admin --account-pass=admin \
   --site-name="Design System API demo" -y
-# Drupal 12's Standard profile installs no frontend theme; Olivero comes from contrib.
+# Standard installs only Default Admin; Olivero and Claro are core themes on 11.5.
 drush theme:install olivero default_admin claro -y
 drush config:set system.theme default olivero -y
 drush config:set system.theme admin default_admin -y
