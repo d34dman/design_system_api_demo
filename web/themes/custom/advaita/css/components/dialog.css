@@ -12,7 +12,7 @@
   padding: var(--ds-space-xl);
   color: var(--ds-color-fg-default);
   border: 0;
-  border-radius: var(--ds-radius-l);
+  border-radius: var(--ds-radius-xl);
   background: var(--ds-color-bg-raised);
   box-shadow: var(--ds-shadow-overlay);
   font-family: var(--ds-font-family-base);
@@ -36,7 +36,7 @@
   overflow: visible;
   font-family: var(--ds-font-family-heading);
   font-size: var(--ds-font-size-l);
-  font-weight: var(--ds-font-weight-strong);
+  font-weight: var(--ds-font-weight-bold);
   line-height: var(--ds-font-line-height-tight);
   white-space: normal;
 }

@@ -53,6 +53,8 @@ const CASES = [
   { id: 'content-flyout-delete', path: '/admin/content', act: async (p) => { await p.locator('.dropbutton-toggle button').first().click(); await p.waitForTimeout(200); await p.locator('.dropbutton-menu__list a[href*="/delete"]').first().hover(); } },
   { id: 'dashboard', path: '/admin/dashboard' },
   { id: 'pages-flyout-view', path: '/admin/content/pages', act: async (p) => { await p.locator('.dropbutton-toggle button').first().click(); await p.waitForTimeout(200); await p.locator('.dropbutton-menu__list a').last().hover(); await p.waitForTimeout(150); } },
+  { id: 'user-edit', path: '/user/1/edit' },
+  { id: 'spec-sheet', path: '/admin/advaita/spec' },
   { id: 'files', path: '/admin/content/files' },
   { id: 'moderated', path: '/admin/content/moderated' },
   { id: 'delete-modal', path: '/admin/content', act: async (p) => { await p.locator('.dropbutton-toggle button').first().click(); await p.waitForTimeout(200); await p.locator('.dropbutton-menu__list a[href*="/delete"]').first().click(); await p.waitForSelector('.ui-dialog', { timeout: 20000 }); await p.waitForTimeout(800); }, dialog: true },

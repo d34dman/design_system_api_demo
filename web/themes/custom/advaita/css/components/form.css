@@ -15,7 +15,7 @@ label,
 .fieldset-legend {
   display: block;
   margin-block-end: var(--ds-space-2xs);
-  color: var(--ds-color-fg-loud);
+  color: var(--ds-color-fg-soft);
   font-size: var(--ds-font-size-s);
   font-weight: var(--ds-font-weight-strong);
 }

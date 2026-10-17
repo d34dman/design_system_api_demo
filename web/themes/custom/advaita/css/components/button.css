@@ -8,7 +8,7 @@
 /* The submits of a listing (Filter, Apply to selected items) are soft. */
 .views-exposed-form .form-actions .ds-button:not(.ds-button--primary),
 .views-form .form-actions .ds-button:not(.ds-button--primary) {
-  color: var(--ds-color-action-primary);
+  color: var(--ds-color-fg-primary);
   background: var(--ds-color-action-primary-soft);
   box-shadow: none;
 }

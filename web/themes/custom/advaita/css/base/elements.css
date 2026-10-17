@@ -82,7 +82,9 @@ hr {
 
 img, video { max-inline-size: 100%; block-size: auto; }
 
-:focus-visible {
+/* A floor: components draw their own ring (the patterns draw a field's
+   inside its edge). */
+:where(:focus-visible) {
   outline: var(--ds-focus-ring-width) solid var(--ds-color-focus);
   outline-offset: var(--ds-focus-ring-offset);
 }

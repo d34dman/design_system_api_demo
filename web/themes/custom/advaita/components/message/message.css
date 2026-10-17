@@ -1,20 +1,21 @@
-/* A Radix callout (soft): a tint of the tone, no ring and no side bar; the
-   icon in the tone, the text in the default colour so links keep theirs. */
+/* A Radix callout (soft, size 2): the tone's tint, text and icon in the
+   tone, no ring and no side bar. Links take the tone too, underlined. */
 .message {
   --_tone: var(--ds-color-action-primary);
+  --_tint: var(--ds-color-action-primary-soft);
   display: flex;
-  gap: var(--ds-space-s);
+  gap: var(--ds-space-m);
   align-items: flex-start;
-  padding-block: var(--ds-space-s);
-  padding-inline: var(--ds-space-m);
-  color: var(--ds-color-fg-default);
+  padding: var(--ds-space-l);
+  color: var(--_tone);
   border-radius: var(--ds-radius-l);
-  background: color-mix(in srgb, var(--_tone) 7%, var(--ds-color-bg-surface));
+  background: var(--_tint);
   font-size: var(--ds-font-size-m);
 }
-.message--status { --_tone: var(--ds-color-status-success); }
-.message--warning { --_tone: var(--ds-color-status-warning); }
-.message--error { --_tone: var(--ds-color-status-error); }
+.message a { color: inherit; text-decoration: underline; }
+.message--status { --_tone: var(--ds-color-status-success); --_tint: var(--ds-color-status-success-soft); }
+.message--warning { --_tone: var(--ds-color-status-warning); --_tint: var(--ds-color-status-warning-soft); }
+.message--error { --_tone: var(--ds-color-status-error); --_tint: var(--ds-color-status-error-soft); }
 .message__icon {
   flex: none;
   inline-size: 1rem;

@@ -34,8 +34,12 @@ const ONLY = args.only?.split(',');
 const OUT = resolve(args.out ?? join(HERE, '..', 'out', 'spec'));
 const REFERENCE = pathToFileURL(join(HERE, 'radix-reference.html')).href;
 
-/** Runs in the page: the measurements of one element. */
-function measure(el) {
+/**
+ * Runs in the page: the measurements of one element. `box` names the
+ * pseudo-elements that draw it, when the element itself doesn't (Radix draws
+ * a checkbox in ::before, a card's fill in ::before and its ring in ::after).
+ */
+function measure(el, box = {}) {
   const canvas = document.createElement('canvas');
   canvas.width = canvas.height = 1;
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
@@ -48,9 +52,27 @@ function measure(el) {
   };
   const transparent = (c) => /rgba\(.*,\s*0\)$/.test(c) || c === 'transparent';
   // The fills behind and on the element, outermost first, from the first opaque one.
+  // A flat gradient (linear-gradient(c, c), as Radix paints a disabled
+  // field's tint) counts as a fill above the background colour.
+  const flat = (image) => {
+    const m = image.match(/^linear-gradient\((.*)\)$/);
+    if (!m) return null;
+    const parts = [];
+    let depth = 0, cur = '';
+    for (const ch of m[1]) {
+      if (ch === '(') depth++;
+      if (ch === ')') depth--;
+      if (ch === ',' && depth === 0) { parts.push(cur.trim()); cur = ''; } else cur += ch;
+    }
+    parts.push(cur.trim());
+    return parts.length === 2 && parts[0] === parts[1] ? parts[0] : null;
+  };
   const layers = [];
   for (let n = el; n && n.nodeType === 1; n = n.parentElement) {
-    const bg = getComputedStyle(n).backgroundColor;
+    const ns = getComputedStyle(n);
+    const tint = flat(ns.backgroundImage);
+    if (tint) layers.unshift(tint);
+    const bg = ns.backgroundColor;
     if (!transparent(bg)) {
       layers.unshift(bg);
       if (rgba([bg]).a === 1) break;
@@ -58,12 +80,21 @@ function measure(el) {
   }
   if (!layers.length || rgba([layers[0]]).a < 1) layers.unshift('#ffffff');
   const own = getComputedStyle(el).backgroundColor;
-  const behind = transparent(own) ? layers : layers.slice(0, -1);
-  const fill = rgba(layers);
+  // What an outer ring is drawn over: the layers behind the element, or the
+  // page when the element itself is the first opaque one.
+  let behind = transparent(own) ? layers.slice() : layers.slice(0, -1);
+  if (!behind.length) behind = [getComputedStyle(document.body).backgroundColor, '#ffffff'].filter((c) => !transparent(c)).slice(0, 1);
   const hex = ({ r, g, b }) => '#' + [r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('');
 
-  const s = getComputedStyle(el);
-  const text = el.matches('input, textarea, select, button, a, th, td') ? el : (el.querySelector('input, textarea, .rt-SelectTriggerInner, .rt-TabNavLinkInner, .rt-SegmentedControlItemLabelActive, .rt-CalloutText, .rt-Heading') ?? el);
+  const s = getComputedStyle(el, box.edge ?? null);
+  const sf = getComputedStyle(el, box.fill ?? box.edge ?? null);
+  if (box.fill ?? box.edge) {
+    const bg = sf.backgroundColor;
+    if (!transparent(bg)) layers.push(bg);
+  }
+  const fillNow = rgba(layers);
+  const text = el.querySelector('.rt-SelectTriggerInner, .rt-TabNavLinkInner, .rt-SegmentedControlItemLabelActive, .rt-CalloutText, .rt-Heading')
+    ?? (el.matches('input, textarea, select, button, a, th, td') ? el : (el.querySelector('input, textarea') ?? el));
   const t = getComputedStyle(text);
 
   // Shadows, split on commas outside parentheses.
@@ -90,15 +121,27 @@ function measure(el) {
     if (ring) edge = { width: ring.spread, color: hex(rgba([...(ring.inset ? layers : behind), ring.color])) };
   }
   const elevated = parsed.some((p) => !p.inset && p.blur > 0 && rgba([p.color]).a > 0);
-  const r = el.getBoundingClientRect();
+  const ow = parseFloat(s.outlineWidth);
+  const outline = s.outlineStyle !== 'none' && ow > 0 ? `${ow}px ${hex(rgba([...layers, s.outlineColor]))}` : 'none';
+  const r = box.edge || box.fill ? { height: parseFloat(s.height) || el.getBoundingClientRect().height } : el.getBoundingClientRect();
   return {
     height: Math.round(r.height * 10) / 10,
     width: Math.round(r.width * 10) / 10,
     // Start padding of the element plus that of its text element (Radix pads
     // a field's input, Drupal the input itself) plus any text indent.
     paddingInline: parseFloat(s.paddingInlineStart) + (text === el ? 0 : parseFloat(t.paddingInlineStart)) + (parseFloat(t.textIndent) || 0),
-    radius: parseFloat(s.borderTopLeftRadius),
-    fill: hex(fill),
+    // A radius in % or beyond half the box is "round": its largest size.
+    radius: (() => {
+      const h = parseFloat(s.height) || r.height;
+      const w = parseFloat(s.width) || r.width;
+      const v = s.borderTopLeftRadius.endsWith('%') ? parseFloat(s.borderTopLeftRadius) * w / 100 : parseFloat(s.borderTopLeftRadius);
+      return Math.round(Math.min(v, h / 2) * 10) / 10;
+    })(),
+    outline,
+    // Its own property, so a decided outline colour doesn't excuse where the
+    // ring sits (inside a field's edge, outside a solid button).
+    outlineOffset: outline === 'none' ? undefined : parseFloat(s.outlineOffset),
+    fill: hex(fillNow),
     color: hex(rgba([...layers, t.color])),
     edge: edge ? `${edge.width}px ${edge.color}` : 'none',
     elevated,
@@ -121,11 +164,11 @@ function lab(hex) {
 const deltaE = (a, b) => Math.hypot(...lab(a).map((v, i) => v - lab(b)[i]));
 const edgeParts = (e) => (e === 'none' ? null : { width: parseFloat(e), color: e.split(' ')[1] });
 
-const PROPS = ['height', 'paddingInline', 'radius', 'fill', 'color', 'edge', 'elevated', 'fontSize', 'fontWeight', 'fontFamily'];
+const PROPS = ['height', 'paddingInline', 'radius', 'fill', 'color', 'edge', 'outline', 'outlineOffset', 'elevated', 'fontSize', 'fontWeight', 'fontFamily'];
 function same(prop, a, b) {
   if (a === undefined || b === undefined) return true;
   if (['fill', 'color'].includes(prop)) return deltaE(a, b) <= 3;
-  if (prop === 'edge') {
+  if (prop === 'edge' || prop === 'outline') {
     const x = edgeParts(a), y = edgeParts(b);
     if (!x || !y) return !x && !y;
     return Math.abs(x.width - y.width) <= 0.5 && deltaE(x.color, y.color) <= 3;
@@ -136,16 +179,24 @@ function same(prop, a, b) {
 
 const login = () => execFileSync('ddev', ['drush', 'user:login', '--uri=' + BASE], { cwd: ROOT, encoding: 'utf8' }).trim();
 
-async function measureAt(page, selector, state, act) {
+async function measureAt(page, selector, state, act, box) {
   if (act) await act(page);
   const el = page.locator(selector).first();
-  if (!(await el.count())) return null;
+  await el.waitFor({ state: 'attached', timeout: 15000 }).catch(() => {});
+  if (!(await el.count())) {
+    if (process.env.PROBE_DEBUG) console.error('missing', selector, page.url(), await page.title());
+    return null;
+  }
   await el.scrollIntoViewIfNeeded();
+  await page.evaluate(() => document.activeElement?.blur());
   if (state === 'hover') await el.hover();
   else await page.mouse.move(0, 0);
-  if (state === 'focus') await el.focus();
+  // A key press first: focus then counts as the keyboard's (:focus-visible),
+  // as a person tabbing gets it, on buttons too.
+  if (state === 'focus') await page.keyboard.press('Shift');
+  if (state === 'focus') await el.evaluate((e) => (e.matches('input, textarea, select, button, a, [tabindex]') ? e : e.querySelector('input, textarea, button'))?.focus());
   await page.waitForTimeout(state ? 180 : 0);
-  return el.evaluate(measure);
+  return el.evaluate(measure, box ?? {});
 }
 
 mkdirSync(OUT, { recursive: true });
@@ -159,25 +210,26 @@ for (const mode of MODES) {
   await site.goto(login());
   let at = null;
   for (const c of COMPONENTS) {
-    const ids = [c.id, ...(c.variants ?? []).map((v) => `${c.id}@${v}`)];
+    const ids = [...(c.noBase ? [] : [c.id]), ...(c.variants ?? []).map((v) => `${c.id}@${v}`)];
     for (const id of ids) {
       if (ONLY && !ONLY.includes(c.id)) continue;
       const d = c.drupal?.[id] ?? {};
       const path = d.path ?? SHEET;
       for (const state of [null, ...(c.states ?? [])]) {
-        const radix = await measureAt(ref, c.radix ?? `[data-spec="${c.id}"]`, state);
+        const radix = await measureAt(ref, c.radix ?? `[data-spec="${c.id}"]`, state, null, c.radixBox);
         if (path !== at || d.act) { await site.goto(BASE + path, { waitUntil: 'networkidle' }); at = d.act ? null : path; }
         let drupal = null;
         try {
-          drupal = await measureAt(site, d.selector ?? `[data-spec="${id}"]`, state, d.act);
+          drupal = await measureAt(site, d.selector ?? `[data-spec="${id}"]`, d.state ?? state, d.act);
         }
         catch (e) {
           drupal = null;
+          if (process.env.PROBE_DEBUG) console.error(id, e.message.split('\n')[0]);
         }
         const key = `${id}${state ? ':' + state : ''}`;
         const rows = PROPS.filter((p) => !(c.ignore ?? []).includes(p)).map((p) => {
           const ok = radix && drupal ? same(p, radix[p], drupal[p]) : false;
-          const why = DEPARTURES[`${c.id}${state ? ':' + state : ''}.${p}`] ?? DEPARTURES[`${c.id}.${p}`] ?? DEPARTURES[`*.${p}`];
+          const why = DEPARTURES[`${c.id}${state ? ':' + state : ''}.${p}`] ?? DEPARTURES[`${c.id}.${p}`] ?? DEPARTURES[`*${state ? ':' + state : ''}.${p}`];
           return { prop: p, radix: radix?.[p], drupal: drupal?.[p], status: ok ? 'ok' : why ? 'departure' : 'fail', why };
         });
         results.push({ mode, key, label: c.label, missing: !drupal ? 'drupal' : !radix ? 'radix' : null, rows });

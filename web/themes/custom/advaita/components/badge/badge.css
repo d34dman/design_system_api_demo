@@ -1,24 +1,22 @@
-/* A Radix soft badge: a tint of the tone, text in the tone, no ring, no dot.
-   The text is moved a fifth of the way to the loud text colour so it holds
-   on the tint in both modes. */
+/* A Radix soft badge (size 1): the tone's tint, text in the tone, no ring,
+   no dot. The contract holds each tone at 4.5:1 on its tint (D27). */
 .badge {
   --_tone: var(--ds-color-fg-soft);
+  --_tint: var(--ds-color-bg-surface-nested);
   display: inline-flex;
   align-items: center;
-  min-block-size: 1.25rem;
-  padding-block: 0;
+  padding-block: calc(var(--ds-space-2xs) / 2);
   padding-inline: var(--ds-space-xs);
-  color: color-mix(in oklab, var(--_tone) 80%, var(--ds-color-fg-loud));
-  border-radius: var(--ds-radius-m);
-  background: color-mix(in srgb, var(--_tone) 12%, var(--ds-color-bg-surface));
+  color: var(--_tone);
+  border-radius: var(--ds-radius-s);
+  background: var(--_tint);
   font-size: var(--ds-font-size-s);
   font-weight: var(--ds-font-weight-strong);
-  line-height: 1;
+  line-height: var(--ds-font-line-height-tight);
   white-space: nowrap;
 }
-.badge--neutral { color: var(--ds-color-fg-soft); background: var(--ds-color-bg-surface-nested); }
-.badge--info { --_tone: var(--ds-color-action-primary); }
-.badge--success { --_tone: var(--ds-color-status-success); }
-.badge--warning { --_tone: var(--ds-color-status-warning); }
-.badge--danger { --_tone: var(--ds-color-status-error); }
+.badge--info { --_tone: var(--ds-color-action-primary); --_tint: var(--ds-color-action-primary-soft); }
+.badge--success { --_tone: var(--ds-color-status-success); --_tint: var(--ds-color-status-success-soft); }
+.badge--warning { --_tone: var(--ds-color-status-warning); --_tint: var(--ds-color-status-warning-soft); }
+.badge--danger { --_tone: var(--ds-color-status-error); --_tint: var(--ds-color-status-error-soft); }
 @media (forced-colors: active) { .badge { border: 1px solid CanvasText; } }
