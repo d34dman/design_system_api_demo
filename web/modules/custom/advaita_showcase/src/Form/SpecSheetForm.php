@@ -51,6 +51,21 @@ final class SpecSheetForm extends FormBase {
       'soft' => $this->button('Filter', 'button-soft', [], ['ds-button--soft']),
       'neutral' => $this->button('Edit', 'button-neutral', [], ['ds-button--neutral']),
       'ghost' => $this->button('Ghost', 'button-ghost', [], ['ds-button--ghost']),
+      // An icon button: the pattern's ghost square around a contract icon.
+      'icon' => [
+        '#type' => 'html_tag',
+        '#tag' => 'button',
+        '#attributes' => [
+          'type' => 'button',
+          'class' => ['ds-button', 'ds-button--ghost', 'ds-button--icon'],
+          'data-spec' => 'icon-button-ghost',
+        ],
+        'icon' => [
+          '#type' => 'component',
+          '#component' => 'design_system_api:icon',
+          '#props' => ['name' => 'close', 'label' => $this->t('Close')],
+        ],
+      ],
       'danger' => $this->button('Remove', 'button-danger', ['#button_type' => 'danger']),
       'danger_solid' => $this->button('Delete', 'button-danger-solid', [], ['ds-button--danger-solid']),
       'disabled' => $this->button('Disabled', 'button-disabled', ['#button_type' => 'primary', '#disabled' => TRUE]),

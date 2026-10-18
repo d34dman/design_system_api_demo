@@ -6,10 +6,12 @@
  * same sample (data-spec="id@variant"). `drupal` overrides where an element
  * lives when it isn't on the spec sheet: a path, a selector, an action that
  * opens it. `states` adds hover or focus measurements. `ignore` skips
- * properties that don't apply.
+ * properties that don't apply. `textBox` names the pseudo-element that draws
+ * the text on both sides (a placeholder).
  *
- * DEPARTURES: differences that are decided, keyed "<id>[:state].<prop>" or
- * "*.<prop>", each with its reason. Anything else that differs fails.
+ * DEPARTURES: differences that are decided, keyed "<id>[@variant][:state].<prop>"
+ * exactly (no wildcards: a departure excuses one element in one state), each
+ * with its reason per mode ({ light, dark }). Anything else that differs fails.
  */
 
 export const SHEET = '/admin/advaita/spec';
@@ -37,13 +39,10 @@ export const COMPONENTS = [
   { id: 'button-disabled', label: 'Button, disabled' },
   { id: 'button-small', label: 'Button, size 1' },
   { id: 'button-small-neutral', label: 'Button, size 1 gray (row operations)' },
-  {
-    id: 'icon-button-ghost', label: 'Icon button, ghost (mode toggle)', ignore: ['fontSize', 'fontWeight', 'fontFamily'],
-    drupal: { 'icon-button-ghost': { path: '/admin/content', selector: '.mode-toggle' } },
-  },
+  { id: 'icon-button-ghost', label: 'Icon button, ghost', ignore: ['fontSize', 'fontWeight', 'fontFamily'] },
   // Fields.
   { id: 'textfield', label: 'Text field', states: ['hover', 'focus'], variants: ['email', 'file'] },
-  { id: 'textfield-placeholder', label: 'Text field, placeholder', ignore: ['color'] },
+  { id: 'textfield-placeholder', label: 'Text field, placeholder', textBox: { text: '::placeholder' } },
   { id: 'textfield-disabled', label: 'Text field, disabled' },
   { id: 'select', label: 'Select', states: ['hover', 'focus'] },
   { id: 'textarea', label: 'Text area', ignore: ['height'] },
@@ -93,11 +92,11 @@ export const COMPONENTS = [
   },
   {
     id: 'menu-item', label: 'Menu item',
-    drupal: { 'menu-item': { path: '/admin/content', act: openRowMenu, selector: '.ds-menu:visible li:last-child > a' } },
+    drupal: { 'menu-item': { path: '/admin/content', act: openRowMenu, selector: '.ds-menu:visible li > a:not(.ds-menu__item--danger)' } },
   },
   {
     id: 'menu-item-highlighted', label: 'Menu item, highlighted (Drupal: hovered)',
-    drupal: { 'menu-item-highlighted': { path: '/admin/content', act: openRowMenu, state: 'hover', selector: '.ds-menu:visible li:first-child > a' } },
+    drupal: { 'menu-item-highlighted': { path: '/admin/content', act: openRowMenu, state: 'hover', selector: '.ds-menu:visible li > a:not(.ds-menu__item--danger)' } },
   },
   {
     id: 'menu-item-danger', label: 'Menu item, danger',
@@ -154,52 +153,59 @@ for (const c of COMPONENTS) {
   c.drupal ??= {};
 }
 
+const light = (reason) => ({ light: reason });
+const dark = (reason) => ({ dark: reason });
+const both = (reason) => ({ light: reason, dark: reason });
+// One reason for several keys.
+const each = (keys, reason) => Object.fromEntries(keys.map((k) => [k, reason]));
+const FIELDS = ['textfield', 'textfield@email', 'textfield@file'];
+
 export const DEPARTURES = {
   // Solid buttons are Radix's: white on blue-9, a contrast departure the
   // skin declares (D28), not one of this probe's.
-  // Red-9 (#e5484d) takes white at 3.9:1: the contract's error colour holds 4.5:1.
-  'button-danger-solid.fill': 'contrast: white on red-9 is 3.9:1; status.error',
-  'button-danger-solid:hover.fill': 'contrast: white on red-10 is 3.6:1; status.error',
-  'button-danger-solid.color': 'contrast: dark text on the light error red in dark mode',
-  'button-danger-solid:hover.color': 'contrast: dark text on the light error red in dark mode',
+  // Red-9 (#e5484d) takes white at 3.9:1: the skin's danger fill holds 4.5:1.
+  ...each(['button-danger-solid.fill', 'button-danger-solid:hover.fill'], both('contrast: white on red-9 is 3.9:1 (red-10, 3.6:1, pointed at); action.danger')),
   // Pointed at, a field shows the 3:1 edge (D26); Radix's TextField has no
   // hover edge and its Select darkens to gray-a8.
-  'textfield:hover.edge': 'pointed at, the 3:1 edge (D26)',
-  'select:hover.edge': 'pointed at, the 3:1 edge (D26)',
+  ...each([...FIELDS.map((f) => `${f}:hover.edge`), 'select:hover.edge'], both('pointed at, the 3:1 edge (D26)')),
   // The focus ring is blue-9: Radix's focus-8 (blue-8) is 2.3:1 on the page.
-  '*:focus.outline': 'focus colour blue-9: blue-8 is 2.3:1 (Canvas UI skin)',
+  // In dark the skin's ring is blue-8, as Radix's.
+  ...each([
+    'button-solid', 'button-solid@actions', 'button-surface', 'button-surface@link', 'button-neutral', 'button-ghost',
+    ...FIELDS, 'select',
+  ].map((id) => `${id}:focus.outline`), light('focus colour blue-9: blue-8 is 2.3:1 (Canvas UI skin)')),
   // Checkboxes and radios keep a 3:1 edge (a11y/field-edge); Radix's and
   // Canvas's is gray-a7, 1.6:1. Checked, the edge is the fill's colour.
-  'checkbox.edge': 'a 3:1 edge (a11y/field-edge); Radix gray-a7 is 1.6:1',
-  'checkbox-disabled.edge': 'disabled edge border.soft',
-  'radio.edge': 'a 3:1 edge (a11y/field-edge); Radix gray-a7 is 1.6:1',
-  'checkbox-checked.edge': 'an edge in the fill colour (forced colours keep it)',
-  'radio-checked.edge': 'an edge in the fill colour (forced colours keep it)',
-  // Shibin, round 2: no solid blue highlight in menus; the soft variant.
-  'menu-item-highlighted.fill': 'soft highlight (Shibin: no dark blue on hover)',
-  'menu-item-highlighted.color': 'soft highlight (Shibin: no dark blue on hover)',
-  'menu-item-danger-highlighted.fill': 'soft highlight, red tint',
-  'menu-item-danger-highlighted.color': 'soft highlight, red text',
+  ...each(['checkbox.edge', 'radio.edge'], both('a 3:1 edge (a11y/field-edge); Radix gray-a7 is 1.6:1')),
+  'checkbox-disabled.edge': both('disabled edge border.soft'),
+  ...each(['checkbox-checked.edge', 'radio-checked.edge'], both('an edge in the fill colour (forced colours keep it)')),
+  // Pointed at, red text keeps the error colour (Radix's red-a11 shifts
+  // over its tint).
+  ...each(['button-danger:hover.color', 'button-danger@link:hover.color'], light('the error colour on hover')),
+  // Menus highlight with the soft variant, not a solid fill.
+  ...each(['menu-item-highlighted.fill', 'menu-item-highlighted.color'], both('soft highlight: no solid blue on hover')),
+  'menu-item-danger-highlighted.fill': both('soft highlight, red tint'),
+  'menu-item-danger-highlighted.color': both('soft highlight, red text'),
   // Green and amber text are a shade darker than Radix's step 11, which is
   // 4.2:1 on its own tint (Canvas UI skin).
-  'callout-status.color': 'contrast: green-11 is 4.2:1 on green-a3',
-  'callout-warning.color': 'contrast: amber-11 is 4.25:1 on amber-a3',
-  'badge-success.color': 'contrast: green-11 is 4.2:1 on green-a3',
-  'badge-warning.color': 'contrast: amber-11 is 4.25:1 on amber-a3',
-  // Pointed at, red text keeps the error colour (Radix's red-a11 shifts
-  // over its tint), and the tint is a mix of the error colour, not red-a4.
-  'button-danger:hover.color': 'the error colour on hover',
-  'button-danger:hover.fill': 'hover tint mixed from status.error (Radix red-a4)',
-  'button-soft:hover.fill': 'hover tint mixed from the accent (Radix accent-a4)',
+  ...each(['callout-status.color', 'badge-success.color'], light('contrast: green-11 is 4.2:1 on green-a3')),
+  ...each(['callout-warning.color', 'badge-warning.color'], light('contrast: amber-11 is 4.25:1 on amber-a3')),
+  // Placeholder text is fg.soft, which holds 4.5:1; Radix's gray-a10 is
+  // 3.8:1 in light and 4.4:1 in dark.
+  'textfield-placeholder.color': both('contrast: fg.soft holds 4.5:1 (Radix gray-a10: 3.8:1 light, 4.4:1 dark)'),
   // Disabled text is fg.disabled (gray-8); Radix's is gray-a8 over its fill.
-  'button-disabled.color': 'fg.disabled is gray-8 (Radix gray-a8 over gray-a3)',
-  // A file field holds the browser's button; Radix has no file field.
-  'textfield.paddingInline': 'a file field holds a button inside its edge',
+  'button-disabled.color': both('fg.disabled is gray-8 (Radix gray-a8 over gray-a3)'),
+  // A file field holds the browser's button inside its edge; Radix has no
+  // file field.
+  ...each(['textfield@file.paddingInline', 'textfield@file:hover.paddingInline', 'textfield@file:focus.paddingInline'], both('a file field holds a button inside its edge')),
   // Radix's indicator is a pseudo-element inset 1px, its ring over the
   // track's edge; the item with an inset ring draws the same.
-  'segmented-active.height': 'Radix measures its inset indicator (22px of 24px)',
-  'segmented-active.fill': 'dark: the indicator is the surface (Radix: gray-a5 over its track)',
-  'segmented-active.edge': 'dark: the soft edge (Radix: gray-a4 over its indicator)',
+  'segmented-active.height': both('Radix measures its inset indicator (22px of 24px)'),
+  // In dark the skin composites Radix's alpha steps over the panel, where
+  // the Media Library dialog sits; the reference sample sits on the page.
+  'segmented.fill': dark('the track is gray-a3 over the panel (Radix sample: over the page)'),
+  'segmented-active.fill': dark('the indicator is the surface (Radix: gray-a5 over its track)'),
+  'segmented-active.edge': dark('the soft edge (Radix: gray-a4 over its indicator)'),
   // Cards' ring in dark: border.soft (gray-a6); Radix's card ring is gray-a5.
-  'card.edge': 'dark: border.soft (Radix gray-a5)',
+  ...each(['card@details.edge', 'card@fieldset.edge'], dark('border.soft (Radix gray-a5)')),
 };

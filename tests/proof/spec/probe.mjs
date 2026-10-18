@@ -37,7 +37,8 @@ const REFERENCE = pathToFileURL(join(HERE, 'radix-reference.html')).href;
 /**
  * Runs in the page: the measurements of one element. `box` names the
  * pseudo-elements that draw it, when the element itself doesn't (Radix draws
- * a checkbox in ::before, a card's fill in ::before and its ring in ::after).
+ * a checkbox in ::before, a card's fill in ::before and its ring in ::after),
+ * and `box.text` the one that draws its text (a field's ::placeholder).
  */
 function measure(el, box = {}) {
   const canvas = document.createElement('canvas');
@@ -95,7 +96,7 @@ function measure(el, box = {}) {
   const fillNow = rgba(layers);
   const text = el.querySelector('.rt-SelectTriggerInner, .rt-TabNavLinkInner, .rt-SegmentedControlItemLabelActive, .rt-CalloutText, .rt-Heading')
     ?? (el.matches('input, textarea, select, button, a, th, td') ? el : (el.querySelector('input, textarea') ?? el));
-  const t = getComputedStyle(text);
+  const t = getComputedStyle(text, box.text ?? null);
 
   // Shadows, split on commas outside parentheses.
   const shadows = [];
@@ -177,7 +178,21 @@ function same(prop, a, b) {
   return a === b;
 }
 
-const login = () => execFileSync('ddev', ['drush', 'user:login', '--uri=' + BASE], { cwd: ROOT, encoding: 'utf8' }).trim();
+const drush = (...a) => execFileSync('ddev', ['drush', ...a], { cwd: ROOT, encoding: 'utf8' }).trim();
+const login = () => drush('user:login', '--uri=' + BASE);
+
+// The probe measures the system's own mode and contrast: user 1's saved
+// display preferences (D29) are set aside for the run and put back after.
+const userData = (call) => `Drupal::service('user.data')->${call};`;
+const savedPreferences = drush('php:eval', `echo serialize(${userData("get('design_system_api', 1, 'preferences')").slice(0, -1)});`);
+const restorePreferences = () => {
+  if (savedPreferences !== 'N;') {
+    const value = Buffer.from(savedPreferences).toString('base64');
+    drush('php:eval', userData(`set('design_system_api', 1, 'preferences', unserialize(base64_decode('${value}')))`));
+  }
+};
+drush('php:eval', userData("delete('design_system_api', 1, 'preferences')"));
+process.on('exit', restorePreferences);
 
 async function measureAt(page, selector, state, act, box) {
   if (act) await act(page);
@@ -216,11 +231,11 @@ for (const mode of MODES) {
       const d = c.drupal?.[id] ?? {};
       const path = d.path ?? SHEET;
       for (const state of [null, ...(c.states ?? [])]) {
-        const radix = await measureAt(ref, c.radix ?? `[data-spec="${c.id}"]`, state, null, c.radixBox);
+        const radix = await measureAt(ref, c.radix ?? `[data-spec="${c.id}"]`, state, null, { ...c.radixBox, ...c.textBox });
         if (path !== at || d.act) { await site.goto(BASE + path, { waitUntil: 'networkidle' }); at = d.act ? null : path; }
         let drupal = null;
         try {
-          drupal = await measureAt(site, d.selector ?? `[data-spec="${id}"]`, d.state ?? state, d.act);
+          drupal = await measureAt(site, d.selector ?? `[data-spec="${id}"]`, d.state ?? state, d.act, c.textBox);
         }
         catch (e) {
           drupal = null;
@@ -229,7 +244,8 @@ for (const mode of MODES) {
         const key = `${id}${state ? ':' + state : ''}`;
         const rows = PROPS.filter((p) => !(c.ignore ?? []).includes(p)).map((p) => {
           const ok = radix && drupal ? same(p, radix[p], drupal[p]) : false;
-          const why = DEPARTURES[`${c.id}${state ? ':' + state : ''}.${p}`] ?? DEPARTURES[`${c.id}.${p}`] ?? DEPARTURES[`*${state ? ':' + state : ''}.${p}`];
+          // Exact: this element (variant included), state and mode only.
+          const why = DEPARTURES[`${key}.${p}`]?.[mode];
           return { prop: p, radix: radix?.[p], drupal: drupal?.[p], status: ok ? 'ok' : why ? 'departure' : 'fail', why };
         });
         results.push({ mode, key, label: c.label, missing: !drupal ? 'drupal' : !radix ? 'radix' : null, rows });

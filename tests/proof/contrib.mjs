@@ -64,8 +64,10 @@ export const SCENARIOS = [
   { id: 'c1', module: 'Coffee 2.0.1', title: 'Command palette over a page', role: 'chrome', path: '/node/2', steps: openCoffee, shot: '#coffee-form-inner' },
   { id: 'c2', module: 'Masquerade 2.2.0', title: 'Switch-user block in the page sidebar', role: 'chrome', path: '/node/2', shot: '.block-masquerade' },
   { id: 'c3', module: 'Content Moderation (core)', title: 'Moderation control on the latest revision', role: 'app', path: '/node/2/latest', shot: '.entity-moderation-form' },
-  { id: 'c4', module: 'Paragraphs 1.23.0', title: 'Paragraphs widget on a frontend edit form', role: 'app', path: '/node/3/edit', shot: '.field--widget-paragraphs' },
-  { id: 'c5', module: 'Layout Paragraphs 3.0.0', title: 'Layout Paragraphs builder around page content', role: 'app', path: '/node/5/edit', steps: hoverComponent, shot: '.lp-builder' },
+  // The landing page and the Layout Paragraphs page get their node IDs at
+  // install (scripts/demo-content.php), so they are found by their aliases.
+  { id: 'c4', module: 'Paragraphs 1.23.0', title: 'Paragraphs widget on a frontend edit form', role: 'app', alias: '/about', edit: true, shot: '.field--widget-paragraphs' },
+  { id: 'c5', module: 'Layout Paragraphs 3.0.0', title: 'Layout Paragraphs builder around page content', role: 'app', alias: '/issue-14', edit: true, steps: hoverComponent, shot: '.lp-builder' },
 ];
 
 const args = Object.fromEntries(process.argv.slice(2).map((a) => a.replace(/^--/, '').split('=')));
@@ -74,6 +76,11 @@ const THEMES = args.themes ? ALL_THEMES.filter((t) => args.themes.split(',').inc
 
 function ddev(...cmd) {
   return execFileSync('ddev', cmd, { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+}
+
+// The system path behind an alias, e.g. /about → /node/13.
+function systemPath(alias) {
+  return ddev('drush', 'php:eval', `echo Drupal::service('path_alias.manager')->getPathByAlias('${alias}');`);
 }
 
 function useTheme(theme) {
@@ -93,6 +100,7 @@ await (await context.newPage()).goto(ddev('drush', 'user:login', '--uri=' + BASE
 const old = (args.scenarios || args.themes) && existsSync(join(OUT, 'report.json')) ? JSON.parse(readFileSync(join(OUT, 'report.json'), 'utf8')) : null;
 const report = { generated: new Date().toISOString(), themes: ALL_THEMES.filter((t) => THEMES.includes(t) || old?.themes.includes(t)), approaches: APPROACHES, scenarios: structuredClone(old?.scenarios ?? {}) };
 for (const s of scenarios) {
+  if (s.alias) s.path = systemPath(s.alias) + (s.edit ? '/edit' : '');
   const results = report.scenarios[s.id]?.results ?? {};
   for (const key of Object.keys(results)) {
     if (THEMES.includes(key.split('--')[0])) delete results[key];
