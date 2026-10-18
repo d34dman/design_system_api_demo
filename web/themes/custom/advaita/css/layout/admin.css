@@ -64,20 +64,6 @@ body.advaita-admin { background: var(--ds-color-bg-surface); }
   backdrop-filter: blur(6px);
 }
 
-/* The light/dark switch: a ghost icon button (.ds-button--ghost
-   .ds-button--icon); its name is the visually hidden label, which mode.js
-   keeps current. The icon is 15px, as Radix's. */
-.mode-toggle.ds-button { flex: none; }
-.mode-toggle::before {
-  content: "";
-  flex: none;
-  inline-size: 0.9375rem;
-  block-size: 0.9375rem;
-  border-radius: 50%;
-  background: linear-gradient(90deg, currentcolor 50%, transparent 50%);
-  box-shadow: inset 0 0 0 1.5px currentcolor;
-}
-
 /* A region holding only the messages placeholder takes no space. */
 .admin-main > :has(> [data-drupal-messages-fallback]:only-child) { display: none; }
 

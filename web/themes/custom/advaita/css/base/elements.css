@@ -7,8 +7,6 @@
 :root {
   color-scheme: light dark;
 }
-:root[data-ds-mode="light"] { color-scheme: light; }
-:root[data-ds-mode="dark"] { color-scheme: dark; }
 
 *,
 *::before,

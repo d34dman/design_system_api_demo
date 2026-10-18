@@ -19,11 +19,6 @@ global:
       css/components/admin-list.css: {}
       css/components/node-form.css: {}
       css/components/ckeditor.css: {}
-  js:
-    js/mode.js: {}
-  dependencies:
-    - core/drupal
-    - core/once
 
 # Contract icons for markup core builds in JavaScript (js/icons.js). The libraries
 # below extend core's (advaita.info.yml), so their scripts run right after core's

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-## Description: Lint the Media Library pilot CSS (passes) and a seeded bad file (fails) with the Design System API's stylelint rules (proof moment 6)
+## Description: Lint all module CSS (passes) and a seeded bad file (fails) with the Design System API's stylelint rules (proof moment 6)
 ## Usage: ds-lint [files...]
 ## Example: "ddev ds-lint"
 
@@ -22,16 +22,11 @@ if [ $# -gt 0 ]; then
   exit $?
 fi
 
-echo "== Pilot CSS (expected: pass)"
-"$STYLELINT" --config "$TOOL/index.js" "web/modules/contrib/design_system_api/modules/design_system_api_media_library/css/*.css" \
-  && echo "✔ no problems"
-echo
-echo "== Admin chrome CSS (expected: pass)"
+echo "== All module CSS, as the module's CI gate runs it (expected: pass)"
+(cd "$TOOL" && npm run --silent lint:module) && echo "✔ no problems"
 CHROME="web/modules/contrib/design_system_api/modules/design_system_api_chrome"
-"$STYLELINT" --config "$TOOL/index.js" "$CHROME/css/*.css" \
-  && echo "✔ no problems"
-echo "hex colors:   $(grep -rEoi '#[0-9a-f]{3,8}\b' "$CHROME" --include='*.css' | wc -l | tr -d ' ')"
-echo "theme names:  $(grep -rEiw --exclude-dir=tests 'default_admin|claro|olivero|gin|stark|advaita' "$CHROME" | wc -l | tr -d ' ')"
+echo "chrome hex colors:   $(grep -rEoi '#[0-9a-f]{3,8}\b' "$CHROME" --include='*.css' | wc -l | tr -d ' ')"
+echo "chrome theme names:  $(grep -rEiw --exclude-dir=tests 'default_admin|claro|olivero|gin|stark|advaita' "$CHROME" | wc -l | tr -d ' ')"
 echo
 echo "== Seeded bad file (expected: fail)"
 "$STYLELINT" --config "$TOOL/index.js" tests/lint/seeded-bad.css
@@ -40,4 +35,4 @@ echo "== Receipts: hex values and theme names in the pilot submodule"
 PILOT="web/modules/contrib/design_system_api/modules/design_system_api_media_library"
 echo "hex colors:   $(grep -rEoi '#[0-9a-f]{3,8}\b' "$PILOT" --include='*.css' | wc -l | tr -d ' ')"
 echo "theme names:  $(grep -rEiw --exclude-dir=tests 'default_admin|claro|olivero|gin|stark' "$PILOT" | wc -l | tr -d ' ')"
-echo "pilot CSS:    $(cat "$PILOT"/css/*.css | wc -l | tr -d ' ') lines, replacing $(ls web/core/themes/default_admin/css/components/media-library*.css | grep -v pcss | xargs cat | wc -l | tr -d ' ') (Default Admin) + $(cat web/themes/contrib/claro/css/theme/media-library.css web/themes/contrib/claro/css/components/media-library.ui.css 2>/dev/null | wc -l | tr -d ' ') (Claro) lines of theme CSS"
+echo "pilot CSS:    $(cat "$PILOT"/css/*.css | wc -l | tr -d ' ') lines, replacing $(ls web/core/themes/default_admin/css/components/media-library*.css | grep -v pcss | xargs cat | wc -l | tr -d ' ') (Default Admin) + $(cat web/core/themes/claro/css/theme/media-library.css web/core/themes/claro/css/components/media-library.ui.css 2>/dev/null | wc -l | tr -d ' ') (Claro) lines of theme CSS"
