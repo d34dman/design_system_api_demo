@@ -24,17 +24,32 @@ Options
   --forms=site|admin     Node forms in the site theme (default: site, so admin UI shows on site pages)
                          or on admin routes
   --ml=admin|boundary    Media Library dialog as chrome (default for Advaita presets) or in the
-                         site's values (default for stock and claro)
+                         site's values (default for stock and claro). "admin" turns on the
+                         ds_scope_poc test module: it marks the dialog until the module does
   --no-login             Don't print a login link
 EOF
   exit 1
+}
+
+installed() {
+  drush php:eval "echo (int) \Drupal::moduleHandler()->moduleExists('$1');"
+}
+
+# The system path behind an alias the demo content sets (/about is node/13 on
+# a fresh install), so the hints don't depend on node IDs.
+path_of() {
+  drush php:eval "echo \Drupal::service('path_alias.manager')->getPathByAlias('$1');"
 }
 
 status() {
   echo "Frontend theme: $(drush config:get system.theme default --format=string)"
   echo "Admin theme:    $(drush config:get system.theme admin --format=string)"
   echo "Node forms:     $([ "$(drush config:get node.settings use_admin_theme --format=string)" = 1 ] && echo 'admin routes' || echo 'site theme')"
-  echo "Media Library:  $(drush state:get ds_scope_poc.ml_as 2>/dev/null || echo boundary)"
+  if [ "$(installed ds_scope_poc)" = 1 ]; then
+    echo "Media Library:  $(drush state:get ds_scope_poc.ml_as 2>/dev/null || echo boundary)"
+  else
+    echo "Media Library:  boundary (ds_scope_poc off)"
+  fi
   drush ds:binding
 }
 
@@ -67,6 +82,14 @@ for arg in "$@"; do
   esac
 done
 
+# The Advaita presets use the theme and its showcase module (dashboard, spec
+# sheet). install-demo applies the showcase recipe; an older site gets it here.
+if [ "$frontend" = advaita ] && [ "$(installed advaita_showcase)" != 1 ]; then
+  echo "Applying the showcase recipe (Advaita, its dashboard, the contrib UIs)..."
+  drush recipe ../recipes/design_system_api_demo_showcase
+  drush php:script ../scripts/demo-content.php
+fi
+
 # Check the skins before changing anything, so a typo leaves the site as it was.
 known="$(drush php:eval 'echo implode(" ", array_keys(\Drupal::service(\Drupal\design_system_api\Skin\SkinRegistry::class)->all()));')"
 for skin in "$site" "$chrome"; do
@@ -83,11 +106,22 @@ drush config:set node.settings use_admin_theme "$([ "$forms" = admin ] && echo 1
 # ds:bind validates the skin and refuses an unknown one.
 drush ds:bind site "$site"
 drush ds:bind chrome "$chrome"
-# The two-systems POC: no scoping approach, and the Media Library mapping.
-drush state:set ds_scope_poc.strategy none
-drush state:set ds_scope_poc.ml_as "$ml"
+# The Media Library dialog declares itself chrome (data-ds-role), but only the
+# two-systems POC module maps that role to the chrome's tokens so far. "admin"
+# turns on just that module (not the POC recipe), with no scoping approach.
+if [ "$ml" = admin ] && [ "$(installed ds_scope_poc)" != 1 ]; then
+  echo "Turning on ds_scope_poc to draw the Media Library dialog as chrome."
+  drush pm:install ds_scope_poc -y >/dev/null
+fi
+if [ "$(installed ds_scope_poc)" = 1 ]; then
+  drush state:set ds_scope_poc.strategy none
+  drush state:set ds_scope_poc.ml_as "$ml"
+fi
 # As ds-scope does: aggregate names don't change with the mapping, so drop them.
-rm -f /var/www/html/web/sites/default/files/css/*
+css="$(drush php:eval "echo \\Drupal::service('file_system')->realpath('public://css');")"
+if [ -n "$css" ] && [ -d "$css" ]; then
+  rm -f "$css"/*
+fi
 drush php:eval '\Drupal::service("asset.query_string")->reset(); \Drupal\Core\Cache\Cache::invalidateTags(["ds_scope_poc"]);'
 drush cache:rebuild >/dev/null 2>&1
 
@@ -98,14 +132,17 @@ if [ "$login" = 1 ]; then
   echo "Log in: $(drush user:login --uri="${DDEV_PRIMARY_URL}")"
 fi
 if [ "$frontend" = advaita ]; then
-  cat <<'EOF'
-
-Pages to show
-  /node                 listing (site)
-  /node/2               article with the Masquerade block (chrome region on a site page)
-  /node/3/edit          Paragraphs widget (chrome) inside a site form
-  /node/2/edit          then "Add media": the Media Library dialog
-  /admin/dashboard      admin page with the site's card inside it
-  /admin/appearance/design-system/binding   swap skins in the UI
-EOF
+  echo
+  echo "Pages to show"
+  row() { printf '  %-21s %s\n' "$1" "$2"; }
+  row /node 'listing (site)'
+  row /node/2 'article with the Masquerade block (chrome region on a site page); Alt+D opens Coffee'
+  row /node/2/latest 'the pending draft and its moderation control'
+  row /node/2/edit 'then "Add media": the Media Library dialog'
+  row "$(path_of /about)/edit" 'Paragraphs widget inside a site form (the /about page)'
+  row "$(path_of /issue-14)/edit" 'Layout Paragraphs builder (the /issue-14 page)'
+  row /admin/dashboard "admin page with the site's card inside it"
+  row /admin/content/pages 'Canvas pages'
+  row /admin/advaita/spec 'every control in the chrome skin'
+  row /admin/appearance/design-system/binding 'swap skins in the UI'
 fi

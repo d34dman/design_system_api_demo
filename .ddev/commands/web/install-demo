@@ -20,12 +20,16 @@ drush config:set system.site page.front /node -y
 # The stage: Article type, image media, Media Library widget, Arabic (RTL),
 # content editing in the frontend theme.
 drush recipe ../recipes/design_system_api_demo_content
-drush php:script ../scripts/demo-content.php
 drush pm:install design_system_api design_system_api_ui design_system_api_default_admin design_system_api_claro design_system_api_media_library design_system_api_chrome -y
+# Everything else the demo shows: the editorial workflow, the contrib UIs, Canvas,
+# the Advaita theme and its dashboard, the landing page types. It needs the module.
+drush recipe ../recipes/design_system_api_demo_showcase
+# The content last, so articles are moderated and the landing pages have their types.
+drush php:script ../scripts/demo-content.php
 drush cache:rebuild
 
 echo
-echo "Frontend theme: Olivero. Admin theme: Default Admin."
+echo "Frontend theme: Olivero. Admin theme: Default Admin. Advaita is installed: ddev demo colour."
 echo "Switch with: ddev admin-theme <default_admin|claro>, ddev frontend-theme <olivero|stark>"
 echo "Open this link to log in:"
 drush user:login

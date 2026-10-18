@@ -1,0 +1,40 @@
+name: 'Design System API demo showcase'
+description: 'Everything the demo shows beyond core: the editorial workflow on articles, the contrib UIs it compares (Coffee, Masquerade, Paragraphs, Layout Paragraphs, Environment Indicator), Drupal Canvas, the Advaita theme and its showcase module (dashboard, spec sheet). Adds the landing page and Layout Paragraphs page types; scripts/demo-content.php fills them. Applied by "ddev install-demo" after the module is installed.'
+type: 'Site'
+recipes:
+  - core/recipes/editorial_workflow
+install:
+  - path
+  - coffee
+  - masquerade
+  - environment_indicator
+  - entity_reference_revisions
+  - paragraphs
+  - layout_discovery
+  - layout_paragraphs
+  - canvas
+  - advaita_showcase
+  # Advaita ships its own block layout (config/install), so installing it does
+  # not copy the default theme's blocks into regions it doesn't have.
+  - advaita
+config:
+  strict: false
+  # A recipe installs only the simple config of the extensions it installs;
+  # their config entities come in through import.
+  import:
+    # Canvas's page list, its text formats, brand kit and image styles.
+    canvas: '*'
+    # The Paragraphs preview view mode.
+    paragraphs: '*'
+    # Advaita's block layout, and the Masquerade block on node 2.
+    advaita: '*'
+  actions:
+    # A pending draft on an article is what the moderation UI and the
+    # dashboard's review queue show (scripts/demo-content.php adds one).
+    workflows.workflow.editorial:
+      addNodeTypes:
+        - article
+    # The indicator draws in Navigation's top bar, not in the old toolbar.
+    environment_indicator.settings:
+      simpleConfigUpdate:
+        toolbar_integration: []

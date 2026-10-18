@@ -6,6 +6,9 @@ install:
   - layout_builder
   - ds_scope_poc
   - ds_hostile
+  # The switch-user block on node 2 in ds_hostile (config/), as in Olivero and
+  # Advaita: the contrib scenarios run in all three themes.
+  - masquerade
 config:
   strict: false
   actions:

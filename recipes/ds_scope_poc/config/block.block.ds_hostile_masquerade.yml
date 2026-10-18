@@ -1,0 +1,27 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - masquerade
+    - system
+  theme:
+    - ds_hostile
+id: ds_hostile_masquerade
+theme: ds_hostile
+region: sidebar
+weight: -10
+provider: null
+plugin: masquerade
+settings:
+  id: masquerade
+  label: Masquerade
+  label_display: visible
+  provider: masquerade
+  show_unmasquerade_link: false
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: |-
+      /node/2
+      /node/2/latest

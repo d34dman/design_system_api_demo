@@ -1,0 +1,30 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.lp_page.field_sections
+    - node.type.lp_page
+  module:
+    - layout_paragraphs
+    - user
+id: node.lp_page.default
+targetEntityType: node
+bundle: lp_page
+mode: default
+content:
+  field_sections:
+    type: layout_paragraphs
+    label: above
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 101
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  langcode: true

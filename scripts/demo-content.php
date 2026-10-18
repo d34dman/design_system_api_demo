@@ -10,8 +10,10 @@
  *
  * Safe to run again, and upgrades an earlier install in place: media items,
  * the first two articles (nodes 1 and 2), the landing page and the Layout
- * Paragraphs page keep their IDs, which the proof scripts use. A node that
- * already has its new title is left alone.
+ * Paragraphs page keep their IDs. A node that already has its new title is
+ * left alone. The landing page (/about), the Layout Paragraphs page
+ * (/issue-14) and the Canvas page (/subscribe) are created when the showcase
+ * recipe (recipes/design_system_api_demo_showcase) has been applied.
  */
 
 declare(strict_types=1);
@@ -38,7 +40,8 @@ $at = static fn (string $date): int => (new \DateTimeImmutable($date, new \DateT
   ->save();
 
 // Articles get a standfirst (the line under the headline, also the excerpt on
-// teaser cards) and a body. Drupal 12 has no text_with_summary field type.
+// teaser cards) and a body: a plain long text, since Drupal 12 removes the
+// text_with_summary field type.
 $fields = [
   'field_standfirst' => ['string_long', 'Standfirst', 'string_textarea', ['rows' => 2, 'placeholder' => '']],
   'body' => ['text_long', 'Body', 'text_textarea', ['rows' => 12, 'placeholder' => '']],
@@ -435,13 +438,16 @@ foreach ($node_storage->loadByProperties(['type' => 'article']) as $node) {
   }
 }
 
-// The landing page and the Layout Paragraphs page exist once the contrib setup
-// has run (tests/proof/contrib.mjs); their paragraphs are rewritten in place.
+// The landing page (Paragraphs) and the Layout Paragraphs page, when the
+// showcase recipe has added their types. An earlier install's pages (found by
+// their old or new title) are rewritten in place; otherwise they are created.
+// Their IDs depend on the install, so each gets an alias: /about, /issue-14.
 $pages = [
   [
     'type' => 'landing',
     'legacy' => 'A landing page built from paragraphs',
     'title' => 'About Meridian',
+    'alias' => '/about',
     'texts' => [
       'Meridian is an independent magazine about architecture, design and the places we share: streets, stations, courtyards and the rooms where a city meets itself.',
       'We publish one long read every week and a printed issue every season. Our writers are architects, planners, historians and people who simply notice things on their way to work.',
@@ -453,40 +459,83 @@ $pages = [
     'type' => 'lp_page',
     'legacy' => 'A page built with Layout Paragraphs',
     'title' => 'Issue 14: The shared city',
+    'alias' => '/issue-14',
     'texts' => [
       'This issue is about the spaces between buildings: the courtyards, quays, platforms and pavements that belong to nobody in particular and to everyone at once.',
       'Inside: the return of the courtyard, a harbour that lets the sea in, and why the tram keeps coming back. On sale from 1 November.',
     ],
   ],
 ];
+$paragraph = static function (array $values, array $behavior = []): Paragraph {
+  $paragraph = Paragraph::create($values);
+  if ($behavior) {
+    $paragraph->setAllBehaviorSettings(['layout_paragraphs' => $behavior]);
+  }
+  $paragraph->save();
+  return $paragraph;
+};
+$reference = static fn (Paragraph $p): array => ['target_id' => $p->id(), 'target_revision_id' => $p->getRevisionId()];
 foreach ($pages as $p) {
-  $node = current($node_storage->loadByProperties(['type' => $p['type'], 'title' => $p['legacy']])) ?: NULL;
-  if (!$node || !$node->hasField('field_sections')) {
+  if (!$etm->getStorage('node_type')->load($p['type'])) {
     continue;
   }
+  $node = current($node_storage->loadByProperties(['type' => $p['type'], 'title' => [$p['title'], $p['legacy']]])) ?: NULL;
   $texts = $p['texts'];
   $items = [];
-  foreach ($node->get('field_sections')->referencedEntities() as $paragraph) {
-    if ($paragraph->bundle() === 'text' && $texts) {
-      $paragraph->set('field_text', array_shift($texts));
-      $paragraph->save();
+  if ($node) {
+    // Rewrite the text paragraphs in place.
+    foreach ($node->get('field_sections')->referencedEntities() as $existing) {
+      if ($existing->bundle() === 'text' && $texts) {
+        $existing->set('field_text', array_shift($texts));
+        $existing->save();
+      }
+      $items[] = $reference($existing);
     }
-    $items[] = ['target_id' => $paragraph->id(), 'target_revision_id' => $paragraph->getRevisionId()];
+    $updated++;
+  }
+  else {
+    $node = Node::create(['type' => $p['type'], 'langcode' => 'en', 'status' => 1]);
+    $created++;
+    if ($p['type'] === 'lp_page') {
+      // A two-column section with one text in each region.
+      $section = $paragraph(['type' => 'section'], ['layout' => 'layout_twocol', 'config' => [], 'parent_uuid' => NULL, 'region' => NULL]);
+      $items[] = $reference($section);
+      foreach (['first', 'second'] as $region) {
+        $items[] = $reference($paragraph(
+          ['type' => 'text', 'field_text' => array_shift($texts)],
+          ['parent_uuid' => $section->uuid(), 'region' => $region],
+        ));
+      }
+    }
   }
   // Layout Paragraphs places paragraphs in regions; only a plain landing page
   // gets the remaining texts as new sections.
   if ($p['type'] === 'landing') {
     foreach ($texts as $text) {
-      $paragraph = Paragraph::create(['type' => 'text', 'field_text' => $text]);
-      $paragraph->save();
-      $items[] = ['target_id' => $paragraph->id(), 'target_revision_id' => $paragraph->getRevisionId()];
+      $items[] = $reference($paragraph(['type' => 'text', 'field_text' => $text]));
     }
   }
   $node->set('field_sections', $items);
   $node->set('title', $p['title']);
   $node->set('uid', $authors['Lena Hartmann']);
+  $node->set('path', ['alias' => $p['alias'], 'pathauto' => 0]);
   $node->save();
-  $updated++;
 }
 
-echo count($media) . " media items, $created articles created, $updated nodes updated.\n";
+// A Canvas page, so Canvas's page list (/admin/content/pages) has a row and
+// its operations.
+if ($etm->hasDefinition('canvas_page')) {
+  $canvas = $etm->getStorage('canvas_page');
+  if (!$canvas->loadByProperties(['title' => 'Subscribe to Meridian'])) {
+    $canvas->create([
+      'title' => 'Subscribe to Meridian',
+      'description' => 'Four printed issues a year and every long read online.',
+      'status' => TRUE,
+      'owner' => $authors['Lena Hartmann'],
+      'path' => ['alias' => '/subscribe'],
+    ])->save();
+    $created++;
+  }
+}
+
+echo count($media) . " media items, $created items created, $updated updated.\n";

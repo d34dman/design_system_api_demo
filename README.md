@@ -69,8 +69,9 @@ ddev install-demo
 
 `ddev install-demo` installs dependencies and the site (Standard profile, frontend
 theme Olivero, admin theme Default Admin, the demo content recipe, Design System API
-with the Media Library pilot and the Default Admin and Claro adapters) and prints a
-one-time login link. The admin account is `admin` / `admin`; this is a local demo,
+with the Media Library pilot, the admin chrome and the Default Admin and Claro
+adapters, then the showcase recipe and the content) and prints a one-time login link.
+Everything the demo shows comes from these steps; nothing is set up by hand. The admin account is `admin` / `admin`; this is a local demo,
 never expose it.
 
 This uses the `1.0.x-dev` release from drupal.org, so it needs the module's `1.0.x`
@@ -139,7 +140,11 @@ ddev ds-scope-poc off
 ## Advaita: one theme, skins bound per context
 
 `web/themes/custom/advaita` is a dual theme (admin and default theme at once) that
-carries no values: its look is three skins in `advaita.skins.yml`, bound by the site.
+carries no values: its look is six skins in `advaita.skins.yml` (paper, indigo, ember,
+canvas, atelier and Canvas UI), bound by the site. The showcase module
+(`web/modules/custom/advaita_showcase`) adds a dashboard (`/admin/dashboard`) and a
+spec sheet of every control (`/admin/advaita/spec`), both drawn with Advaita's
+components.
 
 ```bash
 ddev drush ds:bind site advaita_paper      # the site: warm paper, deep green
@@ -149,7 +154,17 @@ ddev drush ds:binding                      # what each context uses
 ```
 
 `ddev demo colour|ember|structure` does all of this in one step (Advaita as both themes,
-node forms in the site theme, the Media Library dialog as chrome); `ddev demo stock` goes back.
+node forms in the site theme, the Media Library dialog as chrome) and prints the pages
+to show; `ddev demo stock` goes back. The Media Library dialog declares itself chrome,
+but so far only the POC's test module maps that to the chrome's tokens, so `--ml=admin`
+(the default for Advaita) turns on `ds_scope_poc` alone, without the rest of the POC.
+
+Demo-only code, kept out of the module on purpose:
+
+- `advaita_showcase`'s `NavigationIconsHooks` swaps core Navigation's icon pack for
+  thin Phosphor icons while the chrome wears the Canvas UI skin, and
+  `BindingIconCacheSubscriber` clears the icon caches when the chrome skin changes.
+- `advaita/js/dropbutton.js` rebuilds core's dropbutton as a split button with a menu.
 
 `tests/proof/advaita.mjs` binds paper and indigo, captures, swaps the chrome to ember
 (`out/advaita-skin-swap/`) and binds both contexts back to `theme` at the end;
@@ -160,8 +175,9 @@ node forms in the site theme, the Media Library dialog as chrome); `ddev demo st
 | Part | Status |
 |---|---|
 | Drupal 11.5.0-beta1 (with the Design Tokens API), Standard profile, Olivero + Default Admin, Claro installed | Ready |
-| Demo content: *Meridian*, a magazine about architecture, design and places. `scripts/demo-content.php` (after the recipe `recipes/design_system_api_demo_content`) adds a standfirst and body to Article, 12 articles by four writers, 26 photos from `assets/demo-photos` (Unsplash License, see `CREDITS.md` there), Arabic (RTL) translations of the first two, a pending draft on node 2, and rewrites the landing and Layout Paragraphs pages when they exist. Safe to run again: `ddev drush php:script ../scripts/demo-content.php` | Ready |
-| Design System API, Default Admin and Claro adapters, Media Library pilot | Ready |
+| Demo content: *Meridian*, a magazine about architecture, design and places. `scripts/demo-content.php` (after the recipe `recipes/design_system_api_demo_content`) adds a standfirst and body to Article, 12 articles by four writers, 26 photos from `assets/demo-photos` (Unsplash License, see `CREDITS.md` there), Arabic (RTL) translations of the first two, a pending draft on node 2, a landing page built from paragraphs (`/about`), a Layout Paragraphs page (`/issue-14`) and a Canvas page (`/subscribe`). Safe to run again: `ddev drush php:script ../scripts/demo-content.php` | Ready |
+| Showcase (`recipes/design_system_api_demo_showcase`): editorial workflow on articles, Coffee, Masquerade (block on node 2), Paragraphs and Layout Paragraphs (the landing page types), Environment Indicator, Canvas, the Advaita theme and `advaita_showcase` | Ready |
+| Design System API, Default Admin and Claro adapters, Media Library pilot, admin chrome | Ready |
 | Author brand registry for Olivero (`design-system/brand/`) | Ready |
 | Proof gallery (`tests/proof/`) | Ready |
 | Gin adapter (`design_system_api_gin`) | Not started (Gin 5 is installed by Composer, not enabled) |
@@ -171,7 +187,7 @@ node forms in the site theme, the Media Library dialog as chrome); `ddev demo st
 | Command | What it does |
 |---|---|
 | `ddev install-demo` | Install from scratch and print a login link |
-| `ddev demo <preset>` | Switch demo setups: `stock`, `claro`, `colour` (paper + indigo), `ember`, `structure` (atelier + canvas), `skins <site> <chrome>`, `status`; options `--forms=site\|admin`, `--ml=admin\|boundary`, `--no-login`. Prints the state, a login link and the pages to show |
+| `ddev demo <preset>` | Switch demo setups: `stock`, `claro`, `colour` (paper + indigo), `ember`, `structure` (atelier + canvas), `skins <site> <chrome>`, `status`; options `--forms=site\|admin`, `--ml=admin\|boundary`, `--no-login`. Prints the state, a login link and the pages to show. On a site without the showcase it applies the showcase recipe first |
 | `ddev drush uli` | New login link |
 | `ddev admin-theme <name>` | Switch admin theme |
 | `ddev frontend-theme <name>` | Switch frontend theme (`olivero`, `stark`) |
