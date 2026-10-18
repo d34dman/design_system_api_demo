@@ -482,7 +482,7 @@ advaita_canvas_ui:
   label: 'Canvas UI'
   description: 'A chrome that matches the Drupal Canvas editor: Radix slate and blue, white panels, the system font, 14px text and 12px small text, 24 and 32px controls, 3-6px corners. Canvas itself is untouched.'
   color_schemes: [light, dark]
-  # Solid buttons are Canvas's: white on Radix blue-9 (Shibin, 2026-10-17).
+  # Solid buttons are Canvas's: white on Radix blue-9, as Canvas draws them.
   # That misses 4.5:1, so the skin declares it (D28); with more contrast the
   # fill is the contract's further step and every pair holds.
   departures:
