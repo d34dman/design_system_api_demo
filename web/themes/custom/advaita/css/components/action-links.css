@@ -1,8 +1,0 @@
-/**
- * @file
- * Local actions ("+ Add content"): soft buttons from the patterns.
- */
-.action-links { display: flex; flex-wrap: wrap; gap: var(--ds-space-xs); margin: 0; padding: 0; list-style: none; }
-.block-local-actions-block ul { display: flex; flex-wrap: wrap; gap: var(--ds-space-xs); margin: 0; padding: 0; list-style: none; }
-/* Under the tabs, clear of the tab line and of the header's edge. */
-.action-links-block { margin-block: var(--ds-space-m); }

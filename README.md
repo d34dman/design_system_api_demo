@@ -139,9 +139,10 @@ ddev ds-scope-poc off
 
 ## Advaita: one theme, skins bound per context
 
-`web/themes/custom/advaita` is a dual theme (admin and default theme at once) that
-carries no values: its look is six skins in `advaita.skins.yml` (paper, indigo, ember,
-canvas, atelier and Canvas UI), bound by the site. The showcase module
+[Advaita](https://www.drupal.org/project/advaita) (`drupal/advaita`, in workspace
+mode the checkout `apps/advaita`, installed at `web/themes/contrib/advaita`) is a dual
+theme (admin and default theme at once) that carries no values: its look is six skins in `advaita.skins.yml` (paper, indigo, ember,
+canvas, atelier and slate), bound by the site. The showcase module
 (`web/modules/custom/advaita_showcase`) adds a dashboard (`/admin/dashboard`) and a
 spec sheet of every control (`/admin/advaita/spec`), both drawn with Advaita's
 components.
@@ -162,7 +163,7 @@ but so far only the POC's test module maps that to the chrome's tokens, so `--ml
 Demo-only code, kept out of the module on purpose:
 
 - `advaita_showcase`'s `NavigationIconsHooks` swaps core Navigation's icon pack for
-  thin Phosphor icons while the chrome wears the Canvas UI skin, and
+  thin Phosphor icons while the chrome wears the slate skin, and
   `BindingIconCacheSubscriber` clears the icon caches when the chrome skin changes.
 - `advaita/js/dropbutton.js` rebuilds core's dropbutton as a split button with a menu.
 

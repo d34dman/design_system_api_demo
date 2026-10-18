@@ -20,6 +20,7 @@
         "drupal/coffee": "^2.0",
         "drupal/core-composer-scaffold": "11.5.0-beta1",
         "drupal/core-recommended": "11.5.0-beta1",
+        "drupal/advaita": "1.0.x-dev@dev",
         "drupal/design_system_api": "1.0.x-dev@dev",
         "drupal/environment_indicator": "^4.0",
         "drupal/eu_cookie_compliance": "^1.29",

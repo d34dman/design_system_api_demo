@@ -2,7 +2,7 @@
  * Captures the proof matrix: theme × context × view, with the Media Library
  * pilot off ("before") and on ("after"), plus an axe scan of each cell
  * (WCAG 2.0–2.2 A and AA). Theme cells bind both contexts to the theme.
- * Then the chrome cells (CHROME): the admin chrome on the Canvas UI skin in
+ * Then the chrome cells (CHROME): the admin chrome on the slate skin in
  * light, dark, more contrast from the switch, and forced colours.
  *
  * Usage (from the demo root, site running):

@@ -11,14 +11,14 @@ use Drupal\Core\Theme\Icon\IconExtractorPluginManager;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
- * Thin Navigation icons while the chrome wears the Canvas UI skin.
+ * Thin Navigation icons while the chrome wears the slate skin.
  *
- * Canvas UI draws Radix icons, about 1px thin. Core Navigation ships Phosphor
+ * The slate skin draws Radix icons, about 1px thin. Core Navigation ships Phosphor
  * regular shapes (about 1.5px at its 20px size), which look heavy next to
  * them. The skin contract's icons map cannot fix this: it maps the contract's
  * own icon names only, and Navigation renders its own `navigation` pack
  * directly (icon('navigation', ...)). So while the chrome skin is
- * advaita_canvas_ui, the pack is re-pointed at Phosphor light copies in the
+ * advaita_slate, the pack is re-pointed at Phosphor light copies in the
  * Advaita theme, named by Navigation's icon ids.
  *
  * The icon pack definitions are cached and do not vary by config, so
@@ -35,7 +35,7 @@ final class NavigationIconsHooks {
   /**
    * The chrome skin that gets the thin icons.
    */
-  private const SKIN = 'advaita_canvas_ui';
+  private const SKIN = 'advaita_slate';
 
   public function __construct(
     private readonly ConfigFactoryInterface $configFactory,
@@ -64,7 +64,7 @@ final class NavigationIconsHooks {
     }
     $theme_path = $this->pathResolver->getPath('theme', 'advaita');
     $definition = &$definitions['navigation'];
-    $definition['description'] = 'Drupal Navigation icons, redrawn in Phosphor light for the Canvas UI chrome skin (advaita_showcase).';
+    $definition['description'] = 'Drupal Navigation icons, redrawn in Phosphor light for the slate chrome skin (advaita_showcase).';
     $definition['config']['sources'] = ['icons/phosphor-light/{icon_id}.svg'];
     $definition['relative_path'] = $theme_path;
     $definition['absolute_path'] = $this->appRoot . '/' . $theme_path;

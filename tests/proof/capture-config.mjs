@@ -27,7 +27,7 @@ export const VIEWS = [
 ];
 
 /**
- * The admin chrome (design_system_api_chrome) on the Canvas UI skin, under
+ * The admin chrome (design_system_api_chrome) on the slate skin, under
  * Advaita: Navigation's sidebar and top bar on an article. `switch` sets
  * more contrast through the display preferences switch in the top bar (D29)
  * and reloads, so the saved choice is what the server writes on <html>.
@@ -35,7 +35,7 @@ export const VIEWS = [
 export const CHROME = {
   path: '/node/1',
   theme: 'advaita',
-  bindings: { site: 'advaita_atelier', chrome: 'advaita_canvas_ui' },
+  bindings: { site: 'advaita_atelier', chrome: 'advaita_slate' },
   regions: ['.ds-chrome-sidebar', '.ds-chrome-top-bar'],
 };
 
@@ -50,16 +50,16 @@ export const CHROME_VARIANTS = [
 
 /**
  * Violations a skin declares, by cell key prefix, axe rule and target. The
- * Canvas UI skin draws its solid buttons white on Radix blue-9 (3.3:1), as
+ * slate skin draws its solid buttons white on Radix blue-9 (3.3:1), as
  * Canvas does, and declares it (D28); more contrast fixes it, so the
  * switch-more cells must not need this.
  */
 export const DEPARTURES = [
   {
-    cell: 'chrome/advaita_canvas_ui/',
+    cell: 'chrome/advaita_slate/',
     except: ['switch-more'],
     rule: 'color-contrast',
     target: '.toolbar-button--icon--pencil',
-    reason: 'D28: Canvas UI solid button, white on blue-9 (3.3:1); more contrast holds 4.5:1',
+    reason: 'D28: slate solid button, white on blue-9 (3.3:1); more contrast holds 4.5:1',
   },
 ];

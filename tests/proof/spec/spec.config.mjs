@@ -173,7 +173,7 @@ export const DEPARTURES = {
   ...each([
     'button-solid', 'button-solid@actions', 'button-surface', 'button-surface@link', 'button-neutral', 'button-ghost',
     ...FIELDS, 'select',
-  ].map((id) => `${id}:focus.outline`), light('focus colour blue-9: blue-8 is 2.3:1 (Canvas UI skin)')),
+  ].map((id) => `${id}:focus.outline`), light('focus colour blue-9: blue-8 is 2.3:1 (slate skin)')),
   // Checkboxes and radios keep a 3:1 edge (a11y/field-edge); Radix's and
   // Canvas's is gray-a7, 1.6:1. Checked, the edge is the fill's colour.
   ...each(['checkbox.edge', 'radio.edge'], both('a 3:1 edge (a11y/field-edge); Radix gray-a7 is 1.6:1')),
@@ -187,7 +187,7 @@ export const DEPARTURES = {
   'menu-item-danger-highlighted.fill': both('soft highlight, red tint'),
   'menu-item-danger-highlighted.color': both('soft highlight, red text'),
   // Green and amber text are a shade darker than Radix's step 11, which is
-  // 4.2:1 on its own tint (Canvas UI skin).
+  // 4.2:1 on its own tint (slate skin).
   ...each(['callout-status.color', 'badge-success.color'], light('contrast: green-11 is 4.2:1 on green-a3')),
   ...each(['callout-warning.color', 'badge-warning.color'], light('contrast: amber-11 is 4.25:1 on amber-a3')),
   // Placeholder text is fg.soft, which holds 4.5:1; Radix's gray-a10 is
