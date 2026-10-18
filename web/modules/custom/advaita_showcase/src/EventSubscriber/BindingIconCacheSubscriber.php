@@ -17,6 +17,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * icon_pack_collector) and the rendered Navigation markup are cached without
  * any tie to the binding. Invalidating them on a chrome skin change makes a
  * new binding take effect on the next request.
+ *
+ * The icon pack tags stay demo business: only NavigationIconsHooks makes the
+ * packs depend on the binding. The `rendered` tag covers markup that should
+ * carry the binding's cache tag itself; once the module adds that metadata to
+ * what bindings render (backlog B34), drop `rendered` here.
  */
 final class BindingIconCacheSubscriber implements EventSubscriberInterface {
 

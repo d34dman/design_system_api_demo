@@ -4,6 +4,11 @@
  * the toggle (with the contract's chevron) are both .ds-button, joined in
  * dropbutton.css. The secondary actions are gathered into one list so they
  * open as the menu pattern.
+ *
+ * Demo only: it rebuilds core's dropbutton markup in the browser, which a
+ * module can't rely on (the markup is core's to change). A menu-button
+ * pattern belongs in the module once core's dropbutton can render it
+ * (backlog B34); until then Advaita keeps this.
  */
 ((Drupal, once) => {
   const DELETE = 'a[href*="/delete"], [data-drupal-selector$="-delete"], .button--danger';

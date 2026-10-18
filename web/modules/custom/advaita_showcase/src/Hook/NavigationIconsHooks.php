@@ -23,6 +23,12 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  *
  * The icon pack definitions are cached and do not vary by config, so
  * BindingIconCacheSubscriber clears them when the binding is saved.
+ *
+ * Demo only, and deliberately not a module feature: it swaps another
+ * module's icon pack for one theme's skin, and rewrites the pack's paths and
+ * re-runs its icon discovery after core has processed the definition. A skin
+ * that needs other icons for a core pack is a case for the contract (icons
+ * the skin maps) or for core (an icon pack variant), not for code like this.
  */
 final class NavigationIconsHooks {
 
