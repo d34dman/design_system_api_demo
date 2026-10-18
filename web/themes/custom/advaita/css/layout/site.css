@@ -34,6 +34,7 @@
 .site-header__nav .block,
 .site-header__secondary .block { position: relative; }
 .site-header__secondary a { font-size: var(--ds-font-size-s); }
+.site-header__secondary > * { display: flex; flex-wrap: wrap; gap: var(--ds-space-s); align-items: center; }
 
 .site-branding { display: flex; gap: var(--ds-space-s); align-items: center; }
 .block-system-branding-block a[rel="home"] {

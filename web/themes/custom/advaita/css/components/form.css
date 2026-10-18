@@ -65,7 +65,8 @@ label.option {
 .form-textarea.error { border-color: var(--ds-color-status-error); border-width: var(--ds-border-width-m); }
 .form-item--error-message { margin-block-start: var(--ds-space-2xs); color: var(--ds-color-status-error); font-size: var(--ds-font-size-xs); font-weight: var(--ds-font-weight-strong); }
 
-fieldset {
+/* The design system's selectors (mode, contrast) draw their own fieldset. */
+fieldset:not(.ds-selector) {
   min-inline-size: 0;
   margin-inline: 0;
   padding: var(--ds-space-m);
@@ -73,7 +74,7 @@ fieldset {
   border-radius: var(--ds-radius-l);
   background: var(--ds-color-bg-surface);
 }
-fieldset legend { padding-inline: var(--ds-space-2xs); }
+fieldset:not(.ds-selector) legend { padding-inline: var(--ds-space-2xs); }
 .fieldgroup { padding: 0; border: 0; background: none; }
 
 .container-inline { display: flex; flex-wrap: wrap; gap: var(--ds-space-xs); align-items: center; }

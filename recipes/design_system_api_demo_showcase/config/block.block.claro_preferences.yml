@@ -4,10 +4,10 @@ dependencies:
   module:
     - design_system_api
   theme:
-    - advaita
-id: advaita_preferences
-theme: advaita
-region: footer
+    - claro
+id: claro_preferences
+theme: claro
+region: breadcrumb
 weight: 10
 provider: null
 plugin: design_system_api_preferences
@@ -16,4 +16,5 @@ settings:
   label: 'Display preferences'
   label_display: '0'
   provider: design_system_api
+  compact: true
 visibility: {  }

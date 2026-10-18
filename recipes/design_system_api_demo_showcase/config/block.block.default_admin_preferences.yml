@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - design_system_api
+  theme:
+    - default_admin
+id: default_admin_preferences
+theme: default_admin
+region: header
+weight: -10
+provider: null
+plugin: design_system_api_preferences
+settings:
+  id: design_system_api_preferences
+  label: 'Display preferences'
+  label_display: '0'
+  provider: design_system_api
+  compact: true
+visibility: {  }

@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - design_system_api
+  theme:
+    - advaita
+id: advaita_contrast_selector
+theme: advaita
+region: secondary_menu
+weight: -19
+provider: null
+plugin: design_system_api_contrast_selector
+settings:
+  id: design_system_api_contrast_selector
+  label: 'Contrast'
+  label_display: '0'
+  provider: design_system_api
+  label_display_selector: hidden
+  icons_only: true
+visibility: {  }

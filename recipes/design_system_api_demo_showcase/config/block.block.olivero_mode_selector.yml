@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - design_system_api
+  theme:
+    - olivero
+id: olivero_mode_selector
+theme: olivero
+region: secondary_menu
+weight: -20
+provider: null
+plugin: design_system_api_mode_selector
+settings:
+  id: design_system_api_mode_selector
+  label: 'Color mode'
+  label_display: '0'
+  provider: design_system_api
+  label_display_selector: hidden
+  icons_only: true
+visibility: {  }
