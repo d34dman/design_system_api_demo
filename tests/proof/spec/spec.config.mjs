@@ -179,9 +179,9 @@ export const DEPARTURES = {
   ...each(['checkbox.edge', 'radio.edge'], both('a 3:1 edge (a11y/field-edge); Radix gray-a7 is 1.6:1')),
   'checkbox-disabled.edge': both('disabled edge border.soft'),
   ...each(['checkbox-checked.edge', 'radio-checked.edge'], both('an edge in the fill colour (forced colours keep it)')),
-  // Pointed at, red text keeps the error colour (Radix's red-a11 shifts
-  // over its tint).
-  ...each(['button-danger:hover.color', 'button-danger@link:hover.color'], light('the error colour on hover')),
+  // Pointed at, soft buttons take step-12 text on their step-4 fill; Radix
+  // keeps step 11, 4.1-4.3:1 there in light.
+  ...each(['button-soft:hover.color', 'button-danger:hover.color', 'button-danger@link:hover.color'], both('step-12 text on the step-4 hover fill (Radix step 11: 4.1-4.3:1 in light)')),
   // Menus highlight with the soft variant, not a solid fill.
   ...each(['menu-item-highlighted.fill', 'menu-item-highlighted.color'], both('soft highlight: no solid blue on hover')),
   'menu-item-danger-highlighted.fill': both('soft highlight, red tint'),

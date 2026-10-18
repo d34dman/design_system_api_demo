@@ -545,6 +545,12 @@ advaita_canvas_ui:
       color.status.warning: '#a05e00'
       color.status.success: '#1e7b53'
       color.status.error-soft: '#feebec'
+      color.status.error-soft-hover: '#ffdbdc'
+      # Pointed at, soft buttons fill with step 4 as Canvas's do; their text is
+      # step 12 (Radix red-12), where Radix keeps step 11 (4.1-4.3:1 on it).
+      color.status.error-soft-hover-text: '#641723'
+      # A disabled field is Radix's gray-2 tint, the page's grey.
+      color.bg.input-disabled: '{palette.neutral-2}'
       color.status.warning-soft: '#fff7c2'
       color.status.success-soft: '#e6f6eb'
       color.fg.loud: '{palette.neutral-12}'
@@ -626,6 +632,8 @@ advaita_canvas_ui:
       color.status.warning: '#ffca16'
       color.status.success: '#3ed78d'
       color.status.error-soft: '#401821'
+      color.status.error-soft-hover: '#561522'
+      color.status.error-soft-hover-text: '#ffd1d9'
       color.status.warning-soft: '#352617'
       color.status.success-soft: '#193429'
       shadow.overlay: '0 0 0 1px #393d40, 0 12px 60px rgb(0 0 0 / 0.3), 0 12px 32px -16px rgb(0 0 0 / 0.5)'
