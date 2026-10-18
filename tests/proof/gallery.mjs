@@ -10,7 +10,7 @@ import { execFileSync } from 'node:child_process';
 import { cpSync, mkdirSync, readFileSync, writeFileSync, existsSync, rmSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { THEMES, VARIANTS, VIEWS } from './capture-config.mjs';
+import { CHROME, CHROME_VARIANTS, THEMES, VARIANTS, VIEWS } from './capture-config.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..', '..');
@@ -42,7 +42,7 @@ receipts.tokens = readFileSync(join(ROOT, 'web/modules/contrib/design_system_api
 
 if (existsSync(DEST)) rmSync(DEST, { recursive: true });
 mkdirSync(join(DEST, 'shots'), { recursive: true });
-for (const pilot of ['off', 'on', 'brand']) {
+for (const pilot of ['off', 'on', 'brand', 'chrome']) {
   if (existsSync(join(OUT, pilot))) cpSync(join(OUT, pilot), join(DEST, 'shots', pilot), { recursive: true });
 }
 
@@ -50,6 +50,8 @@ const data = {
   themes: THEMES,
   variants: VARIANTS.map(({ name, label }) => ({ name, label })),
   views: VIEWS,
+  chromeSkin: CHROME.bindings.chrome,
+  chromeVariants: CHROME_VARIANTS.map(({ name, label }) => ({ name, label })),
   cells: results.cells,
   receipts,
   builtAt: new Date().toISOString(),

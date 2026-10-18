@@ -217,9 +217,17 @@ footer { color: var(--fg-soft); font-size: 0.85rem; }
   <section class="wide" aria-labelledby="axe-h">
     <div class="col" style="margin: 0;">
       <h2 id="axe-h">Accessibility scan, every cell</h2>
-      <p class="soft">axe-core (WCAG 2.1 A/AA) on the field widget and on the open dialog. Counts are violated rules.</p>
+      <p class="soft">axe-core (WCAG 2.0–2.2 A/AA) on the field widget and on the open dialog. Counts are violated rules; any violation fails the capture.</p>
     </div>
     <div class="table-wrap"><table id="axe-table"></table></div>
+  </section>
+
+  <section class="wide" aria-labelledby="chrome-h">
+    <div class="col" style="margin: 0; max-width: 760px;">
+      <h2 id="chrome-h">The admin chrome on the Canvas UI skin</h2>
+      <p class="soft">Navigation's sidebar and top bar under Advaita, in light and dark, with more contrast set from the switch in the top bar, and in forced colours (light and dark palettes). Each cell shows the page and the sidebar with keyboard focus; the count is axe's violated rules on the chrome.</p>
+    </div>
+    <div class="grid" id="chrome-grid"></div>
   </section>
 
   <section class="col" aria-labelledby="repro-h">
@@ -314,6 +322,15 @@ function stats() {
   $('#stats').innerHTML = items.map(([b, s]) => `<div class="stat"><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join('');
 }
 
+function chromeGrid() {
+  const cells = (DATA.chromeVariants || []).map((v) => [v, DATA.cells[`chrome/${DATA.chromeSkin}/${v.name}`]]).filter(([, c]) => c);
+  $('#chrome-grid').innerHTML = cells.map(([v, c]) => `<figure class="cell">
+      <figcaption><h3>${esc(v.label)}</h3><span>axe: <b>${c.axe.chrome.length}</b></span></figcaption>
+      <img src="shots/chrome/${esc(v.name)}.jpg" alt="The admin chrome, ${esc(v.label)}" loading="lazy" width="1280" height="860">
+      <img src="shots/chrome/${esc(v.name)}--focus.jpg" alt="The sidebar with keyboard focus, ${esc(v.label)}" loading="lazy">
+    </figure>`).join('');
+}
+
 function axeTable() {
   const head = `<thead><tr><th>Theme</th>${DATA.variants.map((v) => `<th>${esc(v.label)}</th>`).join('')}</tr></thead>`;
   const rows = DATA.themes.map((t) => `<tr><th scope="row">${esc(t.label)}</th>${DATA.variants.map((v) => {
@@ -332,5 +349,6 @@ $('#tokens').textContent = DATA.receipts.tokens;
 $('#built').textContent = `Captured ${new Date(DATA.builtAt).toUTCString()} from the demo site.`;
 stats();
 axeTable();
+chromeGrid();
 render();
 </script>
