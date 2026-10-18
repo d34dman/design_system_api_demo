@@ -587,6 +587,10 @@ advaita_canvas_ui:
       # steps). Fields sit on Radix's surface (darker than the panel), menus
       # and dialogs on the panel, with Radix's light 1px ring. Blue-8 holds
       # 3:1 as the focus ring; accent text is blue-11, the fill blue-9.
+      # The danger fill keeps white text readable: the light red (Radix
+      # red-10 on light), not the contract's dark default made for dark text.
+      color.action.danger: '#ce2c31'
+      color.action.danger-hover: '#b42318'
       palette.accent-1: '#0d1520'
       palette.accent-2: '#172030'
       palette.accent-3: '#122e4e'
@@ -644,3 +648,7 @@ advaita_canvas_ui:
       palette.accent-12: '#113264'
     mode=dark contrast=more:
       color.fg.on-action: '{palette.accent-1}'
+      # Dark text on the fills here, so the danger fill is the contract's
+      # light red again.
+      color.action.danger: '#f28b82'
+      color.action.danger-hover: '#f49991'
