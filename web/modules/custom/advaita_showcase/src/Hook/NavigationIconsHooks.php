@@ -18,8 +18,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  * them. The skin contract's icons map cannot fix this: it maps the contract's
  * own icon names only, and Navigation renders its own `navigation` pack
  * directly (icon('navigation', ...)). So while the chrome skin is
- * advaita_slate, the pack is re-pointed at Phosphor light copies in the
- * Advaita theme, named by Navigation's icon ids.
+ * advaita_slate, the pack is re-pointed at Phosphor light copies in this
+ * module (icons/phosphor-light), named by Navigation's icon ids.
  *
  * The icon pack definitions are cached and do not vary by config, so
  * BindingIconCacheSubscriber clears them when the binding is saved.
@@ -50,7 +50,7 @@ final class NavigationIconsHooks {
    *
    * The alter runs after IconPackManager::processDefinition(), which has
    * already resolved the provider's path and discovered the pack's icons. So
-   * this sets the path fields to the Advaita theme (sources are resolved
+   * this sets the path fields to this module (sources are resolved
    * against 'relative_path') and discovers the icons again.
    *
    * @param array<string, array<string, mixed>> $definitions
@@ -62,12 +62,12 @@ final class NavigationIconsHooks {
       || $this->configFactory->get('design_system_api.binding')->get('chrome.skin') !== self::SKIN) {
       return;
     }
-    $theme_path = $this->pathResolver->getPath('theme', 'advaita');
+    $module_path = $this->pathResolver->getPath('module', 'advaita_showcase');
     $definition = &$definitions['navigation'];
     $definition['description'] = 'Drupal Navigation icons, redrawn in Phosphor light for the slate chrome skin (advaita_showcase).';
     $definition['config']['sources'] = ['icons/phosphor-light/{icon_id}.svg'];
-    $definition['relative_path'] = $theme_path;
-    $definition['absolute_path'] = $this->appRoot . '/' . $theme_path;
+    $definition['relative_path'] = $module_path;
+    $definition['absolute_path'] = $this->appRoot . '/' . $module_path;
     $definition['icons'] = $this->extractorManager
       ->createInstance($definition['extractor'], $definition)
       ->discoverIcons();
