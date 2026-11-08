@@ -19,7 +19,7 @@ import AxeBuilder from '@axe-core/playwright';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const BASE = process.env.DEMO_URL ?? 'https://design-system-api-demo.ddev.site';
-const args = Object.fromEntries(process.argv.slice(2).map((a) => a.replace(/^--/, '').split('=')));
+const args = Object.fromEntries(process.argv.slice(2).map((a) => { const [k, v = 'true'] = a.replace(/^--/, '').split('='); return [k, v]; }));
 const OUT = join(HERE, 'out', 'ui-kit-content', args.tag ?? 'latest');
 
 const VARIANTS = [
@@ -54,6 +54,25 @@ async function axe(page, includes = ['[class*="ui-kit-"]']) {
     .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
     .analyze();
   return result.violations.map((v) => ({ id: v.id, nodes: v.nodes.map((n) => n.target.join(' ')) }));
+}
+
+
+// Compares two PNG screenshots pixel by pixel (content plan m2-e3).
+async function comparePngs(page, a, b) {
+  return page.evaluate(async ([a64, b64]) => {
+    const load = (src) => new Promise((ok, fail) => { const i = new Image(); i.onload = () => ok(i); i.onerror = fail; i.src = 'data:image/png;base64,' + src; });
+    const [ia, ib] = await Promise.all([load(a64), load(b64)]);
+    if (ia.width !== ib.width || ia.height !== ib.height) return { same: false, size: [[ia.width, ia.height], [ib.width, ib.height]] };
+    const data = (img) => { const c = document.createElement('canvas'); c.width = img.width; c.height = img.height; const x = c.getContext('2d'); x.drawImage(img, 0, 0); return x.getImageData(0, 0, c.width, c.height).data; };
+    const da = data(ia), db = data(ib);
+    let diff = 0, maxDelta = 0;
+    for (let i = 0; i < da.length; i += 4) {
+      const delta = Math.max(...[0, 1, 2, 3].map((k) => Math.abs(da[i + k] - db[i + k])));
+      if (delta > 2) diff++;
+      maxDelta = Math.max(maxDelta, delta);
+    }
+    return { same: diff === 0, diff, maxDelta, pixels: da.length / 4 };
+  }, [a.toString('base64'), b.toString('base64')]);
 }
 
 mkdirSync(OUT, { recursive: true });
@@ -96,6 +115,17 @@ for (const variant of VARIANTS) {
     });
     return out;
   });
+  // m2-e3: the provider's icon and UI Kit's, pixel by pixel.
+  const icons = {};
+  for (const pair of await page.locator('.ui-kit-showcase-icon-pair').all()) {
+    const name = await pair.getAttribute('data-icon');
+    // Whole-pixel clips of the 32px boxes, so a subpixel offset can't differ.
+    const shot = async (sel) => { const r = await pair.locator(sel).boundingBox(); return page.screenshot({ clip: { x: Math.round(r.x), y: Math.round(r.y), width: 32, height: 32 } }); };
+    const a = await shot('.ui-kit-showcase-icon-box--provider');
+    const b = await shot('.ui-kit-showcase-icon-box--ui-kit');
+    icons[name] = await comparePngs(page, a, b);
+  }
+  checks[variant.id].icons = icons;
   axeResults[variant.id] = await axe(page, ['.ui-kit-showcase--content', ...(await page.locator('.ui-kit-showcase--media').count() ? ['.ui-kit-showcase--media'] : [])]);
   console.log(variant.id, 'axe', axeResults[variant.id].length, axeResults[variant.id].map((v) => v.id).join(' '));
   await context.close();
@@ -110,6 +140,17 @@ for (const variant of VARIANTS) {
       await demo.context.close();
     }
   }
+}
+if (args.lab) {
+  const { context, page } = await prepare(browser, VARIANTS[0], '/ui-kit/layout-lab');
+  checks.lab = await page.evaluate(() => [...document.querySelectorAll('[data-case^="frame-"]')].map((c) => {
+    const f = c.querySelector('.ui-kit-frame').getBoundingClientRect();
+    const i = c.querySelector('.ui-kit-frame img').getBoundingClientRect();
+    return { case: c.dataset.case, width: Math.round(f.width), ratio: +(f.width / f.height).toFixed(3), imageFills: Math.abs(i.width - f.width) < 1 && Math.abs(i.height - f.height) < 1, overflowsParent: f.width > c.getBoundingClientRect().width + 0.5 };
+  }));
+  await page.locator('[data-case^="frame-"]').first().screenshot({ path: join(OUT, 'lab--frame.png') });
+  console.log('lab', JSON.stringify(checks.lab));
+  await context.close();
 }
 writeFileSync(join(OUT, 'axe.json'), JSON.stringify(axeResults, null, 2) + '\n');
 writeFileSync(join(OUT, 'checks.json'), JSON.stringify(checks, null, 2) + '\n');
