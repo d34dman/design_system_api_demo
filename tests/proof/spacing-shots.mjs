@@ -58,6 +58,7 @@ for (const ctx of CONTEXTS) {
   await page.waitForTimeout(200);
   for (const [name, c] of Object.entries(CASES)) {
     const el = page.locator(c.selector).first();
+    if (!(await el.count())) { console.log(`${ctx.id}: no ${name} on this page, skipped`); continue; }
     await el.scrollIntoViewIfNeeded();
     const box = await el.boundingBox();
     const scroll = await page.evaluate(() => ({ x: scrollX, y: scrollY }));
