@@ -12,6 +12,11 @@
  *   surface    a UI Kit root with a visible background or border around
  *              content, but no padding (D-05).
  *
+ * For information only (not counted): blank, a UI Kit root that renders
+ * nothing because it was given blank values, which render as given (D48);
+ * leaving it out is the caller's call. Gaps between a component's own parts
+ * are out of scope (study U-02).
+ *
  * A UI Kit root is an element with a class ui-kit-<name> (no __ or --).
  *
  * Usage:
@@ -92,7 +97,13 @@ function check() {
         if (!shown(k) || getComputedStyle(k).display === 'contents') continue;
         const r = k.getBoundingClientRect();
         if (r.width < 0.5 || r.height < 0.5) {
-          findings.push({ kind: 'empty-gap', where: label(k), section: section(k), detail: `${describe(k)} renders nothing but takes a ${gap}px gap in ${rootName(parent) ?? parent.tagName.toLowerCase()}` });
+          // Inside a component's own parts (a class with __) the gap is the
+          // component's internal spacing, out of this study's scope (U-02).
+          if ([...parent.classList].some((c) => c.startsWith('ui-kit-') && c.includes('__'))) continue;
+          // A UI Kit root that renders blank values as given (D48) is the
+          // caller's to leave out: reported for information only.
+          const kind = isRoot(k) && k.children.length > 0 ? 'blank' : 'empty-gap';
+          findings.push({ kind, where: label(k), section: section(k), detail: `${describe(k)} renders nothing but takes a ${gap}px gap in ${rootName(parent) ?? parent.tagName.toLowerCase()}${kind === 'blank' ? ' (blank values, rendered as given)' : ''}` });
         }
       }
     }
@@ -154,11 +165,13 @@ writeFileSync(join(OUT, 'findings.json'), JSON.stringify(results, null, 1));
 
 const key = (f) => `${f.kind}|${f.where}|${f.detail}`;
 let total = 0;
-for (const [cell, list] of Object.entries(results)) {
+for (const [cell, all] of Object.entries(results)) {
+  const list = all.filter((f) => f.kind !== 'blank');
   total += list.length;
   const counts = ['touching', 'empty-gap', 'surface'].map((k) => `${k} ${list.filter((f) => f.kind === k).length}`).join(', ');
-  console.log(`${cell} (${roots[cell]} UI Kit roots): ${list.length ? counts : 'nothing found'}`);
-  for (const f of list) console.log(`  [${f.kind}] ${f.section ? `«${f.section}» ` : ''}${f.detail}\n      at ${f.where}`);
+  const info = all.length - list.length;
+  console.log(`${cell} (${roots[cell]} UI Kit roots): ${list.length ? counts : 'nothing found'}${info ? ` (+${info} blank, for information)` : ''}`);
+  for (const f of all) console.log(`  [${f.kind}] ${f.section ? `«${f.section}» ` : ''}${f.detail}\n      at ${f.where}`);
 }
 console.log(`\nTotal: ${total} finding(s) in ${Object.keys(results).length} page/width cells.`);
 
