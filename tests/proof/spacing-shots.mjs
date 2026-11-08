@@ -4,7 +4,8 @@
  * case 2 the badges on the stat tiles and the heading after them
  * (.ui-kit-showcase--normal, with the start of the next section). Seven
  * contexts: light, dark, more contrast, forced colors, RTL, phone width and a
- * 24rem container.
+ * 24rem container. A third case, card-slot, frames the card with a badge and
+ * a paragraph in its content slot (m2-e1).
  *
  * Usage:
  *   cd tests/proof && node spacing-shots.mjs --tag=before
@@ -22,6 +23,7 @@ const args = Object.fromEntries(process.argv.slice(2).map((a) => a.replace(/^--/
 const OUT = join(HERE, 'out', 'spacing', args.tag ?? 'latest', 'shots');
 
 const DESKTOP = { width: 1280, height: 900 };
+const ONLY = args.contexts ? args.contexts.split(',') : null;
 const CONTEXTS = [
   { id: 'light', attrs: {}, viewport: DESKTOP },
   { id: 'dark', attrs: { 'data-ds-mode': 'dark' }, viewport: DESKTOP },
@@ -30,12 +32,14 @@ const CONTEXTS = [
   { id: 'rtl', attrs: { dir: 'rtl' }, viewport: DESKTOP },
   { id: 'phone', attrs: {}, viewport: { width: 390, height: 844 } },
   { id: 'narrow', attrs: {}, viewport: DESKTOP, narrow: true },
-];
+].filter((c) => !ONLY || ONLY.includes(c.id));
 // Each case: the element to frame, and how far below it to extend the shot
 // so the next section's heading (or the gap before it) is in view.
 const CASES = {
   buttons: { selector: '.ui-kit-showcase--actions', below: 80 },
   'badges-stats': { selector: '.ui-kit-showcase--normal', below: 80 },
+  // Several children in card's content slot (m2-e1, D-06).
+  'card-slot': { selector: '.ui-kit-card:has(.ui-kit-card__content > p)', below: 0 },
 };
 
 mkdirSync(OUT, { recursive: true });

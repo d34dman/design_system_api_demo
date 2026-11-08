@@ -5,7 +5,9 @@
  *
  *   touching   two neighbouring siblings that each are or hold a UI Kit root
  *              sit closer than space.2xs (0.25rem): nobody owns the space
- *              between them (D-01, D-06).
+ *              between them (D-01). Inside a component's part (a slot such
+ *              as card's content), one UI Kit root next to any element is
+ *              enough (D-06).
  *   empty-gap  a child of a flex or grid container with a gap that renders
  *              nothing but still takes part in the layout, so it adds a
  *              second gap (D-02).
@@ -22,6 +24,7 @@
  * Usage:
  *   cd tests/proof && node spacing.mjs [--tag=baseline] [--against=baseline]
  *     [--pages=showcase,home] [--widths=desktop,phone] [--strict]
+ *     [--inject=<url-encoded css>]   (a deliberate break, to test the check)
  *
  * Writes out/spacing/<tag>/findings.json and a text summary to stdout.
  * --against prints what is new and what is gone compared with another tag.
@@ -114,7 +117,10 @@ function check() {
       .filter(({ r }) => r.width >= 0.5 && r.height >= 0.5);
     for (let i = 1; i < boxes.length; i++) {
       const a = boxes[i - 1], b = boxes[i];
-      if (!holdsRoot(a.k) || !holdsRoot(b.k)) continue;
+      // Two UI Kit roots anywhere; inside a component's part (a slot such as
+      // card's content), a UI Kit root next to any element (D-06).
+      const inPart = [...parent.classList].some((c) => c.startsWith('ui-kit-') && c.includes('__'));
+      if (!(holdsRoot(a.k) && holdsRoot(b.k)) && !(inPart && (holdsRoot(a.k) || holdsRoot(b.k)))) continue;
       const sameRow = Math.min(a.r.bottom, b.r.bottom) - Math.max(a.r.top, b.r.top) > 1;
       const distance = sameRow
         ? Math.max(b.r.left - a.r.right, a.r.left - b.r.right)
@@ -154,6 +160,8 @@ for (const [wid, viewport] of Object.entries(widths)) {
   const page = await context.newPage();
   for (const [name, path] of Object.entries(pages)) {
     await page.goto(`${BASE}${path}`, { waitUntil: 'networkidle' });
+    // --inject=<css>: a deliberate break, to show the check catches it.
+    if (args.inject) await page.addStyleTag({ content: decodeURIComponent(args.inject) });
     await page.waitForTimeout(150);
     results[`${name}/${wid}`] = await page.evaluate(check);
     roots[`${name}/${wid}`] = await page.evaluate(() => [...document.querySelectorAll('[class*="ui-kit-"]')].filter((el) => [...el.classList].some((c) => /^ui-kit-[a-z0-9]+(?:-[a-z0-9]+)*$/.test(c))).length);
