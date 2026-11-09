@@ -105,8 +105,10 @@ How it works:
 - It also sets `COMPOSER=composer.workspace.json`. That file is generated from
   `composer.json` with a path repository for `../../apps/*` prepended
   (`.ddev/workspace/build-composer-json.php`), and has its own
-  `composer.workspace.lock`. It requires exactly what `composer.json` requires; only the
-  repositories differ, so the committed `composer.json` never references local paths.
+  `composer.workspace.lock`. It requires what `composer.json` requires plus the
+  packages in `.ddev/workspace/requires.json`, which have no drupal.org release yet
+  (`drupal/ui_kit`); move a package into `composer.json` once it has one. The committed
+  `composer.json` never references local paths.
   There is no committed `composer.lock` yet: it can only be resolved once the module's
   `1.0.x` branch is on drupal.org.
 - Generated files are gitignored. After changing `composer.json`, run

@@ -25,7 +25,7 @@ case "${1:-status}" in
     # composer.json + workspace path repositories (prepended, so they win).
     ddev exec php .ddev/workspace/build-composer-json.php
     if [ -f composer.workspace.lock ]; then
-      ddev composer update 'drupal/design_system_api*' drupal/advaita --with-all-dependencies
+      ddev composer update 'drupal/design_system_api*' drupal/advaita drupal/ui_kit --with-all-dependencies
     else
       ddev composer update
     fi
