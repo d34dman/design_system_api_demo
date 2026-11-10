@@ -1,0 +1,16 @@
+<div class="system-card" data-ds-system="{{ system }}">
+  <ul class="system-card__swatches" aria-hidden="true">
+    <li style="background: var(--ds-color-bg-canvas)" title="bg.canvas"></li>
+    <li style="background: var(--ds-color-bg-surface)" title="bg.surface"></li>
+    <li style="background: var(--ds-color-action-primary)" title="action.primary"></li>
+    <li style="background: var(--ds-color-fg-default)" title="fg.default"></li>
+  </ul>
+  <p class="system-card__name">{{ name }}</p>
+  {% if typeface %}<p class="system-card__sample">Aa {{ typeface }}</p>{% endif %}
+  {% if summary %}<p class="system-card__summary">{{ summary }}</p>{% endif %}
+  <p class="system-card__facts">
+    <span>{% trans %}1 token{% plural tokens|default(0) %}@count tokens{% endtrans %}</span>
+    <span>{% if problems|default(0) == 0 %}{{ 'No problems'|t }}{% else %}{% trans %}1 problem{% plural problems %}@count problems{% endtrans %}{% endif %}</span>
+  </p>
+  <button type="button" class="system-card__button ds-button ds-button--primary ds-button--small ui-kit-button ui-kit-button--primary" aria-hidden="true" inert>{{ 'Primary'|t }}</button>
+</div>

@@ -1,0 +1,58 @@
+/**
+ * @file
+ * The dashboard's grid (/admin/dashboard): the stat row, the panel grid with
+ * cells spanning one, two or all columns, and the review queue. The panels,
+ * stats and badges are UI Kit's; only their placement is the dashboard's.
+ */
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+  gap: var(--ds-space-l);
+}
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(22rem, 100%), 1fr));
+  margin-block-start: var(--ds-space-l);
+  gap: var(--ds-space-l);
+}
+.dashboard__cell {
+  display: grid;
+  min-inline-size: 0;
+}
+@media (min-width: 70rem) {
+  .dashboard {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .dashboard__cell--span-2 {
+    grid-column: span 2;
+  }
+}
+.dashboard__cell--span-full {
+  grid-column: 1 / -1;
+}
+.review-list,
+.review-list ul {
+  display: grid;
+  gap: var(--ds-space-s);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.review-item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-space-2xs) var(--ds-space-xs);
+  align-items: center;
+}
+.review-item a {
+  text-decoration: none;
+  font-weight: var(--ds-font-weight-strong);
+}
+.review-item a:hover {
+  text-decoration: underline;
+}
+.review-item__meta {
+  flex-basis: 100%;
+  color: var(--ds-color-fg-soft);
+  font-size: var(--ds-font-size-s);
+}

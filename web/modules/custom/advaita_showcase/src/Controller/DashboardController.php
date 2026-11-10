@@ -104,15 +104,16 @@ final class DashboardController implements ContainerInjectionInterface {
           '#items' => array_map(fn ($m) => $m->toLink()->toRenderable(), $no_alt),
         ] : [
           '#type' => 'component',
-          '#component' => 'advaita:empty-state',
+          '#component' => 'ui_kit:empty-state',
           '#props' => [
-            'heading' => $no_alt_count ? 'Some images have no alternative text' : 'Every image has alternative text',
-            'text' => sprintf('%d media items checked.', $media),
-            'tone' => $no_alt_count ? 'danger' : 'success',
+            'title' => $no_alt_count ? 'Some images have no alternative text' : 'Every image has alternative text',
+            'heading_level' => 3,
+            'description' => sprintf('%d media items checked.', $media),
           ],
         ], '1'),
         'activity' => $this->panel('Activity', 'Latest revisions, newest first.', $this->activity(), 'full'),
       ],
+      '#attached' => ['library' => ['advaita_showcase/dashboard']],
     ];
     $this->cache->applyTo($build);
     /** @var array<string, mixed> $build */
@@ -181,7 +182,7 @@ final class DashboardController implements ContainerInjectionInterface {
   private function stat(string $label, string $value, string $hint, ?string $href, string $tone = 'neutral', ?string $status = NULL): array {
     return [
       '#type' => 'component',
-      '#component' => 'advaita:stat',
+      '#component' => 'ui_kit:stat',
       '#props' => [
         'label' => $label,
         'value' => $value,
@@ -194,7 +195,10 @@ final class DashboardController implements ContainerInjectionInterface {
   }
 
   /**
-   * A panel component.
+   * A panel component in a cell of the dashboard grid.
+   *
+   * The description leads the panel's content (UI Kit's panel has a title
+   * only); the span places the cell in the grid (css/dashboard.css).
    *
    * @param string $heading
    *   The heading.
@@ -212,10 +216,24 @@ final class DashboardController implements ContainerInjectionInterface {
    */
   private function panel(string $heading, string $description, array $content, string $span, array $actions = []): array {
     return [
-      '#type' => 'component',
-      '#component' => 'advaita:panel',
-      '#props' => ['heading' => $heading, 'description' => $description, 'span' => $span],
-      '#slots' => array_filter(['content' => $content, 'actions' => $actions]),
+      '#type' => 'container',
+      '#attributes' => ['class' => ['dashboard__cell', 'dashboard__cell--span-' . $span]],
+      'panel' => [
+        '#type' => 'component',
+        '#component' => 'ui_kit:panel',
+        '#props' => ['title' => $heading],
+        '#slots' => array_filter([
+          'content' => [
+            'description' => [
+              '#type' => 'component',
+              '#component' => 'ui_kit:text',
+              '#props' => ['text' => $description, 'tone' => 'secondary'],
+            ],
+            'content' => $content,
+          ],
+          'actions' => $actions,
+        ]),
+      ],
     ];
   }
 
@@ -281,7 +299,7 @@ final class DashboardController implements ContainerInjectionInterface {
   }
 
   /**
-   * The recently updated table: core's table, badges from the theme.
+   * The recently updated table: core's table, UI Kit's badges.
    *
    * @return array<string, mixed>
    *   A render array.
@@ -311,7 +329,7 @@ final class DashboardController implements ContainerInjectionInterface {
         $node->type->entity?->label(),
         ['data' => [
           '#type' => 'component',
-          '#component' => 'advaita:badge',
+          '#component' => 'ui_kit:badge',
           '#props' => $node->isPublished()
             ? ['label' => 'Published', 'tone' => 'success']
             : ['label' => 'Unpublished', 'tone' => 'neutral'],
@@ -344,8 +362,8 @@ final class DashboardController implements ContainerInjectionInterface {
     if (!$drafts) {
       return [
         '#type' => 'component',
-        '#component' => 'advaita:empty-state',
-        '#props' => ['heading' => 'Nothing to review', 'text' => 'New drafts show up here.', 'tone' => 'success'],
+        '#component' => 'ui_kit:empty-state',
+        '#props' => ['title' => 'Nothing to review', 'heading_level' => 3, 'description' => 'New drafts show up here.'],
       ];
     }
     $items = [];
@@ -362,7 +380,7 @@ final class DashboardController implements ContainerInjectionInterface {
           'title' => $draft->label(),
           'badge' => [
             '#type' => 'component',
-            '#component' => 'advaita:badge',
+            '#component' => 'ui_kit:badge',
             '#props' => [
               'label' => ucfirst(($draft->hasField('moderation_state') ? $draft->get('moderation_state')->getString() : '') ?: 'draft'),
               'tone' => 'warning',
@@ -403,7 +421,7 @@ final class DashboardController implements ContainerInjectionInterface {
       $name .= ': ' . ($bound->skin === NULL ? 'theme' : ($this->skins->get($bound->skin)?->label() ?? $bound->skin));
       $cards[] = [
         '#type' => 'component',
-        '#component' => 'advaita:system-card',
+        '#component' => 'advaita_showcase:system-card',
         '#props' => [
           'name' => $name,
           'system' => $system,
@@ -416,7 +434,7 @@ final class DashboardController implements ContainerInjectionInterface {
     }
     return [
       '#type' => 'component',
-      '#component' => 'design_system_api:tiles',
+      '#component' => 'ui_kit:tiles',
       '#props' => ['gap' => 's', 'min' => 'l'],
       '#slots' => ['content' => $cards],
     ];
@@ -465,14 +483,14 @@ final class DashboardController implements ContainerInjectionInterface {
       $items[] = [
         'time' => $this->dateFormatter->format((int) $revision->getRevisionCreationTime(), 'custom', 'j M, H:i'),
         'datetime' => $this->dateFormatter->format((int) $revision->getRevisionCreationTime(), 'custom', 'c'),
-        'text' => sprintf('%s “%s”', $revision->wasDefaultRevision() ? 'Published' : 'Saved a draft of', $revision->label()),
-        'meta' => trim((string) $revision->getRevisionLogMessage()) ?: sprintf('%s, %s', $revision->type->entity?->label(), $revision->language()->getName()),
+        'title' => sprintf('%s “%s”', $revision->wasDefaultRevision() ? 'Published' : 'Saved a draft of', $revision->label()),
+        'description' => trim((string) $revision->getRevisionLogMessage()) ?: sprintf('%s, %s', $revision->type->entity?->label(), $revision->language()->getName()),
       ];
       if (count($items) === self::ACTIVITY) {
         break;
       }
     }
-    return ['#type' => 'component', '#component' => 'advaita:timeline', '#props' => ['items' => $items]];
+    return ['#type' => 'component', '#component' => 'ui_kit:timeline', '#props' => ['items' => $items]];
   }
 
 }

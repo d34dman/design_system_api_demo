@@ -200,7 +200,7 @@ export const CLIPS = [
   {
     id: 'dashboard', title: 'Dashboard: hover, open a dropbutton, switch to dark and back', path: '/admin/dashboard',
     run: async (page) => {
-      for (const stat of await page.locator('a.stat').all()) {
+      for (const stat of await page.locator('.ui-kit-stat').all()) {
         await stat.hover();
         await page.waitForTimeout(350);
       }

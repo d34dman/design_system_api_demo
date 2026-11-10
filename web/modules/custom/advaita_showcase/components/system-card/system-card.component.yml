@@ -1,0 +1,18 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: System card
+status: experimental
+description: 'Demo dashboard: one design system on this site, drawn in its own tokens (the card is a region of that system).'
+props:
+  type: object
+  required: [name, system]
+  properties:
+    name: { type: string, title: Name }
+    system: { type: string, enum: [site, admin], title: System }
+    summary: { type: [string, 'null'] }
+    tokens: { type: integer }
+    problems: { type: integer }
+    typeface: { type: [string, 'null'] }
+libraryOverrides:
+  # The sample button wears the patterns' and UI Kit's button classes.
+  dependencies:
+    - core/components.ui_kit--button

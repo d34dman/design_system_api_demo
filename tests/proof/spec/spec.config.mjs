@@ -124,11 +124,11 @@ export const COMPONENTS = [
   },
   {
     id: 'badge-success', label: 'Badge, success',
-    drupal: { 'badge-success': { path: '/admin/dashboard', selector: '.badge--success' } },
+    drupal: { 'badge-success': { path: '/admin/dashboard', selector: '.ui-kit-badge--success' } },
   },
   {
     id: 'badge-warning', label: 'Badge, warning',
-    drupal: { 'badge-warning': { path: '/admin/dashboard', selector: '.badge--warning' } },
+    drupal: { 'badge-warning': { path: '/admin/dashboard', selector: '.ui-kit-badge--warning' } },
   },
   { id: 'card', noBase: true, label: 'Card (details, fieldset)', radixBox: { fill: '::before', edge: '::after' }, ignore: ['height', 'paddingInline', 'fontSize', 'fontWeight', 'fontFamily', 'color'], variants: ['details', 'fieldset'] },
   {

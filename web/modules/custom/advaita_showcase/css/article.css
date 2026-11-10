@@ -1,0 +1,97 @@
+/**
+ * @file
+ * The demo content's own fields under Advaita: the article standfirst, media
+ * and tags, the landing page sections, the article links block. Advaita draws
+ * core's node markup only; these rules are for this site's fields.
+ */
+
+/* Full view. */
+.advaita-site .node--view-mode-full .field--name-field-standfirst {
+  text-wrap: pretty;
+  color: var(--ds-color-fg-loud);
+  font-family: var(--ds-font-family-heading);
+  font-size: var(--ds-font-size-l);
+  line-height: calc(var(--ds-font-line-height-tight) + 0.2);
+  max-inline-size: var(--ds-measure-text);
+}
+.advaita-site .node--view-mode-full .field--name-field-media.field__items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--ds-space-s);
+}
+.advaita-site .node--view-mode-full .field--name-field-media img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--ds-radius-l);
+  box-shadow: var(--ds-shadow-raised);
+}
+.advaita-site .node--view-mode-full .field--name-field-media.field__items > .field__item:first-child:nth-last-child(odd) {
+  grid-column: 1 / -1;
+}
+.advaita-site .node--view-mode-full .field--name-field-media.field__items > .field__item:first-child:nth-last-child(odd) img {
+  aspect-ratio: 16 / 9;
+}
+
+/* Landing page sections: a lead, then sections divided by a rule. */
+.advaita-site .field--name-field-sections.field__items {
+  display: grid;
+}
+.advaita-site .field--name-field-sections > .field__item {
+  padding-block: var(--ds-space-l);
+  border-block-start: var(--ds-border-width-s) solid var(--ds-color-border-soft);
+}
+.advaita-site .field--name-field-sections > .field__item:first-child {
+  padding-block-start: 0;
+  text-wrap: pretty;
+  color: var(--ds-color-fg-loud);
+  border-block-start: 0;
+  font-family: var(--ds-font-family-heading);
+  font-size: var(--ds-font-size-l);
+  line-height: calc(var(--ds-font-line-height-tight) + 0.15);
+}
+
+/* Teasers: the image first, the standfirst clamped, no links. */
+.advaita-site .node--view-mode-teaser .field--name-field-media {
+  order: -1;
+  margin-block-end: var(--ds-space-xs);
+}
+.advaita-site .node--view-mode-teaser .field--name-field-standfirst {
+  display: -webkit-box;
+  overflow: hidden;
+  order: 1;
+  color: var(--ds-color-fg-soft);
+  font-size: var(--ds-font-size-s);
+  padding-inline: var(--ds-space-m);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+.advaita-site .node--view-mode-teaser .field--name-field-media > .field__item:not(:first-child),
+.advaita-site .node--view-mode-teaser .block-extra-field-blocknodearticlelinks {
+  display: none;
+}
+.advaita-site .node--view-mode-teaser .field--name-field-media img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+/* Tags as pills. */
+.advaita-site .field--name-field-tags .field__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-space-2xs);
+}
+.advaita-site .field--name-field-tags a {
+  text-decoration: none;
+  border-radius: 999px;
+  background: var(--ds-color-action-primary-soft);
+  font-size: var(--ds-font-size-xs);
+  padding-block: 0.15em;
+  padding-inline: 0.6em;
+}
