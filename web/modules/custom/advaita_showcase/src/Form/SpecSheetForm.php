@@ -57,12 +57,14 @@ final class SpecSheetForm extends FormBase {
         '#tag' => 'button',
         '#attributes' => [
           'type' => 'button',
-          'class' => ['ds-button', 'ds-button--ghost', 'ds-button--icon'],
+          // Markup that sets ds-button itself adds UI Kit's button classes
+          // (the patterns map the rest).
+          'class' => ['ds-button', 'ds-button--ghost', 'ds-button--icon', 'ui-kit-button', 'ui-kit-button--secondary'],
           'data-spec' => 'icon-button-ghost',
         ],
         'icon' => [
           '#type' => 'component',
-          '#component' => 'design_system_api:icon',
+          '#component' => 'ui_kit:icon',
           '#props' => ['name' => 'close', 'label' => $this->t('Close')],
         ],
       ],
