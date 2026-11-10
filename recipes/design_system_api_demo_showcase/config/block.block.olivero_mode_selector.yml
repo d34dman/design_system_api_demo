@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies:
   module:
-    - design_system_api
+    - design_system_api_preferences
   theme:
     - olivero
 id: olivero_mode_selector
@@ -15,7 +15,7 @@ settings:
   id: design_system_api_mode_selector
   label: 'Color mode'
   label_display: '0'
-  provider: design_system_api
+  provider: design_system_api_preferences
   label_display_selector: hidden
   icons_only: true
 visibility: {  }

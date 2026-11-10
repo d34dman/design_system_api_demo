@@ -13,6 +13,9 @@ install:
   - layout_discovery
   - layout_paragraphs
   - canvas
+  # The color mode and contrast selectors (their blocks are placed below for
+  # every theme); the admin chrome shows the switch in its top bar with it.
+  - design_system_api_preferences
   - advaita_showcase
   # Advaita ships its own block layout (config/install), so installing it does
   # not copy the default theme's blocks into regions it doesn't have.
