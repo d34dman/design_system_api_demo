@@ -153,7 +153,7 @@ class DsScopePocHooks {
       return;
     }
     if ($this->systems->formPatterns()) {
-      $attachments['#attached']['library'][] = 'design_system_api/forms';
+      $attachments['#attached']['library'][] = 'design_system_api_patterns/forms';
     }
     if ($strategy === 'fence' || $strategy === 'fence-id') {
       $attachments['#attached']['library'][] = 'ds_scope_poc/' . $strategy;

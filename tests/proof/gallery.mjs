@@ -38,7 +38,7 @@ const receipts = {
 execFileSync('ddev', ['ds-brand', 'off'], { cwd: ROOT, stdio: 'ignore' });
 receipts.lint = strip(run('ddev', ['ds-lint']));
 receipts.registry = readFileSync(join(ROOT, 'design-system/brand/olivero.registry.yml'), 'utf8').trim();
-receipts.tokens = readFileSync(join(ROOT, 'web/modules/contrib/design_system_api/modules/design_system_api_media_library/design_system_api_media_library.tokens.yml'), 'utf8').trim();
+receipts.tokens = readFileSync(join(ROOT, 'web/modules/contrib/design_system_api_media_library/design_system_api_media_library.tokens.yml'), 'utf8').trim();
 
 if (existsSync(DEST)) rmSync(DEST, { recursive: true });
 mkdirSync(join(DEST, 'shots'), { recursive: true });

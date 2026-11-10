@@ -1,4 +1,7 @@
 {
+    "drupal/design_system_api_chrome": "1.x-dev@dev",
+    "drupal/design_system_api_media_library": "1.x-dev@dev",
+    "drupal/design_system_api_patterns": "1.x-dev@dev",
     "drupal/design_system_api_preferences": "1.x-dev@dev",
     "drupal/ui_kit": "1.x-dev@dev"
 }

@@ -5,4 +5,5 @@ package: Testing
 core_version_requirement: ^11.5 || ^12
 dependencies:
   - design_system_api:design_system_api
+  - design_system_api_patterns:design_system_api_patterns
   - drupal:media_library

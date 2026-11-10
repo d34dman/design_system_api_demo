@@ -24,15 +24,17 @@ fi
 
 echo "== All module CSS, as the module's CI gate runs it (expected: pass)"
 (cd "$TOOL" && npm run --silent lint:module) && echo "✔ no problems"
-CHROME="web/modules/contrib/design_system_api/modules/design_system_api_chrome"
+echo "== The implementation projects' CSS (expected: pass)"
+"$STYLELINT" --config "$TOOL/index.js" web/modules/contrib/design_system_api_chrome/css/*.css web/modules/contrib/design_system_api_patterns/css/*.css web/modules/contrib/design_system_api_media_library/css/*.css && echo "✔ no problems"
+CHROME="web/modules/contrib/design_system_api_chrome"
 echo "chrome hex colors:   $(grep -rEoi '#[0-9a-f]{3,8}\b' "$CHROME" --include='*.css' | wc -l | tr -d ' ')"
 echo "chrome theme names:  $(grep -rEiw --exclude-dir=tests 'default_admin|claro|olivero|gin|stark|advaita' "$CHROME" | wc -l | tr -d ' ')"
 echo
 echo "== Seeded bad file (expected: fail)"
 "$STYLELINT" --config "$TOOL/index.js" tests/lint/seeded-bad.css
 echo
-echo "== Receipts: hex values and theme names in the pilot submodule"
-PILOT="web/modules/contrib/design_system_api/modules/design_system_api_media_library"
+echo "== Receipts: hex values and theme names in the pilot"
+PILOT="web/modules/contrib/design_system_api_media_library"
 echo "hex colors:   $(grep -rEoi '#[0-9a-f]{3,8}\b' "$PILOT" --include='*.css' | wc -l | tr -d ' ')"
 echo "theme names:  $(grep -rEiw --exclude-dir=tests 'default_admin|claro|olivero|gin|stark' "$PILOT" | wc -l | tr -d ' ')"
 echo "pilot CSS:    $(cat "$PILOT"/css/*.css | wc -l | tr -d ' ') lines, replacing $(ls web/core/themes/default_admin/css/components/media-library*.css | grep -v pcss | xargs cat | wc -l | tr -d ' ') (Default Admin) + $(cat web/core/themes/claro/css/theme/media-library.css web/core/themes/claro/css/components/media-library.ui.css 2>/dev/null | wc -l | tr -d ' ') (Claro) lines of theme CSS"

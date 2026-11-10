@@ -20,7 +20,7 @@ drush config:set system.site page.front /node -y
 # The stage: Article type, image media, Media Library widget, Arabic (RTL),
 # content editing in the frontend theme.
 drush recipe ../recipes/design_system_api_demo_content
-drush pm:install design_system_api design_system_api_ui design_system_api_default_admin ds_claro_adapter design_system_api_media_library design_system_api_chrome -y
+drush pm:install design_system_api design_system_api_ui design_system_api_default_admin ds_claro_adapter design_system_api_patterns design_system_api_media_library design_system_api_chrome -y
 # Everything else the demo shows: the editorial workflow, the contrib UIs, Canvas,
 # the Advaita theme and its dashboard, the landing page types. It needs the module.
 drush recipe ../recipes/design_system_api_demo_showcase
