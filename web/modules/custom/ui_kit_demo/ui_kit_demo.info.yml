@@ -1,0 +1,8 @@
+name: 'UI Kit demo'
+type: module
+description: 'A sample app built from UI Kit components, to click through: home, sign-in, a content dashboard, a project dashboard with chat, and a form. Sample data only; nothing is stored. Demo site only.'
+package: Design System Demo
+core_version_requirement: ^11.5 || ^12
+dependencies:
+  - drupal:user
+  - ui_kit:ui_kit

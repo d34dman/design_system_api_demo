@@ -1,0 +1,44 @@
+# Sample screens: no site data, nothing stored. Installing grants the permission
+# to everyone (ui_kit_demo.install); revoke it to hide the demo.
+ui_kit_demo.home:
+  path: '/ui-kit/demo'
+  defaults:
+    _controller: '\Drupal\ui_kit_demo\Controller\DemoController::home'
+    _title: 'UI Kit demo'
+  requirements:
+    _permission: 'view ui kit demo'
+ui_kit_demo.login:
+  path: '/ui-kit/demo/login'
+  defaults:
+    _controller: '\Drupal\ui_kit_demo\Controller\DemoController::login'
+    _title: 'Sign in'
+  requirements:
+    _permission: 'view ui kit demo'
+ui_kit_demo.content:
+  path: '/ui-kit/demo/content'
+  defaults:
+    _controller: '\Drupal\ui_kit_demo\Controller\DemoController::content'
+    _title: 'Content'
+  requirements:
+    _permission: 'view ui kit demo'
+ui_kit_demo.projects:
+  path: '/ui-kit/demo/projects'
+  defaults:
+    _controller: '\Drupal\ui_kit_demo\Controller\DemoController::projects'
+    _title: 'Website relaunch'
+  requirements:
+    _permission: 'view ui kit demo'
+ui_kit_demo.article:
+  path: '/ui-kit/demo/article'
+  defaults:
+    _controller: '\Drupal\ui_kit_demo\Controller\DemoController::article'
+    _title: 'New article'
+  requirements:
+    _permission: 'view ui kit demo'
+ui_kit_demo.article_preview:
+  path: '/ui-kit/demo/article-preview'
+  defaults:
+    _controller: '\Drupal\ui_kit_demo\Controller\DemoController::articlePreview'
+    _title: 'Article preview'
+  requirements:
+    _permission: 'view ui kit demo'

@@ -1,0 +1,4 @@
+demo:
+  css:
+    component:
+      css/ui-kit-demo.css: {}

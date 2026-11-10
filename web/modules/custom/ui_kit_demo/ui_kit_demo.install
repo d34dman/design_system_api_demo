@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for the UI Kit demo.
+ */
+
+declare(strict_types=1);
+
+use Drupal\user\Entity\Role;
+use Drupal\user\RoleInterface;
+
+/**
+ * Implements hook_install().
+ *
+ * The demo is sample data only, so everyone may see it once it is on.
+ */
+function ui_kit_demo_install(): void {
+  foreach (Role::loadMultiple([RoleInterface::ANONYMOUS_ID, RoleInterface::AUTHENTICATED_ID]) as $role) {
+    $role->grantPermission('view ui kit demo')->save();
+  }
+}

@@ -1,0 +1,239 @@
+/* UI Kit demo: the app frame and the stand-ins for parts UI Kit doesn't ship
+   (Gaps). Not UI Kit API: candidates get their own component CSS when they
+   ship, and the stand-in here goes. */
+
+/* @provider design_system_api */
+.ui-kit-demo {
+  --_canvas: var(--ds-color-bg-canvas);
+  --_surface: var(--ds-color-bg-surface);
+  --_text: var(--ds-color-fg-default);
+  --_loud: var(--ds-color-fg-loud);
+  --_soft: var(--ds-color-fg-soft);
+  --_border: var(--ds-color-border-soft);
+  --_border-loud: var(--ds-color-border-loud);
+  --_accent: var(--ds-color-action-primary);
+  --_on-accent: var(--ds-color-fg-on-action);
+  --_gap-outline: var(--ds-color-status-warning);
+  --_gap-label: var(--ds-color-status-warning-soft);
+  --_focus: var(--ds-color-focus);
+  --_focus-width: var(--ds-focus-ring-width);
+  --_focus-offset: var(--ds-focus-ring-offset);
+  --_radius-s: var(--ds-radius-s);
+  --_radius-m: var(--ds-radius-m);
+  --_radius-l: var(--ds-radius-l);
+  --_border-width: var(--ds-border-width-s);
+  --_space-2xs: var(--ds-space-2xs);
+  --_space-xs: var(--ds-space-xs);
+  --_space-s: var(--ds-space-s);
+  --_space-m: var(--ds-space-m);
+  --_space-l: var(--ds-space-l);
+  --_space-xl: var(--ds-space-xl);
+  --_size-s: var(--ds-font-size-s);
+  --_size-l: var(--ds-font-size-l);
+  --_weight-strong: var(--ds-font-weight-strong);
+  --_sticky: var(--ds-layer-sticky);
+}
+/* @end-provider */
+
+/* Text and background pairs are the ones the provider holds for contrast:
+   default and soft text on the canvas, link and primary text on a surface. */
+
+/* The app frame: a rail with the navigation, the screen beside it. */
+.ui-kit-demo {
+  box-sizing: border-box;
+  min-block-size: 100vh;
+  color: var(--_text);
+  background: var(--_canvas);
+}
+.ui-kit-demo--app {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+}
+.ui-kit-demo-rail {
+  position: sticky;
+  z-index: var(--_sticky);
+  inset-block-start: 0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  block-size: 100vh;
+  padding: var(--_space-l) var(--_space-m);
+  border-inline-end: var(--_border-width) solid var(--_border);
+  background: var(--_surface);
+  gap: var(--_space-l);
+}
+.ui-kit-demo-main {
+  min-inline-size: 0;
+  padding: var(--_space-xl);
+}
+.ui-kit-demo-main:focus {
+  outline: none;
+}
+/* The screen's column is ui_kit:center (measure l) around a ui_kit:stack;
+   a form reads better narrow, at the start of that column. */
+.ui-kit-demo-main--narrow {
+  max-inline-size: 48rem;
+}
+
+/* Sign-in: one column in the middle of the window. */
+.ui-kit-demo--login .ui-kit-demo-main {
+  display: grid;
+  align-content: center;
+  box-sizing: border-box;
+  min-block-size: 100vh;
+}
+.ui-kit-demo-login {
+  inline-size: min(100%, 26rem);
+}
+
+/* Small windows: the rail becomes a bar above the screen. */
+@media (max-width: 48rem) {
+  .ui-kit-demo--app {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ui-kit-demo-rail {
+    position: static;
+    padding: var(--_space-s) var(--_space-m);
+    border-inline-end: 0;
+    border-block-end: var(--_border-width) solid var(--_border);
+    block-size: auto;
+    gap: var(--_space-s);
+  }
+  .ui-kit-demo-toggle {
+    align-self: start;
+  }
+  .ui-kit-demo-main {
+    padding: var(--_space-m);
+  }
+}
+
+.ui-kit-demo-brand {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  color: var(--_loud);
+  font-size: var(--_size-l);
+  font-weight: var(--_weight-strong);
+  gap: var(--_space-xs);
+}
+.ui-kit-demo-brand__mark {
+  border-radius: var(--_radius-s);
+  background: var(--_accent);
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+}
+.ui-kit-demo-toggle {
+  margin-block-start: auto;
+  padding: var(--_space-xs) var(--_space-s);
+  text-decoration: none;
+  color: var(--_soft);
+  border: var(--_border-width) dashed var(--_border-loud);
+  border-radius: var(--_radius-m);
+  font-size: var(--_size-s);
+}
+.ui-kit-demo-toggle[data-on="true"] {
+  color: var(--_text);
+  border-style: solid;
+}
+.ui-kit-demo-toggle:hover {
+  color: var(--_text);
+}
+.ui-kit-demo-toggle:focus-visible {
+  outline: var(--_focus-width) solid var(--_focus);
+  outline-offset: var(--_focus-offset);
+}
+
+/* A titled section: heading and line above the content. */
+.ui-kit-demo-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--_space-s);
+}
+
+/* Lists the stand-ins draw. */
+.ui-kit-demo-conversation,
+.ui-kit-demo-chart__bars {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Bar chart. */
+.ui-kit-demo-chart {
+  margin: 0;
+}
+.ui-kit-demo-chart__bars {
+  display: grid;
+  block-size: 10rem;
+  grid-auto-columns: 1fr;
+  grid-auto-flow: column;
+  gap: var(--_space-2xs);
+}
+.ui-kit-demo-chart__bars li {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-inline-size: 0;
+}
+.ui-kit-demo-chart__bar {
+  align-self: end;
+  border-radius: var(--_radius-s) var(--_radius-s) 0 0;
+  background: var(--_accent);
+}
+.ui-kit-demo-chart__label {
+  overflow: hidden;
+  text-align: center;
+  color: var(--_soft);
+  font-size: var(--_size-s);
+}
+
+/* Conversation. */
+.ui-kit-demo-conversation {
+  display: grid;
+  gap: var(--_space-m);
+}
+.ui-kit-demo-conversation__message {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: var(--_space-s);
+}
+.ui-kit-demo-conversation p {
+  margin: 0;
+}
+.ui-kit-demo-conversation__meta {
+  color: var(--_soft);
+  font-size: var(--_size-s);
+}
+.ui-kit-demo-conversation__meta strong {
+  color: var(--_loud);
+}
+
+/* "Show what's missing": outline each stand-in and name its gap. */
+.ui-kit-demo--gaps [data-ui-kit-gap] {
+  position: relative;
+  outline: 2px dashed var(--_gap-outline);
+  outline-offset: 2px;
+}
+.ui-kit-demo--gaps [data-ui-kit-gap]::after {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  padding: 0 var(--_space-2xs);
+  content: attr(data-ui-kit-gap);
+  color: var(--_gap-outline);
+  background: var(--_gap-label);
+  font-size: var(--_size-s);
+  line-height: 1.4;
+}
+
+@media (forced-colors: active) {
+  .ui-kit-demo-chart__bar {
+    forced-color-adjust: none;
+    color: CanvasText;
+    border: 1px solid CanvasText;
+    background: Canvas;
+  }
+  .ui-kit-demo-chart__bar {
+    background: Highlight;
+  }
+}
