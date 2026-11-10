@@ -74,7 +74,7 @@ adapters, then the showcase recipe and the content) and prints a one-time login 
 Everything the demo shows comes from these steps; nothing is set up by hand. The admin account is `admin` / `admin`; this is a local demo,
 never expose it.
 
-This uses the `1.0.x-dev` release from drupal.org, so it needs the module's `1.0.x`
+This uses the `1.x-dev` release from drupal.org, so it needs the module's `1.x`
 branch to be published there.
 
 ## Switching admin themes
@@ -110,7 +110,7 @@ How it works:
   (`drupal/ui_kit`); move a package into `composer.json` once it has one. The committed
   `composer.json` never references local paths.
   There is no committed `composer.lock` yet: it can only be resolved once the module's
-  `1.0.x` branch is on drupal.org.
+  `1.x` branch is on drupal.org.
 - Generated files are gitignored. After changing `composer.json`, run
   `ddev workspace-mode on` again to regenerate.
 
