@@ -57,8 +57,8 @@ What that means here:
 
 This repository is a showcase and test bed, not a release. It owns everything that
 only makes sense for the demo: the demo content and its theme pieces, the Claro
-adapter example, the two-design-systems test setup and the proof gallery. UI Kit's
-sample app is to move here from UI Kit. Nothing a real site needs should live here;
+adapter example, the two-design-systems test setup, the proof gallery and UI Kit's
+sample app (`web/modules/custom/ui_kit_demo`, `/ui-kit/demo`). Nothing a real site needs should live here;
 that belongs in one of the drupal.org projects.
 
 
@@ -161,8 +161,9 @@ mode the checkout `apps/advaita`, installed at `web/themes/contrib/advaita`) is 
 theme (admin and default theme at once) that carries no values: its look is six skins in `advaita.skins.yml` (paper, indigo, ember,
 canvas, atelier and slate), bound by the site. The showcase module
 (`web/modules/custom/advaita_showcase`) adds a dashboard (`/admin/dashboard`) and a
-spec sheet of every control (`/admin/advaita/spec`), both drawn with Advaita's
-components.
+spec sheet of every control (`/admin/advaita/spec`). The dashboard is drawn with UI
+Kit's components (stat, panel, badge, empty state, timeline, tiles) and the module's own
+`advaita_showcase:system-card`; its grid is the module's `css/dashboard.css`.
 
 ```bash
 ddev drush ds:bind site advaita_paper      # the site: warm paper, deep green
@@ -183,6 +184,9 @@ Demo-only code, kept out of the module on purpose:
   thin Phosphor icons while the chrome wears the slate skin, and
   `BindingIconCacheSubscriber` clears the icon caches when the chrome skin changes.
 - `advaita/js/dropbutton.js` rebuilds core's dropbutton as a split button with a menu.
+- `advaita_showcase`'s `css/article.css` draws the demo content's own fields under
+  Advaita (standfirst, media, tags, landing page sections); Advaita draws only core's
+  node markup.
 
 `tests/proof/advaita.mjs` binds paper and indigo, captures, swaps the chrome to ember
 (`out/advaita-skin-swap/`) and binds both contexts back to `theme` at the end;
@@ -194,7 +198,7 @@ Demo-only code, kept out of the module on purpose:
 |---|---|
 | Drupal 11.5.0-beta1 (with the Design Tokens API), Standard profile, Olivero + Default Admin, Claro installed | Ready |
 | Demo content: *Meridian*, a magazine about architecture, design and places. `scripts/demo-content.php` (after the recipe `recipes/design_system_api_demo_content`) adds a standfirst and body to Article, 12 articles by four writers, 26 photos from `assets/demo-photos` (Unsplash License, see `CREDITS.md` there), Arabic (RTL) translations of the first two, a pending draft on node 2, a landing page built from paragraphs (`/about`), a Layout Paragraphs page (`/issue-14`) and a Canvas page (`/subscribe`). Safe to run again: `ddev drush php:script ../scripts/demo-content.php` | Ready |
-| Showcase (`recipes/design_system_api_demo_showcase`): editorial workflow on articles, Coffee, Masquerade (block on node 2), Paragraphs and Layout Paragraphs (the landing page types), Environment Indicator, Canvas, the Advaita theme and `advaita_showcase` | Ready |
+| Showcase (`recipes/design_system_api_demo_showcase`): editorial workflow on articles, Coffee, Masquerade (block on node 2), Paragraphs and Layout Paragraphs (the landing page types), Environment Indicator, Canvas, the Advaita theme, `advaita_showcase` and UI Kit's sample app (`ui_kit_demo`) | Ready |
 | Design System API, Default Admin adapter, Media Library pilot, admin chrome; Claro adapter as the demo's own example (`web/modules/custom/ds_claro_adapter`) | Ready |
 | Author brand registry for Olivero (`design-system/brand/`) | Ready |
 | Proof gallery (`tests/proof/`) | Ready |

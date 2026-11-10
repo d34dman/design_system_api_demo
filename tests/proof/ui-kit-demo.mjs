@@ -1,5 +1,5 @@
 /**
- * UI Kit's demo app (/ui-kit/demo, submodule ui_kit_demo) under the front-end
+ * UI Kit's demo app (/ui-kit/demo, the demo's module ui_kit_demo) under the front-end
  * theme in six variants: light, dark, more contrast, dark with more contrast,
  * forced colors and RTL. One full-page screenshot per screen and variant, one
  * more per screen with "Show what's missing" on (light), and an axe scan per
