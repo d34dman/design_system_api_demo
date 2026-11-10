@@ -74,8 +74,14 @@ adapters, then the showcase recipe and the content) and prints a one-time login 
 Everything the demo shows comes from these steps; nothing is set up by hand. The admin account is `admin` / `admin`; this is a local demo,
 never expose it.
 
-This uses the `1.x-dev` release from drupal.org, so it needs the module's `1.x`
-branch to be published there.
+This installs the latest alpha releases from drupal.org: the Design System API, its
+implementation projects (admin chrome, patterns, Media Library, display preferences),
+UI Kit and Advaita. The admin chrome and the Media Library are required as
+`drupal/design_system_api_chrome-design_system_api_chrome` and
+`drupal/design_system_api_media_library-design_system_api_media_library`: their short
+names still point at the metapackages made while they were submodules, which install
+no code ([infrastructure issue 3606968](https://git.drupalcode.org/project/infrastructure/-/work_items/3606968)). `composer.json` installs them into
+`web/modules/contrib/<module>` all the same.
 
 ## Switching admin themes
 
@@ -105,12 +111,12 @@ How it works:
 - It also sets `COMPOSER=composer.workspace.json`. That file is generated from
   `composer.json` with a path repository for `../../apps/*` prepended
   (`.ddev/workspace/build-composer-json.php`), and has its own
-  `composer.workspace.lock`. It requires what `composer.json` requires plus the
-  packages in `.ddev/workspace/requires.json`, which have no drupal.org release yet
-  (`drupal/ui_kit`); move a package into `composer.json` once it has one. The committed
-  `composer.json` never references local paths.
-  There is no committed `composer.lock` yet: it can only be resolved once the module's
-  `1.x` branch is on drupal.org.
+  `composer.workspace.lock`. `.ddev/workspace/requires.json` pins each checkout
+  (`1.x-dev`) and wins over `composer.json`, whose constraints take releases; a
+  checkout also replaces the longer `drupal/<project>-<module>` name, so the chrome
+  and the Media Library aren't installed twice. List every checkout there. The
+  committed `composer.json` never references local paths.
+  There is no committed `composer.lock` yet.
 - Generated files are gitignored. After changing `composer.json`, run
   `ddev workspace-mode on` again to regenerate.
 

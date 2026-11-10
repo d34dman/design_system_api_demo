@@ -20,8 +20,12 @@
         "drupal/coffee": "^2.0",
         "drupal/core-composer-scaffold": "11.5.0-beta1",
         "drupal/core-recommended": "11.5.0-beta1",
-        "drupal/advaita": "1.x-dev@dev",
-        "drupal/design_system_api": "1.x-dev@dev",
+        "drupal/advaita": "^1.0@alpha",
+        "drupal/design_system_api": "^1.0@alpha",
+        "drupal/design_system_api_chrome-design_system_api_chrome": "^1.0.0-alpha8",
+        "drupal/design_system_api_media_library-design_system_api_media_library": "^1.0.0-alpha8",
+        "drupal/design_system_api_patterns": "^1.0@alpha",
+        "drupal/design_system_api_preferences": "^1.0@alpha",
         "drupal/environment_indicator": "^4.0",
         "drupal/eu_cookie_compliance": "^1.29",
         "drupal/field_group": "^4.0",
@@ -38,6 +42,7 @@
         "drupal/select2": "^2.0",
         "drupal/sitewide_alert": "^3.1",
         "drupal/webform": "^6.3",
+        "drupal/ui_kit": "^1.0@alpha",
         "drush/drush": "^13.8"
     },
     "conflict": {
@@ -63,6 +68,12 @@
             }
         },
         "installer-paths": {
+            "web/modules/contrib/design_system_api_chrome": [
+                "drupal/design_system_api_chrome-design_system_api_chrome"
+            ],
+            "web/modules/contrib/design_system_api_media_library": [
+                "drupal/design_system_api_media_library-design_system_api_media_library"
+            ],
             "web/core": [
                 "type:drupal-core"
             ],

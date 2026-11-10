@@ -5,8 +5,11 @@
  * Builds composer.workspace.json: composer.json plus the workspace path repositories.
  *
  * The path repositories are prepended so local checkouts win over drupal.org.
- * requires.json adds packages that exist only as workspace checkouts so far (no
- * drupal.org release yet); move each into composer.json once it has one.
+ * requires.json pins the workspace checkouts (1.x-dev, from the path
+ * repositories) and wins over composer.json, whose constraints take releases.
+ * A checkout replaces the drupal/<project>-<module> name packages.drupal.org
+ * gives a project whose name an old submodule metapackage holds (chrome, Media
+ * Library; drupal.org infrastructure issue 3606968), so both aren't installed.
  * Run by `ddev workspace-mode on`.
  */
 
@@ -18,7 +21,11 @@ $workspace = json_decode((string) file_get_contents(__DIR__ . '/repositories.jso
 $requires = json_decode((string) file_get_contents(__DIR__ . '/requires.json'), TRUE, 512, JSON_THROW_ON_ERROR);
 
 $composer['repositories'] = array_merge($workspace, $composer['repositories'] ?? []);
-$composer['require'] = ($composer['require'] ?? []) + $requires;
+$require = $composer['require'] ?? [];
+foreach (array_keys($requires) as $name) {
+  unset($require[$name . '-' . substr($name, strlen('drupal/'))]);
+}
+$composer['require'] = $requires + $require;
 ksort($composer['require']);
 
 file_put_contents(
