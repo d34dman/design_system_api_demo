@@ -1,0 +1,7 @@
+name: 'Demo: Claro adapter'
+type: module
+description: 'Example adapter: fills the design contract with Claro''s own values, so contract-based UI looks native in Claro. Shows how to adapt a theme that knows nothing about the contract.'
+package: Design System Demo
+core_version_requirement: ^11.5 || ^12
+dependencies:
+  - design_system_api:design_system_api
