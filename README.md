@@ -53,6 +53,15 @@ What that means here:
 - Standard installs no frontend theme and no content types (as on 12); the demo content
   comes as a recipe.
 
+## Scope
+
+This repository is a showcase and test bed, not a release. It owns everything that
+only makes sense for the demo: the demo content and its theme pieces, the Claro
+adapter example, the two-design-systems test setup and the proof gallery. UI Kit's
+sample app is to move here from UI Kit. Nothing a real site needs should live here;
+that belongs in one of the drupal.org projects.
+
+
 ## Requirements
 
 - [DDEV](https://ddev.readthedocs.io/) 1.25 or newer, with Docker running.
