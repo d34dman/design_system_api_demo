@@ -198,7 +198,7 @@ Demo-only code, kept out of the module on purpose:
 |---|---|
 | Drupal 11.5.0-beta1 (with the Design Tokens API), Standard profile, Olivero + Default Admin, Claro installed | Ready |
 | Demo content: *Meridian*, a magazine about architecture, design and places. `scripts/demo-content.php` (after the recipe `recipes/design_system_api_demo_content`) adds a standfirst and body to Article, 12 articles by four writers, 26 photos from `assets/demo-photos` (Unsplash License, see `CREDITS.md` there), Arabic (RTL) translations of the first two, a pending draft on node 2, a landing page built from paragraphs (`/about`), a Layout Paragraphs page (`/issue-14`) and a Canvas page (`/subscribe`). Safe to run again: `ddev drush php:script ../scripts/demo-content.php` | Ready |
-| Showcase (`recipes/design_system_api_demo_showcase`): editorial workflow on articles, Coffee, Masquerade (block on node 2), Paragraphs and Layout Paragraphs (the landing page types), Environment Indicator, Canvas, the Advaita theme, `advaita_showcase` and UI Kit's sample app (`ui_kit_demo`) | Ready |
+| Showcase (`recipes/design_system_api_demo_showcase`): editorial workflow on articles, Coffee, Masquerade (block on node 2), Paragraphs and Layout Paragraphs (the landing page types), Environment Indicator, Canvas, the Advaita theme, `advaita_showcase` UI Kit's sample app (`ui_kit_demo`), and the display preferences selectors for every theme (Display preferences' own recipes) | Ready |
 | Design System API, Default Admin adapter, Media Library pilot, admin chrome; Claro adapter as the demo's own example (`web/modules/custom/ds_claro_adapter`) | Ready |
 | Author brand registry for Olivero (`design-system/brand/`) | Ready |
 | Proof gallery (`tests/proof/`) | Ready |
