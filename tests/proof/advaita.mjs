@@ -79,6 +79,15 @@ function ddev(...cmd) {
   return execFileSync('ddev', cmd, { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
 }
 
+// The color mode, through the display preferences' mode selector (Advaita has
+// no toggle of its own, D61). Saved for user 1; the run puts user 1's saved
+// preferences back at the end.
+async function setMode(page, mode) {
+  const saved = page.waitForResponse((r) => r.url().includes('/design-system/preferences') && r.request().method() === 'POST');
+  await page.locator(`[data-ds-preference="mode"] input[value="${mode}"]`).first().check();
+  if (!(await saved).ok()) throw new Error(`The mode selector could not save ${mode}.`);
+}
+
 async function settle(page) {
   await page.mouse.move(0, 0);
   await page.evaluate(() => document.fonts.ready);
@@ -146,10 +155,10 @@ export const FEELS = [
   {
     id: 'mode-toggle', title: 'The admin switched to dark, the site card keeps its own values', path: '/admin/dashboard',
     run: async (page) => {
-      await page.locator('[data-advaita-mode-toggle]').click();
+      await setMode(page, 'dark');
       await page.locator('.system-card').first().scrollIntoViewIfNeeded();
     },
-    after: async (page) => { await page.evaluate(() => localStorage.removeItem('advaita.mode')); },
+    after: async (page) => { await setMode(page, 'system'); },
   },
   {
     id: 'admin-on-site', title: 'Admin UI on a site page: Paragraphs in the admin system inside a site form', path: '/node/3/edit',
@@ -209,12 +218,12 @@ export const CLIPS = [
       await page.keyboard.press('Escape');
       await page.locator('.dropbutton-toggle button').first().click();
       await page.waitForTimeout(400);
-      await page.locator('[data-advaita-mode-toggle]').click();
+      await setMode(page, 'dark');
       await page.waitForTimeout(1400);
       await page.mouse.wheel(0, 500);
       await page.waitForTimeout(1200);
       await page.mouse.wheel(0, -500);
-      await page.locator('[data-advaita-mode-toggle]').click();
+      await setMode(page, 'light');
       await page.waitForTimeout(1000);
     },
   },
@@ -245,6 +254,10 @@ ddev('drush', 'config:set', 'node.settings', 'use_admin_theme', '1', '-y');
 ddev('drush', 'ds:bind', 'site', 'advaita_paper');
 ddev('drush', 'ds:bind', 'chrome', 'advaita_indigo');
 ddev('ds-scope', 'none');
+// User 1's saved display preferences, put back at the end (setMode() saves).
+const php = (code) => ddev('drush', 'php:eval', code);
+const preferences = php("echo base64_encode(serialize(Drupal::service('user.data')->get('design_system_api', 1, 'preferences')));");
+php("Drupal::service('user.data')->delete('design_system_api', 1, 'preferences');");
 
 const report = { generated: new Date().toISOString(), pages: {}, feels: {}, clips: {}, coverage: {} };
 const save = () => writeFileSync(join(OUT, only ? `report-${only}.json` : 'report.json'), JSON.stringify(report, null, 1));
@@ -451,6 +464,8 @@ if (!only || only === 'icons') {
 finally {
   // Whatever got captured is kept, and the site goes back to its usual state.
   save();
+  php("Drupal::service('user.data')->delete('design_system_api', 1, 'preferences');");
+  php(`$v = unserialize(base64_decode('${preferences}')); if ($v !== NULL) { Drupal::service('user.data')->set('design_system_api', 1, 'preferences', $v); }`);
   ddev('drush', 'ds:bind', 'site', 'theme');
   ddev('drush', 'ds:bind', 'chrome', 'theme');
   ddev('drush', 'config:set', 'system.theme', 'default', 'olivero', '-y');
