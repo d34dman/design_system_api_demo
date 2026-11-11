@@ -3,6 +3,14 @@ description: 'Everything the demo shows beyond core: the editorial workflow on a
 type: 'Site'
 recipes:
   - core/recipes/editorial_workflow
+  # The color mode and contrast selectors, placed for every theme the demo
+  # shows (the project's recipes; it installs the project, and the admin chrome
+  # shows the switch in its top bar with it). Each installs its theme if it is
+  # not installed yet, Advaita included.
+  - modules/contrib/design_system_api_preferences/recipes/design_system_api_preferences_olivero
+  - modules/contrib/design_system_api_preferences/recipes/design_system_api_preferences_advaita
+  - modules/contrib/design_system_api_preferences/recipes/design_system_api_preferences_claro
+  - modules/contrib/design_system_api_preferences/recipes/design_system_api_preferences_default_admin
 install:
   - path
   - coffee
@@ -13,9 +21,6 @@ install:
   - layout_discovery
   - layout_paragraphs
   - canvas
-  # The color mode and contrast selectors (their blocks are placed below for
-  # every theme); the admin chrome shows the switch in its top bar with it.
-  - design_system_api_preferences
   - advaita_showcase
   # UI Kit's sample app (/ui-kit/demo), the demo's own module.
   - ui_kit_demo
