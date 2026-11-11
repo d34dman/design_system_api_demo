@@ -47,6 +47,10 @@ const SWAP_OUT = join(HERE, 'out', 'advaita-skin-swap');
 const ICONS_OUT = join(HERE, 'out', 'advaita-icons');
 const BASE = process.env.DEMO_URL ?? 'https://design-system-api-demo.ddev.site';
 const args = Object.fromEntries(process.argv.slice(2).map((a) => a.replace(/^--/, '').split('=')));
+// The demo's landing page (Paragraphs, an author field). Its node ID depends on
+// the install, so it is looked up.
+const LANDING = execFileSync('ddev', ['drush', 'php:eval', "$ids = Drupal::entityQuery('node')->accessCheck(FALSE)->condition('type', 'landing')->sort('nid')->range(0, 1)->execute(); echo reset($ids) ?: '';"], { cwd: ROOT, encoding: 'utf8' }).trim();
+if (!LANDING) throw new Error('No landing page on the site: run ddev install-demo.');
 
 // What each page is, and which system renders it.
 export const PAGES = [
@@ -55,7 +59,7 @@ export const PAGES = [
   { id: 'node-edit', path: '/node/2/edit', system: 'admin', title: 'Edit an article', note: 'Node form with Media Library widget and moderation' },
   { id: 'blocks', path: '/admin/structure/block', system: 'admin', title: 'Block layout', note: 'Tabledrag, selects, dropbuttons' },
   { id: 'article', path: '/node/2', system: 'site', title: 'Article', note: 'The site system, with the switch-user block' },
-  { id: 'landing', path: '/node/3', system: 'site', title: 'Landing page', note: 'Paragraphs content' },
+  { id: 'landing', path: `/node/${LANDING}`, system: 'site', title: 'Landing page', note: 'Paragraphs content' },
 ];
 
 export const MODES = [
@@ -146,7 +150,7 @@ export const FEELS = [
     },
   },
   {
-    id: 'autocomplete', title: 'Autocomplete suggestions', path: '/node/3/edit',
+    id: 'autocomplete', title: 'Autocomplete suggestions', path: `/node/${LANDING}/edit`,
     run: async (page) => {
       await page.locator('summary', { hasText: 'Authoring information' }).click();
       const field = page.locator('#edit-uid-0-target-id');
@@ -165,7 +169,7 @@ export const FEELS = [
     after: async (page) => { await setMode(page, 'system'); },
   },
   {
-    id: 'admin-on-site', title: 'Admin UI on a site page: Paragraphs in the admin system inside a site form', path: '/node/3/edit',
+    id: 'admin-on-site', title: 'Admin UI on a site page: Paragraphs in the admin system inside a site form', path: `/node/${LANDING}/edit`,
     frontendForms: true,
     run: async (page) => { await page.locator('.field--widget-paragraphs').scrollIntoViewIfNeeded(); },
   },
@@ -179,7 +183,7 @@ export const SWAP = {
     { id: 'dashboard', path: '/admin/dashboard', title: 'Dashboard' },
     { id: 'node-edit', path: '/node/2/edit', title: 'Edit an article' },
     { id: 'article', path: '/node/2', title: 'Article with the switch-user block (admin region on a site page)' },
-    { id: 'landing-edit', path: '/node/3/edit', title: 'Paragraphs in the admin system inside a site form', frontendForms: true, focus: '.field--widget-paragraphs', icons: '.field--widget-paragraphs' },
+    { id: 'landing-edit', path: `/node/${LANDING}/edit`, title: 'Paragraphs in the admin system inside a site form', frontendForms: true, focus: '.field--widget-paragraphs', icons: '.field--widget-paragraphs' },
   ],
   modes: ['light', 'dark'],
 };
