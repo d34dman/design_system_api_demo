@@ -109,18 +109,20 @@ export const COMPONENTS = [
   // Table.
   { id: 'table-header', label: 'Table header cell', ignore: ['radius', 'elevated'] },
   { id: 'table-cell', label: 'Table cell', ignore: ['radius', 'elevated'] },
-  // Feedback and containers.
+  // Feedback and containers. Advaita draws core's messages as UI Kit's
+  // message (status → success, error → danger); .message--* is core's
+  // markup in a theme that doesn't.
   {
     id: 'callout-status', label: 'Message, status',
-    drupal: { 'callout-status': { selector: '[data-drupal-messages] .message--status' } },
+    drupal: { 'callout-status': { selector: '[data-drupal-messages] :is(.ui-kit-message--success, .message--status)' } },
   },
   {
     id: 'callout-error', label: 'Message, error',
-    drupal: { 'callout-error': { selector: '[data-drupal-messages] .message--error' } },
+    drupal: { 'callout-error': { selector: '[data-drupal-messages] :is(.ui-kit-message--danger, .message--error)' } },
   },
   {
     id: 'callout-warning', label: 'Message, warning',
-    drupal: { 'callout-warning': { selector: '[data-drupal-messages] .message--warning' } },
+    drupal: { 'callout-warning': { selector: '[data-drupal-messages] :is(.ui-kit-message--warning, .message--warning)' } },
   },
   {
     id: 'badge-success', label: 'Badge, success',
