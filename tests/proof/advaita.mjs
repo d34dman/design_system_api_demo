@@ -83,9 +83,13 @@ function ddev(...cmd) {
 // no toggle of its own, D61). Saved for user 1; the run puts user 1's saved
 // preferences back at the end.
 async function setMode(page, mode) {
-  const saved = page.waitForResponse((r) => r.url().includes('/design-system/preferences') && r.request().method() === 'POST');
-  await page.locator(`[data-ds-preference="mode"] input[value="${mode}"]`).first().check();
-  if (!(await saved).ok()) throw new Error(`The mode selector could not save ${mode}.`);
+  // Waited on together, so a failed click can't leave the response wait
+  // rejecting unhandled (Node would exit before the restore at the end).
+  const [saved] = await Promise.all([
+    page.waitForResponse((r) => r.url().includes('/design-system/preferences') && r.request().method() === 'POST'),
+    page.locator(`[data-ds-preference="mode"] input[value="${mode}"]:visible`).first().check(),
+  ]);
+  if (!saved.ok()) throw new Error(`The mode selector could not save ${mode}.`);
 }
 
 async function settle(page) {

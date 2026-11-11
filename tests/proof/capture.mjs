@@ -172,10 +172,16 @@ async function captureChrome(browser, variant) {
   const page = await context.newPage();
   await page.goto(BASE + CHROME.path, { waitUntil: 'networkidle' });
   if (variant.contrast) {
-    const option = page.locator(`.ds-chrome-top-bar [data-ds-preference="contrast"] input[value="${variant.contrast}"]`);
-    const saved = page.waitForResponse((r) => r.url().includes('/design-system/preferences') && r.request().method() === 'POST');
-    await option.check();
-    if (!(await saved).ok()) throw new Error('The switch could not save the choice.');
+    // The switch the page shows: the top bar's steps aside when the theme
+    // places its own selectors (Advaita does, through its recipe).
+    const option = page.locator(`[data-ds-preference="contrast"] input[value="${variant.contrast}"]:visible`).first();
+    // Waited on together, so a failed click can't leave the response wait
+    // rejecting unhandled (Node would exit before the restore below).
+    const [saved] = await Promise.all([
+      page.waitForResponse((r) => r.url().includes('/design-system/preferences') && r.request().method() === 'POST'),
+      option.check(),
+    ]);
+    if (!saved.ok()) throw new Error('The switch could not save the choice.');
     await page.reload({ waitUntil: 'networkidle' });
     const applied = await page.evaluate(() => document.documentElement.getAttribute('data-ds-contrast'));
     if (applied !== variant.contrast) throw new Error(`The switch did not save contrast=${variant.contrast} (got ${applied}).`);
