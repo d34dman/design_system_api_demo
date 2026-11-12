@@ -16,9 +16,11 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import AxeBuilder from '@axe-core/playwright';
+import { landingNode } from './landing.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..', '..');
+const LANDING = landingNode(ROOT);
 const OUT = join(HERE, 'out', 'skin-looks');
 const BASE = process.env.DEMO_URL ?? 'https://design-system-api-demo.ddev.site';
 const args = Object.fromEntries(process.argv.slice(2).map((a) => a.replace(/^--/, '').split('=')));
@@ -33,8 +35,8 @@ const MODES = pick(['light', 'dark'], 'modes');
 const PAGES = pick([
   { id: 'front', path: '/node' },
   { id: 'article', path: '/node/2' },
-  { id: 'landing', path: '/node/3' },
-  { id: 'landing-edit', path: '/node/3/edit', frontendForms: true },
+  { id: 'landing', path: `/node/${LANDING}` },
+  { id: 'landing-edit', path: `/node/${LANDING}/edit`, frontendForms: true },
   {
     id: 'media-library', path: '/node/2/edit', frontendForms: true,
     run: async (page) => {

@@ -23,9 +23,11 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import AxeBuilder from '@axe-core/playwright';
+import { landingNode } from './landing.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..', '..');
+const LANDING = landingNode(ROOT);
 const BASE = process.env.DEMO_URL ?? 'https://design-system-api-demo.ddev.site';
 const args = Object.fromEntries(process.argv.slice(2).map((a) => a.replace(/^--/, '').split('=')));
 const OUT = resolve(args.out ?? join(HERE, 'out', 'skin-ui'));
@@ -157,7 +159,7 @@ try {
   // 8. A site page in the new skin, light and dark.
   for (const mode of MODES.slice(0, 2)) {
     await page.emulateMedia({ colorScheme: mode.emulate.colorScheme });
-    await page.goto(BASE + '/node/3', { waitUntil: 'networkidle' });
+    await page.goto(BASE + `/node/${LANDING}`, { waitUntil: 'networkidle' });
     await page.evaluate(() => document.fonts.ready);
     const skinCss = await page.locator('link[data-design-system-skin]').evaluateAll((links) => links.map((l) => ({ skin: l.dataset.designSystemSkin, context: l.dataset.designSystemContext })));
     const primary = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--ds-color-action-primary').trim());

@@ -27,9 +27,11 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import AxeBuilder from '@axe-core/playwright';
+import { landingNode } from './landing.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..', '..');
+const LANDING = landingNode(ROOT);
 const OUT = join(HERE, 'out', 'skin-contrast');
 const BASE = process.env.DEMO_URL ?? 'https://design-system-api-demo.ddev.site';
 
@@ -41,7 +43,7 @@ const MODES = ['light', 'dark'];
 const PAGES = [
   { id: 'article', path: '/node/2', title: 'Article with the switch-user block (chrome region on a site page)' },
   {
-    id: 'landing-edit', path: '/node/3/edit', title: 'Paragraphs in the chrome inside a site form', frontendForms: true,
+    id: 'landing-edit', path: `/node/${LANDING}/edit`, title: 'Paragraphs in the chrome inside a site form', frontendForms: true,
     run: async (page) => { await page.locator('.field--widget-paragraphs').first().scrollIntoViewIfNeeded(); },
   },
   {

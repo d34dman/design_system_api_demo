@@ -39,18 +39,16 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium, firefox, webkit } from 'playwright';
 import AxeBuilder from '@axe-core/playwright';
+import { landingNode } from './landing.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..', '..');
+const LANDING = landingNode(ROOT);
 const OUT = join(HERE, 'out', 'advaita');
 const SWAP_OUT = join(HERE, 'out', 'advaita-skin-swap');
 const ICONS_OUT = join(HERE, 'out', 'advaita-icons');
 const BASE = process.env.DEMO_URL ?? 'https://design-system-api-demo.ddev.site';
 const args = Object.fromEntries(process.argv.slice(2).map((a) => a.replace(/^--/, '').split('=')));
-// The demo's landing page (Paragraphs, an author field). Its node ID depends on
-// the install, so it is looked up.
-const LANDING = execFileSync('ddev', ['drush', 'php:eval', "$ids = Drupal::entityQuery('node')->accessCheck(FALSE)->condition('type', 'landing')->sort('nid')->range(0, 1)->execute(); echo reset($ids) ?: '';"], { cwd: ROOT, encoding: 'utf8' }).trim();
-if (!LANDING) throw new Error('No landing page on the site: run ddev install-demo.');
 
 // What each page is, and which system renders it.
 export const PAGES = [
