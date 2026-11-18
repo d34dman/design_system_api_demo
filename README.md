@@ -34,6 +34,20 @@ npm run capture     # drives the demo with Playwright; about 12 minutes
 npm run gallery     # builds tests/proof/out/gallery/index.html
 ```
 
+The other scripts in `tests/proof/` run with `node <script>.mjs`; each one's header
+says what it checks and where it writes:
+
+| Script | Checks |
+|---|---|
+| `admin-chrome.mjs` | Core's admin chrome (Navigation, Toolbar, contextual links) on every setup |
+| `advaita.mjs` | Advaita's pages, skins and modes, with axe |
+| `patterns-ui-kit.mjs` | Core's controls under Advaita, drawn by the patterns and UI Kit |
+| `skin-contrast.mjs`, `skin-looks.mjs`, `skin-ui.mjs` | Two systems differing in structure; every skin pair; making a skin in the UI |
+| `ui-kit-showcase.mjs`, `ui-kit-content.mjs`, `ui-kit-layout-lab.mjs`, `ui-kit-demo.mjs` | UI Kit's showcase, content components, layout lab and sample app in six variants |
+| `spacing.mjs` | Composition spacing on the showcase and the demo screens |
+| `regions.mjs`, `contrib.mjs` (+ `*-gallery.mjs`) | Two design systems on one page: leaks and visual scores per approach |
+| `store-shots.mjs` | Screenshots for Advaita's project page |
+
 ## Why Drupal 11.5 beta
 
 The Design System API builds on core's Design Tokens API

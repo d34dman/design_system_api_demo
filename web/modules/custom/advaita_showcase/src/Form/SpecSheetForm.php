@@ -50,24 +50,6 @@ final class SpecSheetForm extends FormBase {
       'surface' => $this->button('Add media', 'button-surface'),
       'soft' => $this->button('Filter', 'button-soft', [], ['ds-button--soft']),
       'neutral' => $this->button('Edit', 'button-neutral', [], ['ds-button--neutral']),
-      'ghost' => $this->button('Ghost', 'button-ghost', [], ['ds-button--ghost']),
-      // An icon button: the pattern's ghost square around a contract icon.
-      'icon' => [
-        '#type' => 'html_tag',
-        '#tag' => 'button',
-        '#attributes' => [
-          'type' => 'button',
-          // Markup that sets ds-button itself adds UI Kit's button classes
-          // (the patterns map the rest).
-          'class' => ['ds-button', 'ds-button--ghost', 'ds-button--icon', 'ui-kit-button', 'ui-kit-button--secondary'],
-          'data-spec' => 'icon-button-ghost',
-        ],
-        'icon' => [
-          '#type' => 'component',
-          '#component' => 'ui_kit:icon',
-          '#props' => ['name' => 'close', 'label' => $this->t('Close')],
-        ],
-      ],
       'danger' => $this->button('Remove', 'button-danger', ['#button_type' => 'danger']),
       'danger_solid' => $this->button('Delete', 'button-danger-solid', [], ['ds-button--danger-solid']),
       'disabled' => $this->button('Disabled', 'button-disabled', ['#button_type' => 'primary', '#disabled' => TRUE]),

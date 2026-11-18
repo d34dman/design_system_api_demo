@@ -1,0 +1,39 @@
+/* The layout lab's own parts: frames of a fixed width, and boxes that stand
+   for real content. The boxes keep their browser margins (p, h3, figure), as
+   content in Drupal does; the layouts must not let those margins change the
+   gaps. Long words break only when there is no other way (break-word), so a
+   layout that doesn't let its children shrink overflows. */
+.ui-kit-lab,
+.ui-kit-lab-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+  padding: 1rem;
+}
+.ui-kit-lab h2 {
+  margin: 0;
+}
+.ui-kit-lab-case {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
+  gap: 0.5rem;
+}
+.ui-kit-lab-frame {
+  box-sizing: content-box;
+  max-inline-size: none;
+  outline: 1px dashed var(--ds-color-border-default, GrayText);
+  outline-offset: 2px;
+}
+.ui-kit-lab-box {
+  box-sizing: border-box;
+  padding: 0.5rem;
+  color: var(--ds-color-fg-default, CanvasText);
+  background: var(--ds-color-bg-surface-nested, Canvas);
+  box-shadow: inset 0 0 0 1px var(--ds-color-border-soft, GrayText);
+  overflow-wrap: break-word;
+}
+/* A caller's setting on the outer stack: it must not reach the inner one. */
+.ui-kit-lab-outer > .ui-kit-stack {
+  --ui-kit-stack-gap: 3rem;
+}

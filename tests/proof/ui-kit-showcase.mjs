@@ -1,5 +1,5 @@
 /**
- * UI Kit's showcase (/ui-kit/showcase, test module ui_kit_test) under Advaita
+ * UI Kit's showcase (/ui-kit/showcase, the demo's ui_kit_demo module) under Advaita
  * in six variants: light, dark, more contrast, dark with more contrast,
  * forced colors and RTL. Captures the normal rows and the blank row (every
  * optional value missing or blank) separately, with an axe scan of the

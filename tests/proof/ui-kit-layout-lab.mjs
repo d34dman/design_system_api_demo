@@ -1,11 +1,9 @@
 /**
- * UI Kit's layout lab (/ui-kit/layout-lab, test module ui_kit_test): every
+ * UI Kit's layout lab (/ui-kit/layout-lab, the demo's ui_kit_demo module): every
  * layout measured in frames of a fixed width (320, 640, 1280px), in six
  * variants (light, dark, more contrast, dark with more contrast, forced
  * colors, RTL) and at 400% zoom.
  *
- * - compare: each of the provider's stack, cluster, sidebar and tiles next to
- *   UI Kit's, pixel by pixel (plan m1-e1).
  * - geometry: no layout box leaves its frame; gaps between a layout's
  *   children equal its gap; columns split by ratio at 40rem and wider and
  *   stack below, also in a narrow side of a wide frame; center keeps its
@@ -19,7 +17,7 @@
  *   cd tests/proof && node ui-kit-layout-lab.mjs [--variants=light,rtl] [--tag=after]
  *
  * Writes out/ui-kit-layout-lab/<tag>/: <variant>--<section>.png,
- * zoom--<page>.png, compare.json, geometry.json, zoom.json, axe.json.
+ * zoom--<page>.png, geometry.json, zoom.json, axe.json.
  * Exits 1 if a geometry check or a zoom check fails, or axe finds anything.
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -44,25 +42,6 @@ const VARIANTS = [
 
 const DEMO_PAGES = ['/ui-kit/demo', '/ui-kit/demo/content', '/ui-kit/demo/projects', '/ui-kit/demo/article', '/ui-kit/demo/login'];
 
-// Pixel comparison of two PNGs in the page's canvas, as ui-kit-showcase.mjs.
-async function comparePngs(page, a, b) {
-  return page.evaluate(async ([a64, b64]) => {
-    const load = (src) => new Promise((ok, fail) => { const i = new Image(); i.onload = () => ok(i); i.onerror = fail; i.src = 'data:image/png;base64,' + src; });
-    const [ia, ib] = await Promise.all([load(a64), load(b64)]);
-    if (ia.width !== ib.width || ia.height !== ib.height) {
-      return { same: false, size: [[ia.width, ia.height], [ib.width, ib.height]], diff: null };
-    }
-    const data = (img) => { const c = document.createElement('canvas'); c.width = img.width; c.height = img.height; const x = c.getContext('2d'); x.drawImage(img, 0, 0); return x.getImageData(0, 0, c.width, c.height).data; };
-    const da = data(ia), db = data(ib);
-    const TOLERANCE = 2;
-    let diff = 0;
-    for (let i = 0; i < da.length; i += 4) {
-      if (Math.max(...[0, 1, 2, 3].map((k) => Math.abs(da[i + k] - db[i + k]))) > TOLERANCE) diff++;
-    }
-    return { same: diff === 0, size: [[ia.width, ia.height]], diff, pixels: da.length / 4 };
-  }, [a.toString('base64'), b.toString('base64')]);
-}
-
 // Every measurement, in the page. Returns a list of { case, check, ok, detail }.
 function measure() {
   const results = [];
@@ -73,7 +52,6 @@ function measure() {
 
   for (const frame of document.querySelectorAll('.ui-kit-lab-frame')) {
     const kase = frame.dataset.case;
-    if (kase.startsWith('compare-')) continue;
     const f = frame.getBoundingClientRect();
 
     // No layout box leaves its frame, and the frame doesn't scroll.
@@ -147,7 +125,7 @@ function measure() {
 
 mkdirSync(OUT, { recursive: true });
 const browser = await chromium.launch();
-const compare = {}, geometry = {}, axe = {}, zoom = {};
+const geometry = {}, axe = {}, zoom = {};
 let failed = 0;
 
 for (const variant of VARIANTS) {
@@ -160,24 +138,12 @@ for (const variant of VARIANTS) {
   }, variant.attrs);
   await page.waitForTimeout(150);
 
-  // The provider's layout and UI Kit's, pixel by pixel (m1-e1).
-  compare[variant.id] = {};
-  for (const name of await page.locator('[data-compare]').evaluateAll((els) => els.map((e) => e.dataset.compare))) {
-    const shots = {};
-    for (const side of ['provider', 'ui-kit']) {
-      const el = page.locator(`[data-case="compare-${name}-${side}"] > *`).first();
-      if (await el.count()) shots[side] = await el.screenshot({ path: join(OUT, `${variant.id}--compare-${name}-${side}.png`) });
-    }
-    compare[variant.id][name] = shots.provider ? await comparePngs(page, shots.provider, shots['ui-kit']) : { provider: 'absent' };
-    console.log(variant.id, 'compare', name, JSON.stringify(compare[variant.id][name]));
-  }
-
   geometry[variant.id] = await page.evaluate(measure);
   const bad = geometry[variant.id].filter((r) => !r.ok);
   failed += bad.length;
   console.log(variant.id, 'geometry', geometry[variant.id].length - bad.length, '/', geometry[variant.id].length, bad.map((r) => `${r.case}: ${r.check} (${r.detail})`).join(' | '));
 
-  for (const section of ['compare', 'columns', 'nested']) {
+  for (const section of ['columns', 'nested']) {
     await page.locator(`#lab-${section}`).screenshot({ path: join(OUT, `${variant.id}--${section}.png`) });
   }
 
@@ -200,7 +166,7 @@ if (!args.variants || args.variants.split(',').includes('zoom')) {
     for (const path of ['/ui-kit/layout-lab', ...DEMO_PAGES]) {
       await page.goto(`${BASE}${path}`, { waitUntil: 'networkidle' });
       await page.evaluate((d) => document.documentElement.setAttribute('dir', d), dir);
-      await page.addStyleTag({ content: '.ui-kit-lab-frame { inline-size: 100% !important; box-sizing: border-box; } .ui-kit-lab-compare { display: none; }' });
+      await page.addStyleTag({ content: '.ui-kit-lab-frame { inline-size: 100% !important; box-sizing: border-box; }' });
       await page.waitForTimeout(100);
       const sizes = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }));
       const geo = path.endsWith('layout-lab') ? (await page.evaluate(measure)).filter((r) => r.check === 'no overflow' && !r.ok) : [];
@@ -215,7 +181,6 @@ if (!args.variants || args.variants.split(',').includes('zoom')) {
   }
 }
 
-writeFileSync(join(OUT, 'compare.json'), JSON.stringify(compare, null, 2) + '\n');
 writeFileSync(join(OUT, 'geometry.json'), JSON.stringify(geometry, null, 2) + '\n');
 writeFileSync(join(OUT, 'zoom.json'), JSON.stringify(zoom, null, 2) + '\n');
 writeFileSync(join(OUT, 'axe.json'), JSON.stringify(axe, null, 2) + '\n');

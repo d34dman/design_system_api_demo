@@ -33,13 +33,11 @@ export const COMPONENTS = [
   { id: 'button-surface', label: 'Button, surface (default)', states: ['hover', 'focus'], variants: ['link'] },
   { id: 'button-soft', label: 'Button, soft', states: ['hover'] },
   { id: 'button-neutral', label: 'Button, surface gray (neutral)', states: ['hover', 'focus'] },
-  { id: 'button-ghost', label: 'Button, ghost gray', states: ['hover', 'focus'] },
   { id: 'button-danger', label: 'Button, danger (soft red)', states: ['hover'], variants: ['link'] },
   { id: 'button-danger-solid', label: 'Button, danger solid', states: ['hover'] },
   { id: 'button-disabled', label: 'Button, disabled' },
   { id: 'button-small', label: 'Button, size 1' },
   { id: 'button-small-neutral', label: 'Button, size 1 gray (row operations)' },
-  { id: 'icon-button-ghost', label: 'Icon button, ghost', ignore: ['fontSize', 'fontWeight', 'fontFamily'] },
   // Fields.
   { id: 'textfield', label: 'Text field', states: ['hover', 'focus'], variants: ['email', 'file'] },
   { id: 'textfield-placeholder', label: 'Text field, placeholder', textBox: { text: '::placeholder' } },
@@ -61,19 +59,11 @@ export const COMPONENTS = [
   // Navigation.
   {
     id: 'tab-active', label: 'Page tab, current',
-    drupal: { 'tab-active': { path: '/admin/content/moderated', selector: 'ul.ds-tabs:not(.ds-tabs--small) a.is-active' } },
+    drupal: { 'tab-active': { path: '/admin/content/moderated', selector: '.tabs--primary .ui-kit-tab-navigation__link[aria-current]' } },
   },
   {
     id: 'tab', label: 'Page tab', states: ['hover'],
-    drupal: { tab: { path: '/admin/content/moderated', selector: '.ds-tabs:not(.ds-tabs--small) li:not(.is-active) > a' } },
-  },
-  {
-    id: 'tab-small-active', label: 'Secondary tab, current',
-    drupal: { 'tab-small-active': { path: '/admin/content/moderated', selector: 'ul.ds-tabs--small a.is-active' } },
-  },
-  {
-    id: 'tab-small', label: 'Secondary tab',
-    drupal: { 'tab-small': { path: '/admin/content/moderated', selector: '.ds-tabs--small li:not(.is-active) > a' } },
+    drupal: { tab: { path: '/admin/content/moderated', selector: '.tabs--primary .ui-kit-tab-navigation__link:not([aria-current])' } },
   },
   {
     id: 'segmented', label: 'Segmented control (Media Library: Grid / Table)', ignore: ['paddingInline', 'fontSize', 'fontWeight', 'fontFamily', 'color'],
@@ -88,23 +78,23 @@ export const COMPONENTS = [
   // Menu (a row's operations).
   {
     id: 'menu', label: 'Dropdown menu', ignore: ['fontSize', 'fontWeight', 'fontFamily', 'color', 'height', 'paddingInline'],
-    drupal: { menu: { path: '/admin/content', act: openRowMenu, selector: '.dropbutton-wrapper.open .ds-menu, .dropbutton-wrapper [aria-expanded="true"] ~ * .ds-menu, .ds-menu:visible' } },
+    drupal: { menu: { path: '/admin/content', act: openRowMenu, selector: '.dropbutton-wrapper.open .dropbutton-menu__list, .dropbutton-wrapper [aria-expanded="true"] ~ * .dropbutton-menu__list, .dropbutton-menu__list:visible' } },
   },
   {
     id: 'menu-item', label: 'Menu item',
-    drupal: { 'menu-item': { path: '/admin/content', act: openRowMenu, selector: '.ds-menu:visible li > a:not(.ds-menu__item--danger)' } },
+    drupal: { 'menu-item': { path: '/admin/content', act: openRowMenu, selector: '.dropbutton-menu__list:visible li > a:not(.dropbutton-menu__item--danger)' } },
   },
   {
     id: 'menu-item-highlighted', label: 'Menu item, highlighted (Drupal: hovered)',
-    drupal: { 'menu-item-highlighted': { path: '/admin/content', act: openRowMenu, state: 'hover', selector: '.ds-menu:visible li > a:not(.ds-menu__item--danger)' } },
+    drupal: { 'menu-item-highlighted': { path: '/admin/content', act: openRowMenu, state: 'hover', selector: '.dropbutton-menu__list:visible li > a:not(.dropbutton-menu__item--danger)' } },
   },
   {
     id: 'menu-item-danger', label: 'Menu item, danger',
-    drupal: { 'menu-item-danger': { path: '/admin/content', act: openRowMenu, selector: '.ds-menu:visible a.ds-menu__item--danger' } },
+    drupal: { 'menu-item-danger': { path: '/admin/content', act: openRowMenu, selector: '.dropbutton-menu__list:visible a.dropbutton-menu__item--danger' } },
   },
   {
     id: 'menu-item-danger-highlighted', label: 'Menu item, danger, highlighted (Drupal: hovered)',
-    drupal: { 'menu-item-danger-highlighted': { path: '/admin/content', act: openRowMenu, state: 'hover', selector: '.ds-menu:visible a.ds-menu__item--danger' } },
+    drupal: { 'menu-item-danger-highlighted': { path: '/admin/content', act: openRowMenu, state: 'hover', selector: '.dropbutton-menu__list:visible a.dropbutton-menu__item--danger' } },
   },
   // Table.
   { id: 'table-header', label: 'Table header cell', ignore: ['radius', 'elevated'] },
@@ -140,7 +130,7 @@ export const COMPONENTS = [
         path: '/admin/content',
         act: async (page) => {
           await openRowMenu(page);
-          await page.locator('.ds-menu:visible a[href*="/delete"]').first().click();
+          await page.locator('.dropbutton-menu__list:visible a[href*="/delete"]').first().click();
           await page.waitForSelector('.ui-dialog', { timeout: 15000 });
           await page.waitForTimeout(400);
         },
@@ -173,7 +163,7 @@ export const DEPARTURES = {
   // The focus ring is blue-9: Radix's focus-8 (blue-8) is 2.3:1 on the page.
   // In dark the skin's ring is blue-8, as Radix's.
   ...each([
-    'button-solid', 'button-solid@actions', 'button-surface', 'button-surface@link', 'button-neutral', 'button-ghost',
+    'button-solid', 'button-solid@actions', 'button-surface', 'button-surface@link', 'button-neutral',
     ...FIELDS, 'select',
   ].map((id) => `${id}:focus.outline`), light('focus colour blue-9: blue-8 is 2.3:1 (slate skin)')),
   // Checkboxes and radios keep a 3:1 edge (a11y/field-edge); Radix's and

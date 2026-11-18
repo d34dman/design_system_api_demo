@@ -42,3 +42,20 @@ ui_kit_demo.article_preview:
     _title: 'Article preview'
   requirements:
     _permission: 'view ui kit demo'
+
+# Every UI Kit component on one page, and the layout lab that measures the
+# layouts; the demo's proof scripts read both.
+ui_kit_demo.showcase:
+  path: '/ui-kit/showcase'
+  defaults:
+    _controller: '\Drupal\ui_kit_demo\Controller\ShowcaseController'
+    _title: 'UI Kit showcase'
+  requirements:
+    _permission: 'view ui kit demo'
+ui_kit_demo.layout_lab:
+  path: '/ui-kit/layout-lab'
+  defaults:
+    _controller: '\Drupal\ui_kit_demo\Controller\LayoutLabController'
+    _title: 'UI Kit layout lab'
+  requirements:
+    _permission: 'view ui kit demo'
