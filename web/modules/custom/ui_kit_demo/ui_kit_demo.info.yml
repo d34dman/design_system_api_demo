@@ -1,6 +1,6 @@
 name: 'UI Kit demo'
 type: module
-description: 'A sample app built from UI Kit components, to click through: home, sign-in, a content dashboard, a project dashboard with chat, and a form. Sample data only; nothing is stored. Demo site only.'
+description: 'A sample app built from UI Kit components, to click through: home, sign-in, a content dashboard, a project dashboard with chat, and a form; plus UI Kit''s showcase (/ui-kit/showcase) and layout lab (/ui-kit/layout-lab). Sample data only; nothing is stored. Demo site only.'
 package: Design System Demo
 core_version_requirement: ^11.5 || ^12
 dependencies:

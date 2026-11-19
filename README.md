@@ -72,7 +72,8 @@ What that means here:
 This repository is a showcase and test bed, not a release. It owns everything that
 only makes sense for the demo: the demo content and its theme pieces, the Claro
 adapter example, the two-design-systems test setup, the proof gallery and UI Kit's
-sample app (`web/modules/custom/ui_kit_demo`, `/ui-kit/demo`). Nothing a real site needs should live here;
+sample app, showcase and layout lab (`web/modules/custom/ui_kit_demo`: `/ui-kit/demo`,
+`/ui-kit/showcase`, `/ui-kit/layout-lab`). Nothing a real site needs should live here;
 that belongs in one of the drupal.org projects.
 
 

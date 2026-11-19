@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Drupal\Tests\ui_kit_demo\Functional;
 
 use Drupal\Tests\BrowserTestBase;
+use Drupal\user\Entity\Role;
+use Drupal\user\RoleInterface;
 use Drupal\ui_kit_demo\Gaps;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
@@ -130,6 +132,28 @@ class DemoTest extends BrowserTestBase {
     // Every gap in the register is drawn somewhere, and nothing else is.
     $this->assertEqualsCanonicalizing(array_keys(Gaps::ALL), array_keys($seen));
     $this->assertSession()->elementNotExists('css', '.ui-kit-demo--gaps');
+  }
+
+  /**
+   * UI Kit's showcase and layout lab render, behind the module's permission.
+   */
+  public function testShowcaseAndLayoutLab(): void {
+    $this->drupalGet('/ui-kit/showcase');
+    $this->assertSession()->statusCodeEquals(200);
+    foreach (['ui-kit-badge', 'ui-kit-stat', 'ui-kit-stack'] as $root) {
+      $this->assertSession()->elementExists('css', '.' . $root);
+    }
+    $this->assertSession()->linkByHrefExists('/ui-kit/showcase#info');
+
+    $this->drupalGet('/ui-kit/layout-lab');
+    $this->assertSession()->statusCodeEquals(200);
+    $this->assertSession()->elementExists('css', '.ui-kit-lab [data-case]');
+
+    Role::load(RoleInterface::ANONYMOUS_ID)?->revokePermission('view ui kit demo')->save();
+    foreach (['/ui-kit/showcase', '/ui-kit/layout-lab'] as $path) {
+      $this->drupalGet($path);
+      $this->assertSession()->statusCodeEquals(403);
+    }
   }
 
   /**

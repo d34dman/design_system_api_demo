@@ -4,21 +4,36 @@ declare(strict_types=1);
 
 namespace Drupal\ui_kit_demo\Controller;
 
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Url;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Renders every component in every tone, then with blank values.
  *
  * Each part is a wrapper with a class, so it can be captured on its own.
  */
-final class ShowcaseController {
+final class ShowcaseController implements ContainerInjectionInterface {
 
   /**
    * The tones the components share.
    */
   private const TONES = ['neutral', 'info', 'success', 'warning', 'danger'];
+
+  public function __construct(
+    private readonly ModuleExtensionList $modules,
+  ) {}
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container): static {
+    $modules = $container->get('extension.list.module');
+    assert($modules instanceof ModuleExtensionList);
+    return new static($modules);
+  }
 
   /**
    * Builds the showcase.
@@ -46,7 +61,7 @@ final class ShowcaseController {
           'hint' => 'last 24 hours',
           'tone' => $tone,
           'status' => $tone === 'neutral' ? NULL : ucfirst($tone),
-          'href' => $i % 2 ? '/ui-kit/showcase#' . $tone : NULL,
+          'href' => $i % 2 ? Url::fromRoute('ui_kit_demo.showcase', [], ['fragment' => $tone])->toString() : NULL,
         ],
       ];
     }
@@ -470,7 +485,7 @@ final class ShowcaseController {
     $retry = $this->component('button', ['label' => 'Retry']);
     $log = $this->component('link', ['label' => 'Open the log', 'href' => '#']);
     $landscape = $this->component('image', [
-      'src' => self::images() . '/landscape.svg',
+      'src' => $this->images() . '/landscape.svg',
       'alt' => '',
       'width' => 640,
       'height' => 360,
@@ -700,7 +715,7 @@ final class ShowcaseController {
         'rich-text' => [
           '#type' => 'container',
           '#attributes' => ['class' => ['ui-kit-showcase--rich-text']],
-          'sample' => $this->component('rich-text', [], ['content' => ['#markup' => str_replace('{images}', self::images(), self::SAMPLE)]]),
+          'sample' => $this->component('rich-text', [], ['content' => ['#markup' => str_replace('{images}', $this->images(), self::SAMPLE)]]),
         ],
         'quote' => [
           '#type' => 'container',
@@ -738,7 +753,7 @@ final class ShowcaseController {
    *   A render array.
    */
   private function media(): array {
-    $images = self::images();
+    $images = $this->images();
     $landscape = fn (string $alt = 'A placeholder landscape'): array => $this->component('image', [
       'src' => "$images/landscape.svg",
       'alt' => $alt,
@@ -834,12 +849,10 @@ final class ShowcaseController {
   }
 
   /**
-   * The URL path of the test module's sample pictures.
+   * The URL path of this module's sample pictures.
    */
-  private static function images(): string {
-    $modules = \Drupal::service('extension.list.module');
-    assert($modules instanceof ModuleExtensionList);
-    return Url::fromUserInput('/' . $modules->getPath('ui_kit_demo') . '/images')->toString();
+  private function images(): string {
+    return Url::fromUserInput('/' . $this->modules->getPath('ui_kit_demo') . '/images')->toString();
   }
 
   /**

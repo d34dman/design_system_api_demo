@@ -123,7 +123,7 @@ finally {
     `Drupal::configFactory()->getEditable('node.settings')->set('use_admin_theme', ${before.adminForms ? 'TRUE' : 'FALSE'})->save();`
     + `Drupal::keyValue('development_settings')->set('design_system_api_debug', ${before.debug ? 'TRUE' : 'FALSE'});`
     // No PHP variables: ddev's shell would expand them.
-    + (before.preferences === 'YjowOw==' ? '' : `Drupal::service('user.data')->set('design_system_api', 1, 'preferences', unserialize(base64_decode('${before.preferences}')));`),
+    + (before.preferences === 'Tjs=' /* serialize(NULL): nothing saved */ ? '' : `Drupal::service('user.data')->set('design_system_api', 1, 'preferences', unserialize(base64_decode('${before.preferences}')));`),
   );
   drush('cr');
   await browser.close();
