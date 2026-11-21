@@ -97,10 +97,15 @@ figure.cell figcaption h3 { font-family: var(--font-body); font-weight: 600; fon
 .axe.ok { color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent); }
 .axe.bad { color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, transparent); }
 
-.compare { position: relative; overflow: hidden; background: var(--surface-nested); max-width: 100%; }
-.compare img { display: block; width: 100%; height: auto; }
-.compare .after { position: absolute; inset: 0; clip-path: inset(0 0 0 var(--pos, 50%)); }
-.compare .after img { height: 100%; object-fit: cover; object-position: left top; }
+.compare { position: relative; overflow: hidden; background: var(--surface-nested); max-width: 100%; display: grid; }
+/* Before and after share one grid cell. Each image's width is its share of the
+   wider capture (set by the script once both have loaded), so both are drawn at
+   the same scale: neither is stretched or cropped. RTL cells anchor them at the
+   inline end, where an RTL layout starts. */
+.compare > img, .compare > .after { grid-area: 1 / 1; }
+.compare img { display: block; width: var(--w, 100%); height: auto; align-self: start; justify-self: start; }
+.compare.is-rtl img { justify-self: end; }
+.compare .after { display: grid; background: var(--surface-nested); clip-path: inset(0 0 0 var(--pos, 50%)); }
 .compare .rule { position: absolute; inset-block: 0; left: var(--pos, 50%); width: 2px; background: var(--accent); pointer-events: none; }
 .compare .tag { position: absolute; inset-block-start: 8px; font: 500 0.7rem/1 var(--font-mono); padding: 5px 7px; border-radius: 5px; background: rgb(16 19 26 / 0.78); color: #fff; pointer-events: none; }
 .compare .tag.b { inset-inline-start: 8px; }
@@ -108,6 +113,9 @@ figure.cell figcaption h3 { font-family: var(--font-body); font-weight: 600; fon
 .compare input[type="range"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
 .compare:has(input:focus-visible) { outline: 3px solid var(--accent); outline-offset: -3px; }
 
+.chrome-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 560px), 1fr)); }
+.chrome-pair { display: grid; grid-template-columns: 1280fr 249fr; align-items: start; }
+.chrome-pair img { display: block; width: 100%; height: auto; }
 .pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 20px; }
 .pair figure { margin: 0; display: grid; gap: 8px; min-width: 0; }
 .pair img { border: 1px solid var(--border); border-radius: var(--radius); display: block; width: 100%; height: auto; }
@@ -227,7 +235,7 @@ footer { color: var(--fg-soft); font-size: 0.85rem; }
       <h2 id="chrome-h">The admin chrome on the slate skin</h2>
       <p class="soft">Navigation's sidebar and top bar under Advaita, in light and dark, with more contrast set from the switch in the top bar, and in forced colours (light and dark palettes). Each cell shows the page and the sidebar with keyboard focus; the count is axe's violated rules on the chrome.</p>
     </div>
-    <div class="grid" id="chrome-grid"></div>
+    <div class="grid chrome-grid" id="chrome-grid"></div>
   </section>
 
   <section class="col" aria-labelledby="repro-h">
@@ -290,7 +298,7 @@ function render() {
     const label = `${DATA.themes.find((t) => t.name === theme).label}, ${v.label}`;
     return `<figure class="cell">
       <figcaption><h3>${esc(v.label)}</h3><span>${badge(axeCount(`off/${theme}/${v.name}`, view))} → ${badge(axeCount(`on/${theme}/${v.name}`, view))}</span></figcaption>
-      <div class="compare" style="--pos:50%">
+      <div class="compare${v.name === 'rtl' ? ' is-rtl' : ''}" style="--pos:50%">
         <img src="${before}" alt="Before, ${esc(label)}: the theme's own Media Library CSS" loading="lazy">
         <div class="after"><img src="${after}" alt="After, ${esc(label)}: the pilot on the contract" loading="lazy"></div>
         <div class="rule"></div>
@@ -302,6 +310,19 @@ function render() {
   document.querySelectorAll('.compare input').forEach((r) => {
     r.addEventListener('input', () => r.parentElement.style.setProperty('--pos', r.value + '%'));
   });
+  document.querySelectorAll('.compare').forEach(scale);
+}
+
+// Draws both captures of a compare at one scale: the wider one fills the box.
+function scale(box) {
+  const imgs = [...box.querySelectorAll('img')];
+  const done = () => {
+    if (!imgs.every((i) => i.complete && i.naturalWidth)) return;
+    const max = Math.max(...imgs.map((i) => i.naturalWidth));
+    imgs.forEach((i) => i.style.setProperty('--w', `${(i.naturalWidth / max) * 100}%`));
+  };
+  imgs.forEach((i) => i.addEventListener('load', done));
+  done();
 }
 
 function stats() {
@@ -326,8 +347,10 @@ function chromeGrid() {
   const cells = (DATA.chromeVariants || []).map((v) => [v, DATA.cells[`chrome/${DATA.chromeSkin}/${v.name}`]]).filter(([, c]) => c);
   $('#chrome-grid').innerHTML = cells.map(([v, c]) => `<figure class="cell">
       <figcaption><h3>${esc(v.label)}</h3><span>axe: <b>${c.axe.chrome.length}</b></span></figcaption>
-      <img src="shots/chrome/${esc(v.name)}.jpg" alt="The admin chrome, ${esc(v.label)}" loading="lazy" width="1280" height="860">
-      <img src="shots/chrome/${esc(v.name)}--focus.jpg" alt="The sidebar with keyboard focus, ${esc(v.label)}" loading="lazy">
+      <div class="chrome-pair">
+        <img src="shots/chrome/${esc(v.name)}.jpg" alt="The admin chrome, ${esc(v.label)}" loading="lazy" width="1280" height="860">
+        <img src="shots/chrome/${esc(v.name)}--focus.jpg" alt="The sidebar with keyboard focus, ${esc(v.label)}" loading="lazy" width="249" height="860">
+      </div>
     </figure>`).join('');
 }
 
